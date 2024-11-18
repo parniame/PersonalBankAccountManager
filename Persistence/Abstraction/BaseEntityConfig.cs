@@ -1,0 +1,46 @@
+﻿//using Domain;
+//using Domain.Abstraction;
+//using Microsoft.EntityFrameworkCore;
+//using Microsoft.EntityFrameworkCore.Metadata.Builders;
+//using System;
+//using System.Collections.Generic;
+//using System.Data;
+//using System.Linq;
+//using System.Text;
+//using System.Threading.Tasks;
+
+//namespace Persistence.Abstraction
+//{
+//    public class BaseEntityConfig<T> : IEntityTypeConfiguration<T>
+//        where T : BaseEntity
+//    {
+
+//        public virtual void Configure(EntityTypeBuilder<T> builder)
+//        {
+//            Type type = typeof(T);
+//            Type[] types = type.GetInterfaces();
+//            builder.ToTable(typeof(T).ToString());
+//            builder.HasKey(x => x.Id);
+//            builder.Property(x => x.Id).ValueGeneratedOnAdd();
+
+//            if (types.Contains(typeof(ITraceble)) || types.Contains(typeof(ITimeTraceble)))
+//            {
+//                builder.Property(x => x.DateCreated)
+//                           .HasColumnType(SqlDbType.SmallDateTime.ToString()).HasDefaultValue(DateTime.Now)
+//                           .IsRequired();
+//                builder.Property(x => x.DateUpdated)
+//                        .HasColumnType(SqlDbType.SmallDateTime.ToString())
+//                        .HasColumnType(SqlDbType.SmallDateTime.ToString()).HasDefaultValue(DateTime.Now)
+//                        .IsRequired();
+
+//            }
+//            else
+//            {
+//                builder.Ignore(x => x.DateCreated);
+//                builder.Ignore(x => x.DateUpdated);
+//            }
+//        }
+
+//    }
+//}
+
