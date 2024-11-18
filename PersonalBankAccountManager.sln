@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceLayer", "ServiceLayer", "{2ACC0E1E-C399-4D42-8765-4B1B160B2CE6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTransferObject", "DataTransferObject\DataTransferObject.csproj", "{36C07946-0B2C-49E9-99F3-7098E5D3E949}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{841A83AB-6B3F-43A0-96C7-627144CDDEB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{841A83AB-6B3F-43A0-96C7-627144CDDEB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{841A83AB-6B3F-43A0-96C7-627144CDDEB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36C07946-0B2C-49E9-99F3-7098E5D3E949}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36C07946-0B2C-49E9-99F3-7098E5D3E949}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36C07946-0B2C-49E9-99F3-7098E5D3E949}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36C07946-0B2C-49E9-99F3-7098E5D3E949}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,6 +57,7 @@ Global
 		{7E3A9874-E7DE-43F1-ABB5-EABCA853F42A} = {64431B14-91F9-42B7-BFC0-7EA474C742A1}
 		{CF3DE820-FA46-428A-AA32-8EFB6DD87D95} = {64431B14-91F9-42B7-BFC0-7EA474C742A1}
 		{841A83AB-6B3F-43A0-96C7-627144CDDEB5} = {2ACC0E1E-C399-4D42-8765-4B1B160B2CE6}
+		{36C07946-0B2C-49E9-99F3-7098E5D3E949} = {2ACC0E1E-C399-4D42-8765-4B1B160B2CE6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3AFE42CB-0F68-47B6-A20C-9B3EBEE82E48}

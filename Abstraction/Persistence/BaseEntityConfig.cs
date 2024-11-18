@@ -1,5 +1,6 @@
 ﻿
 using Abstraction.Domain;
+using Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -38,6 +39,11 @@ namespace Abstraction.Persistence
             {
                 builder.Ignore(x => x.DateCreated);
                 builder.Ignore(x => x.DateUpdated);
+            }
+            if(!types.Contains(typeof(ITraceble<>)))
+            {
+                builder.Ignore(x => x.CreatorID);
+                builder.Ignore(x => x.UpdatorID);
             }
         }
 

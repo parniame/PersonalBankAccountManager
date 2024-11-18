@@ -5,6 +5,7 @@ using System.Security.Claims;
 using Abstraction.Domain;
 using Persistence.Repositories;
 using Persistence;
+using Mapster;
 namespace PersonalBankAccountManager
 {
     public class Program
@@ -29,7 +30,7 @@ namespace PersonalBankAccountManager
 
 
 
-            //TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
+            TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
             //MapsterConfig.RegisterMapping();
             builder.Services.AddMvc();
             builder.Services.AddControllers();

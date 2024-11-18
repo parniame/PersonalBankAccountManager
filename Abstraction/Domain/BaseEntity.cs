@@ -12,6 +12,8 @@ namespace Abstraction.Domain
         public Guid Id { get; set; }
         public DateTime? DateCreated { get; set; }
         public DateTime? DateUpdated { get; set; }
+        public Guid? CreatorID { get; set; }
+        public Guid? UpdatorID { get; set; }
 
 
         protected abstract void Validate();

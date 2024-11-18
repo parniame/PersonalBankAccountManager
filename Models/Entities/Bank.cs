@@ -3,6 +3,7 @@
 
 
 using Abstraction.Domain;
+using Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
