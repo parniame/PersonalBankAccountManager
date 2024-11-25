@@ -1,0 +1,57 @@
+﻿
+
+<aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+        <li class="nav-item">
+            <a class="nav-link " asp-action="Index" asp-controller="Member">
+                <i class="bi bi-grid"></i>
+                <span>داشبورد</span>
+            </a>
+        </li><!-- End Dashboard Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#Add-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-safe2"></i><span>حساب ها</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="Add-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a asp-action="AddBankAccount" asp-controller="Member">
+                        <i class="bi bi-plus-square"></i></i><span>درج حساب جدید</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="GetBankAccounts" asp-controller="Member">
+                        <i class="bi bi-wallet2"></i></i><span>مشاهده حساب ها</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#See-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-menu-button-wide"></i><span> تراکنش ها</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="See-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a asp-action="AddTransaction" asp-controller="Member">
+                        <i class="bi bi-plus-square"></i><span> درج تراکنش جدید</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="GetTransactions" asp-controller="Member">
+                        <i class="bi bi-archive"></i><span>گزارش تراکنش ها</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="AddTransactionPlan" asp-controller="Member">
+                        <i class="bi bi-alarm"></i></i><span>زمان بندی تراکنش ها</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+
+    </ul>
+
+</aside>

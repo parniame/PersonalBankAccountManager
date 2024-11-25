@@ -17,7 +17,11 @@ namespace Models.Entities
     public class Bank: BaseEntity
     {
         public string Name { get; private set; }
-
+        public Guid? CreatorID { get; set; }
+        public User? Creator { get; set; }
+      
+        public Guid? UpdatorID { get; set; }
+        public User? Updator { get; set; }
         protected override void Validate()
         {
             if (string.IsNullOrWhiteSpace(Name))

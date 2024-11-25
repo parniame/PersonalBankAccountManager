@@ -13,11 +13,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistence", "Persistence\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{64431B14-91F9-42B7-BFC0-7EA474C742A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{841A83AB-6B3F-43A0-96C7-627144CDDEB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{841A83AB-6B3F-43A0-96C7-627144CDDEB5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceLayer", "ServiceLayer", "{2ACC0E1E-C399-4D42-8765-4B1B160B2CE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTransferObject", "DataTransferObject\DataTransferObject.csproj", "{36C07946-0B2C-49E9-99F3-7098E5D3E949}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTransferObject", "DataTransferObject\DataTransferObject.csproj", "{36C07946-0B2C-49E9-99F3-7098E5D3E949}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{1FC2386C-7AC2-4E6F-8109-D3FE172D3D70}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,10 @@ Global
 		{36C07946-0B2C-49E9-99F3-7098E5D3E949}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36C07946-0B2C-49E9-99F3-7098E5D3E949}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36C07946-0B2C-49E9-99F3-7098E5D3E949}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FC2386C-7AC2-4E6F-8109-D3FE172D3D70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FC2386C-7AC2-4E6F-8109-D3FE172D3D70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FC2386C-7AC2-4E6F-8109-D3FE172D3D70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FC2386C-7AC2-4E6F-8109-D3FE172D3D70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

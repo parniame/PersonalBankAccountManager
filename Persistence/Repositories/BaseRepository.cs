@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Persistence.Repositories
 {
-    public class BaseRepository<TSource> : IBaseRepository<TSource> where TSource : class 
+    public class BaseRepository<TSource> : IBaseRepository<TSource> where TSource : BaseEntity 
     {
         private readonly PersonalBankAccountManagerDBContext _dbcontext;
         private readonly DbSet<TSource> _entitySet;

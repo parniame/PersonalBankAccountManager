@@ -1,4 +1,5 @@
-﻿using Models.Entities;
+﻿using Abstraction.Domain;
+using Models.Entities;
 using Service.ServiceInterfaces;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Service.ServiceClasses
     public class TransactionService : ServiceBase<Transaction>,ITransactionService
     {
 
-        public TransactionService(Guid id)
+        public TransactionService(Guid id, IBaseRepository<Transaction> baseRepository) : base(baseRepository)
         {
             UserId = id;
         }

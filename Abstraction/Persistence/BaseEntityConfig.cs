@@ -1,6 +1,6 @@
 ﻿
 using Abstraction.Domain;
-using Domain;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -24,27 +24,16 @@ namespace Abstraction.Persistence
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            if ( types.Contains(typeof(ITimeTraceble)))
-            {
-                builder.Property(x => x.DateCreated)
-                           .HasColumnType(SqlDbType.SmallDateTime.ToString()).HasDefaultValue(DateTime.Now)
-                           .IsRequired();
-                builder.Property(x => x.DateUpdated)
-                        .HasColumnType(SqlDbType.SmallDateTime.ToString())
-                        .HasColumnType(SqlDbType.SmallDateTime.ToString()).HasDefaultValue(DateTime.Now)
-                        .IsRequired();
 
-            }
-            else
-            {
-                builder.Ignore(x => x.DateCreated);
-                builder.Ignore(x => x.DateUpdated);
-            }
-            if(!types.Contains(typeof(ITraceble<>)))
-            {
-                builder.Ignore(x => x.CreatorID);
-                builder.Ignore(x => x.UpdatorID);
-            }
+            builder.Property(x => x.DateCreated)
+                       .HasColumnType(SqlDbType.DateTime.ToString()).HasDefaultValue(DateTime.Now)
+                       .IsRequired();
+            builder.Property(x => x.DateUpdated)
+                    .HasColumnType(SqlDbType.DateTime.ToString())
+                    .HasColumnType(SqlDbType.DateTime.ToString()).HasDefaultValue(DateTime.Now)
+                    .IsRequired();
+
+
         }
 
     }

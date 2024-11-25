@@ -17,10 +17,7 @@ namespace Service
         private readonly IBaseRepository<Entity> _baseRepository;
         public static Guid UserId;
 
-        public ServiceBase()
-        {
-
-        }
+        
         public ServiceBase(IBaseRepository<Entity> baseRepository)
         {
             _baseRepository = baseRepository;
@@ -32,8 +29,7 @@ namespace Service
             var entity = MapToEntity(dto);
             entity.DateCreated = DateTime.Now;
             entity.DateUpdated = DateTime.Now;
-            entity.CreatorID = UserId;
-            entity.UpdatorID = UserId;
+           
             
             return await _baseRepository.CreateAsync(entity);
         }

@@ -9,28 +9,33 @@ using System.Threading.Tasks;
 
 namespace Models.Entities
 {
-    [Owned]
-    public class Document : ValueObject
+    
+    public class Document : BaseEntity
     {
         public Guid Id { get; set; }
         public string FileAddress { get; private set; }
         public Guid TransactionId { get; set; }
-       
 
-        public Document(string fileAddress)
+        protected override void Validate()
         {
-            if (string.IsNullOrEmpty(fileAddress)) 
-                throw new ArgumentNullException(nameof(fileAddress));
-           
-
-            FileAddress = fileAddress;
-            
+            throw new NotImplementedException();
         }
 
-        protected override IEnumerable<object?> GetEqualityComponents()
-        {
-            yield return FileAddress;
-          
-        }
+
+        //public Document(string fileAddress)
+        //{
+        //    if (string.IsNullOrEmpty(fileAddress)) 
+        //        throw new ArgumentNullException(nameof(fileAddress));
+
+
+        //    FileAddress = fileAddress;
+
+        //}
+
+        //protected override IEnumerable<object?> GetEqualityComponents()
+        //{
+        //    yield return FileAddress;
+
+        //}
     }
 }

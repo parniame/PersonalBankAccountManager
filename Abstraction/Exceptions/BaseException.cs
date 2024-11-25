@@ -8,19 +8,12 @@ namespace Abstraction.Exceptions
 {
     public class BaseException : Exception
     {
-        public BaseException(string message, int sequence) : base(message)
+        public BaseException(string message) : base(message)
         {
-            Code = $"Domain_{sequence}";
+
         }
 
         public string Code { get; set; }
-    }
-    
-    public class BaseEmptyArgumentException : BaseException
-    {
-        public BaseEmptyArgumentException(string argument, int sequence) : base($"{argument} can't be emtpy.", sequence)
-        {
-        }
     }
 
 }

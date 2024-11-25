@@ -9,14 +9,30 @@ using System.Threading.Tasks;
 
 namespace Domain.Exceptions
 {
-    
-  
+
+
+    public class BankDomainException : BaseException
+    {
+        public BankDomainException(string message, int sequence) : base(message)
+        {
+            Code = $"BankDomain_{sequence}";
+        }
+    }
+
+
+
+    public class BaseEmptyArgumentException : BankDomainException
+    {
+        public BaseEmptyArgumentException(string argument, int sequence) : base($"{argument} can't be emtpy.", sequence)
+        {
+        }
+    }
 
     public class EmptyDomainNameException : BaseEmptyArgumentException
     {
         public EmptyDomainNameException() : base("Bank title", 1)
         {
-            Code = $"BankDomain_{1}";
+           
         }
     }
 

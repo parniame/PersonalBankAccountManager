@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Models.Entities
 {
-    public class Transaction : BaseEntity,ITimeTraceble
+    public class Transaction : BaseEntity
     {
         public Guid UserId { get; set; }
         public bool IsWithdrawl { get; set; }
@@ -19,8 +19,8 @@ namespace Models.Entities
         public string? Description { get; set; }
         public Guid? SecondBankAccountId { get; set; }
         public Guid? TransactionPlanId { get; set; }
-        public DateTime? DateCreated { get; set; }
-        public DateTime? DateUpdated { get; set; }
+        //public DateTime? DateCreated { get; set; }
+        //public DateTime? DateUpdated { get; set; }
         public ICollection<Document> TransActionDocuments { get; private set; }
         
         public User User { get; set; }// be eliminated if without use!

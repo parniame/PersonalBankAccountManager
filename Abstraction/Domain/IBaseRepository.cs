@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Abstraction.Domain
 {
-    public interface IBaseRepository<TSource> where TSource : class
+    public interface IBaseRepository<TSource> where TSource : BaseEntity
     {
         Task<TSource> GetByIdAsync(Guid id, bool noTraking = true);
         Task<TSource> GetFirstAsync(Expression<Func<TSource, bool>> predicate = null, bool noTracking = true);

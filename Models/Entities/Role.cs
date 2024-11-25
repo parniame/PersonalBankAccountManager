@@ -9,6 +9,12 @@ namespace Models.Entities
 {
     public class Role : IdentityRole<Guid>
     {
+        public Role() { }   
+
+        public Role(string roleName) : base(roleName)
+        {
+        }
+
         public string? PersianName { get; set; } = string.Empty;
         public string? Description { get; set; } = string.Empty;
        

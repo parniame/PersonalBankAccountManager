@@ -10,8 +10,11 @@ namespace Service.ServiceInterfaces
 {
     public interface IUserService
     {
-        Task<IdentityResult> CreateUser(RegisterUserDTO user, string password);
-        Task<UserDTO> GetCurrentUserAsync(string userName, string userId);
-        Task<List<UserDTO>> GetAllUser();
+        //Task<IdentityResult> CreateUser(RegisterCommand user, string password,Guid userId);
+        Task<UserResult> GetCurrentUserAsync(string userName, string userId);
+        Task<List<UserResult>> GetAllUser();
+        Task<bool> LoginAsync(LoginCommand command);
+        Task<bool> RegisterAsync(RegisterCommand command,string userRole);
+        Task LogoutAsync(string username);
     }
 }

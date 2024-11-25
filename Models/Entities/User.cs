@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Models.Entities
 {
-    public class User : IdentityUser<Guid>, ITraceble<User>, ITimeTraceble
+    public class User : IdentityUser<Guid>
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public DateOnly? DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         public DateTime? DateCreated { get; set; }
         public Guid? CreatorID { get; set; }
