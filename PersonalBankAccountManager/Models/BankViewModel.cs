@@ -15,13 +15,14 @@ namespace PersonalBankAccountManager.Models
     {
         public static BankViewModel MapToBankViewModel(this BankCommand bank)
         {
-            return new BankViewModel
+            var bankViewModel = new BankViewModel();
+            bankViewModel.Id = bank.Id;
+            bankViewModel.Name = bank.Name;
+            if(bank.Picture != null)
             {
-                Id = bank.Id,
-
-                Name = bank.Name,
-                URL = bank.Picture.FileAddress
-            };
+                bankViewModel.URL = bank.Picture.FileAddress;
+            }
+            return bankViewModel;
         }
     }
 }

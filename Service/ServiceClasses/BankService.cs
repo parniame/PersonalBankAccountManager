@@ -4,6 +4,7 @@ using DataTransferObject;
 using Microsoft.AspNetCore.Http;
 using Models.Entities;
 using Persistence.Repositories;
+using Service.Exceptions;
 using Service.FileValidate;
 using Service.ServiceInterfaces;
 using System;
@@ -28,7 +29,7 @@ namespace Service.ServiceClasses
 
             if (!file.IsImage())
             {
-                throw new Exception("فایل وارد شده عکس نیست");
+                throw new InvalidImage();
             }
 
 

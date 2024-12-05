@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Service.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,25 +18,30 @@ namespace Service.FileValidate
             //-------------------------------------------
             //  Check the image mime types
             //-------------------------------------------
-            if (postedFile.ContentType.ToLower() != "image/jpg" &&
-                        postedFile.ContentType.ToLower() != "image/jpeg" &&
-                        postedFile.ContentType.ToLower() != "image/pjpeg" &&
-                        postedFile.ContentType.ToLower() != "image/gif" &&
-                        postedFile.ContentType.ToLower() != "image/x-png" &&
-                        postedFile.ContentType.ToLower() != "image/png")
+            if (postedFile.ContentType.ToLower() != "image/jpg"
+
+                       && postedFile.ContentType.ToLower() != "image/jpeg" 
+                        //&&
+                        //postedFile.ContentType.ToLower() != "image/pjpeg" &&
+                        //postedFile.ContentType.ToLower() != "image/gif" &&
+                        //postedFile.ContentType.ToLower() != "image/x-png" &&
+                        //postedFile.ContentType.ToLower() != "image/png"
+                        )
             {
-                return false;
+                throw new OnlyJPGFormat();
+                
             }
 
             //-------------------------------------------
             //  Check the image extension
             //-------------------------------------------
             if (Path.GetExtension(postedFile.FileName).ToLower() != ".jpg"
-                && Path.GetExtension(postedFile.FileName).ToLower() != ".png"
-                && Path.GetExtension(postedFile.FileName).ToLower() != ".gif"
-                && Path.GetExtension(postedFile.FileName).ToLower() != ".jpeg")
+                //&& Path.GetExtension(postedFile.FileName).ToLower() != ".png"
+                //&& Path.GetExtension(postedFile.FileName).ToLower() != ".gif"
+                && Path.GetExtension(postedFile.FileName).ToLower() != ".jpeg"
+                )
             {
-                return false;
+                throw new OnlyJPGFormat();
             }
 
             //-------------------------------------------

@@ -30,13 +30,8 @@ namespace Service.Mapster
                 .Map(dest => dest.Name, src => src.UniqueName);
             TypeAdapterConfig<Bank, BankCommand>.NewConfig()
                 .Map(dest => dest.Picture, src => src.Picture);
-                //TypeAdapterConfig<Category, CategoryDTO>.NewConfig()
-                //    .Map(dest => dest.Name, src => src.CategoryName)
-                //    .Map(dest => dest.Message, src => src.Description);
-
-                //TypeAdapterConfig<CategoryDTO, Category>.NewConfig()
-                //.Map(dest => dest.CategoryName, src => src.Name)
-                //    .Map(dest => dest.Description, src => src.Message);
+            TypeAdapterConfig<BankAccount, BankAccountCommand>.NewConfig()
+                .Map(dest => dest.BankPicture, src => src.Bank.Picture);
 
                 
 

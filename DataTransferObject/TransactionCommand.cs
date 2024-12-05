@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace DataTransferObject
 {
-    public class BankAccountCommand
+    public class TransactionCommand
     {
         public Guid UserId { get; set; }
+        public bool IsWithdrawl { get; set; }
         public string Title { get; set; }
+        public Guid BankAccountId { get; set; }
         public decimal Amount { get; set; }
-        public Guid BankId { get; set; }
+        public Guid? CategoryId { get; set; }
         public string? Description { get; set; }
-        public string? CardNumber { get; set; }
-
-        public PictureArgs BankPicture { get; set; }
+        public Guid? SecondBankAccountId { get; set; }
+        public Guid? TransactionPlanId { get; set; }
     }
 }

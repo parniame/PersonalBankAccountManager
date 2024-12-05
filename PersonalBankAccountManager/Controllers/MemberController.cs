@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PersonalBankAccountManager.Models;
 using Service.ServiceInterfaces;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 
@@ -14,6 +15,7 @@ namespace PersonalBankAccountManager.Controllers
     {
         private readonly IBankService _bankService;
         private readonly IBankAccountService _bankAccountService;
+
         private readonly ITransactionPlanService _transactionPlanService;
         private readonly ILogger<AdminController> _logger;
 
@@ -32,7 +34,7 @@ namespace PersonalBankAccountManager.Controllers
         [HttpGet]
         public async Task<IActionResult> AddBankAccount()
         {
-            var addBankAccountViewModel = new BankAccountViewModel();
+            var addBankAccountViewModel = new AddBankAccountViewModel();
             var bankCommands = await _bankService.GetAllAsync<BankCommand>();
             List<BankViewModel> banks = new List<BankViewModel>();
             for(int i = 0;i< bankCommands.Count(); i++)
@@ -45,13 +47,13 @@ namespace PersonalBankAccountManager.Controllers
         }
        
         [HttpPost]
-        public async Task<IActionResult> AddBankAccountPostAsync(BankAccountViewModel addBankAccountView)
+        public async Task<IActionResult> AddBankAccountPostAsync(AddBankAccountViewModel addBankAccountView)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var bankAccountCommand = _bankAccountService.MapToCustom<BankAccountViewModel, BankAccountCommand>(addBankAccountView);
+                    var bankAccountCommand = _bankAccountService.MapToCustom<AddBankAccountViewModel, BankAccountCommand>(addBankAccountView);
                     var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                     if (!string.IsNullOrEmpty(currentUserId))
                     {
@@ -116,6 +118,26 @@ namespace PersonalBankAccountManager.Controllers
                 ViewData["ErrorMessage"] = "ساخت پلنر تراکنش با مشکل مواجه شد";
             }
             return View("AddTransactionPlan");
+        }
+        [HttpGet]
+        public async Task<IActionResult> AddTransaction()
+        {
+            
+            var  addTransactionViewModel = new AddTransactionViewModel();
+            var bankAccountCommands = await _bankAccountService.GetAllAsync<BankAccountCommand>();
+            List<BankAccountViewModel> bankAccounts = new List<BankAccountViewModel>();
+            for(int i = 0; i < bankAccountCommands.Count(); i++)
+            {
+                var bankAccount = bankAccountCommands[i].MapToBankAccountViewModel();
+                bankAccounts.Add(bankAccount);
+            }
+            addTransactionViewModel.BankAccountViewModels = bankAccounts;
+            return View(addTransactionViewModel);
+        }
+        [HttpPost]
+        public IActionResult AddTransactionPostAsync(AddTransactionViewModel addTransactionViewModel)
+        {
+            throw new NotImplementedException();
         }
     }
 }

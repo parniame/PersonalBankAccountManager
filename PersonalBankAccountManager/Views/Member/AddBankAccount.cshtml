@@ -1,4 +1,4 @@
-﻿@model BankAccountViewModel;
+﻿@model AddBankAccountViewModel;
 @{
     ViewData["Title"] = "AddBankAccount";
     Layout = "_Layout";
@@ -7,7 +7,7 @@
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
 
-
+<link rel="stylesheet" href="~/css/imageOption.css" asp-append-version="true" />
 
 <div class="card center">
     <div class="card-body">
@@ -22,13 +22,35 @@
                 </div>
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
-            <div class="row mb-3">
-                <label asp-for="BankId" class="col-sm-2 col-form-label"></label>
-                <div class="col-sm-10">
-                    @Html.Partial("_BankOption", Model);
+
+            <fieldset class="row mb-3">
+                <legend class="col-form-label col-sm-2 pt-0">نوع بانک</legend>
+                <div class="col-sm-2" id="image-dropdown">
+                   
+
+                    @foreach (var item in Model.BankViewModels)
+                    {
+                        string str = null;
+                        if (item.URL != null)
+                        {
+                            var fullAddress = item.URL; //C:\Users\10\source\repos\PersonalBankAccountManager\PersonalBankAccountManager\wwwroot\images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                            var fileAddress = fullAddress.Split("wwwroot\\", 2)[1];//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                            var normalizedFileAddress = fileAddress.Replace("\\", "/");//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                            str = "../" + normalizedFileAddress;
+                        }
+
+                        <div class="form-check">
+                            <input data-val="true" class="form-check-input" type="radio" id="BankId" name="BankId" value="@item.Id" >
+                            
+                            <label asp-for="BankId" style="background-image : url(@str)" >@Html.DisplayFor(modelItem => item.Name)</label>
+
+                        </div>
+
+                    }
+
                 </div>
                 <span asp-validation-for="BankId" class="text-danger"></span>
-            </div>
+            </fieldset>
 
             <div class="row mb-3 ">
                 <label asp-for="Amount" class="col-sm-2 col-form-label"></label>
@@ -59,7 +81,7 @@
 
 
 
-        </form><!-- End Horizontal Form -->
+        </form>
 
 
     </div>
