@@ -25,7 +25,7 @@ namespace Persistence
         public DbSet<TransactionPlan> TransactionPlans { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<BankAccount> BankAccounts { get; set; }
-        public DbSet<Document> Documents { get; set; }
+        public DbSet<Picture> Pictures   { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Bank>  Banks { get; set; }
 

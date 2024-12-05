@@ -17,6 +17,8 @@ namespace Persistence.TableConfigs
     {
         public override void Configure(EntityTypeBuilder<BankAccount> builder)
         {
+            base.Configure(builder);
+
             builder.ToTable(nameof(BankAccount));
             builder.Property(x => x.Amount).IsRequired();
             builder.Property(x => x.Description)

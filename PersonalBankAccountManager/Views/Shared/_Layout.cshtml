@@ -1,33 +1,6 @@
-﻿<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - PersonalBankAccountManager</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/PersonalBankAccountManager.styles.css" asp-append-version="true" />
-    <!-- Vendor CSS Files -->
-    <link href="~/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="~/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-    <link href="~/assets/vendor/quill/quill.snow.css" rel="stylesheet">
-    <link href="~/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
-    <link href="~/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-    <link href="~/assets/vendor/simple-datatables/style.css" rel="stylesheet">
-    <!-- Template Main CSS File -->
-    <link href="~/assets/css/style.css" rel="stylesheet">
-
-
-    <!-- =======================================================
-    * Template Name: NiceAdmin
-    * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-    * Updated: Apr 20 2024 with Bootstrap v5.3.3
-    * Author: BootstrapMade.com
-    * License: https://bootstrapmade.com/license/
-    ======================================================== -->
-
-</head>
+﻿@{
+    await Html.RenderPartialAsync("_Head");
+}
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -42,9 +15,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">صفحه اصلی</a>
                         </li>
-                        @* <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li> *@
+                        <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Test">Privacy</a>
+                        </li>
                     </ul>
                     @if (!User.Identity?.IsAuthenticated ?? true)
                     {
@@ -73,39 +46,8 @@
         </main>
     </div>
 
-    @if (!string.IsNullOrWhiteSpace(ViewData["ErrorMessage"]?.ToString()))
-    {
-        <div class="position-fixed bottom-0 start-0 p-3" style="z-index: 11">
-            <div id="error-toast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                    <strong class="me-auto">متن ارور</strong>
-                    <button type="button" class="btn-close btn-lg me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="d-flex">
-                    <div id="error-toast-body" class="toast-body">
-                        @(ViewData["ErrorMessage"]?.ToString() ?? "مشکلی وجود دارد")
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
-    }
-    @if (!string.IsNullOrWhiteSpace(TempData["SuccessMessage"]?.ToString()))
-    {
-        <div class="position-fixed bottom-0 start-0 p-3" style="z-index: 11">
-            <div id="success-toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                    <strong class="me-auto">پیام موفقیت</strong>
-                    <button type="button" class="btn-close btn-lg me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="d-flex">
-                    <div id="error-toast-body" class="toast-body">
-                        @(TempData["SuccessMessage"]?.ToString() ?? "با موفقیت انجام شد")
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
+    @{
+        await Html.RenderPartialAsync("_Message");
     }
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">

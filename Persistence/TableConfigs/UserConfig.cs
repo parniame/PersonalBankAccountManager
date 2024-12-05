@@ -15,13 +15,13 @@ namespace Persistence.TableConfigs
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.ToTable(nameof(User));
-            
+
 
             builder.Property(x => x.UserName)
                 .HasColumnType(SqlDbType.VarChar.ToString())
                 .HasMaxLength(32)
                 .IsRequired();
-           
+
             builder.Property(x => x.FirstName)
                 .HasColumnType(SqlDbType.NVarChar.ToString())
                 .HasMaxLength(50)
@@ -32,10 +32,10 @@ namespace Persistence.TableConfigs
                 .IsRequired();
             builder.Property(x => x.DateOfBirth)
                            .HasColumnType("datetime").HasDefaultValue(DateTime.Now);
-                 //          .HasConversion(
-                 //d => d.ToString(),
-                 //d => Convert.ToDateTime(d)
-                 //);
+            //          .HasConversion(
+            //d => d.ToString(),
+            //d => Convert.ToDateTime(d)
+            //);
             builder.Property(x => x.Email)
                 .HasColumnType(SqlDbType.VarChar.ToString())
                 .HasMaxLength(320);
@@ -44,17 +44,16 @@ namespace Persistence.TableConfigs
                 .HasMaxLength(12);
             builder.Property(x => x.DateCreated)
                            .HasColumnType("datetime").HasDefaultValue(DateTime.Now);
-                           
+
             builder.Property(x => x.DateUpdated)
                     .HasColumnType("datetime")
-                    .HasColumnType("datetime")
                     .HasDefaultValue(DateTime.Now);
-                    
-                  
+
+
             builder.HasOne(x => x.Updator).WithMany().HasForeignKey(x => x.UpdatorID).OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(x => x.Creator).WithMany().HasForeignKey(x => x.CreatorID).OnDelete(DeleteBehavior.NoAction);
             builder.HasIndex(x => x.UserName).IsUnique();
-            
+
         }
     }
 }

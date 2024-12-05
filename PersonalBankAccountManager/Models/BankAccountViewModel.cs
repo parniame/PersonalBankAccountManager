@@ -9,7 +9,7 @@ namespace PersonalBankAccountManager.Models
         [Required(ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = "RequiredValidationMessage")]
         public string Title { get; set; }
 
-        [Display(Name = "AmountProp", ResourceType = typeof(PresentationResources))]
+        [Display(Name = "BankAccountAmountProp", ResourceType = typeof(PresentationResources))]
         [Required(ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = "RequiredValidationMessage")]
         [Range(1, int.MaxValue, ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = "OnlyPositive")]
         [RegularExpression("^[0-9]*$", ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = "Onlynumber")]
@@ -22,6 +22,7 @@ namespace PersonalBankAccountManager.Models
         public string? Description { get; set; }
         [Display(Name = "CardNumberProp", ResourceType = typeof(PresentationResources))]
         public string? CardNumber { get; set; }
+        public List<BankViewModel> BankViewModels { get; set; } = new List<BankViewModel>();
 
     }
 }

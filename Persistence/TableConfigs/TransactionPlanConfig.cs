@@ -17,10 +17,11 @@ namespace Persistence.TableConfigs
     {
         public override void Configure(EntityTypeBuilder<TransactionPlan> builder)
         {
+            base.Configure(builder);
+            
             builder.ToTable(nameof(TransactionPlan));
-
             builder.Property(x => x.TillThisDate).HasColumnType(SqlDbType.SmallDateTime.ToString()).IsRequired();
-            builder.Property(x => x.UniqueName).HasColumnName("Transaction Plan Name").IsRequired();
+            builder.Property(x => x.Name).HasColumnName("Transaction Plan Name").IsRequired();
             builder.Property(x => x.Amount).IsRequired();
 
            

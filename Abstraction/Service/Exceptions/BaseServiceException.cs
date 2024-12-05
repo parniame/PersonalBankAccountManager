@@ -18,16 +18,28 @@ public class BaseServiceException : BaseException
 
 public class ItemNotFoundException : BaseServiceException
 {
-    public ItemNotFoundException(string itemName) : base($"{itemName} not found.")
+    public ItemNotFoundException(string itemName) : base($"وجود ندارد {itemName}  ")
     {
         Code += 404;
     }
 }
 
-public class PermissionDeniedException : BaseServiceException
+
+public class DuplicateUniquePropertyException : BaseServiceException
 {
-    public PermissionDeniedException() : base($"Permission denied! You can't perform this action.")
+    public DuplicateUniquePropertyException(string objName) : base($"از قبل موجود است  \u200E{objName}\u200E")
     {
+        
         Code += 403;
     }
 }
+public class CodeErrorException : BaseServiceException
+{
+    public CodeErrorException() : base("در کد مشکلی وجود دارد")
+    {
+        
+        Code += 402;
+    }
+}
+
+

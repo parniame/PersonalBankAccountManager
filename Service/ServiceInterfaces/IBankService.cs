@@ -1,4 +1,6 @@
 ﻿using Abstraction.Service;
+using DataTransferObject;
+using Microsoft.AspNetCore.Http;
 using Models.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,5 +12,6 @@ namespace Service.ServiceInterfaces
 {
     public interface IBankService : IServiceBase<Bank>
     {
+        Task<bool> CreateBankWithFileAsync(BankCommand bankDTO, IFormFile file);
     }
 }

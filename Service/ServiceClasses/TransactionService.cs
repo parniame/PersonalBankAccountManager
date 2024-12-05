@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 
 namespace Service.ServiceClasses
 {
-    public class TransactionService : ServiceBase<Transaction>,ITransactionService
-    {
 
-        public TransactionService(Guid id, IBaseRepository<Transaction> baseRepository) : base(baseRepository)
+    public class TransactionService : ServiceBase<Transaction>, ITransactionService
+    {
+        
+        public TransactionService( IBaseRepository<Transaction> baseRepository) : base(baseRepository)
         {
-            UserId = id;
+            
         }
     }
 }

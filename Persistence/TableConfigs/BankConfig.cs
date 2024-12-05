@@ -17,12 +17,12 @@ namespace Persistence.TableConfigs
     {
         public void Configure(EntityTypeBuilder<Bank> builder)
         {
-            builder.ToTable(nameof(Bank));
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
+            base.Configure(builder);
 
+            builder.ToTable(nameof(Bank));
             builder.Property(x => x.Name).HasColumnType(SqlDbType.VarChar.ToString()).IsRequired();
             
+            builder.HasOne(x => x.Picture).WithOne().HasForeignKey<Bank>(x => x.PictureId ).OnDelete(DeleteBehavior.NoAction);
 
 
 

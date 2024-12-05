@@ -15,7 +15,6 @@ namespace Persistence.TableConfigs
         public void Configure(EntityTypeBuilder<Role> builder)
         {
             builder.ToTable(nameof(Role));
-
             builder.Property(x => x.Name).HasColumnType(SqlDbType.VarChar.ToString()).IsRequired();
             builder.Property(x => x.Description)
                 .HasColumnType(SqlDbType.NVarChar.ToString())

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Persistence.Repositories
 {
-    public class BaseRepository<TSource> : IBaseRepository<TSource> where TSource : BaseEntity 
+    public class BaseRepository<TSource> : IBaseRepository<TSource> where TSource : BaseEntity
     {
         private readonly PersonalBankAccountManagerDBContext _dbcontext;
         private readonly DbSet<TSource> _entitySet;
@@ -37,17 +37,19 @@ namespace Persistence.Repositories
             query = include == null ? query : include(query);
             return query.Select<TSource, TResult>(selector);
         }
-        public async Task<TSource> GetByIdAsync(Guid id, bool noTracking = true)
+        public async Task<TSource?> GetByIdAsync(Guid id, bool noTracking = true)
         {
             var tSource = await _entitySet.FindAsync(id);
             if (noTracking)
                 _dbcontext.Entry(tSource).State = EntityState.Detached;
             return tSource;
         }
-        public async Task<TSource> GetFirstAsync(Expression<Func<TSource, bool>> predicate, bool noTracking = true)
+        public async Task<TSource?> GetFirstAsync(Expression<Func<TSource, bool>> predicate, bool noTracking = true)
         {
+
             var tSource = await Task.Run(() => _entitySet.FirstOrDefault(predicate));
-            if (noTracking) _dbcontext.Entry(tSource).State = EntityState.Detached;
+            if (tSource != null)
+                if (noTracking) _dbcontext.Entry(tSource).State = EntityState.Detached;
             return tSource;
         }
         public async Task<bool> CreateAsync(TSource TEntity)

@@ -1,23 +1,15 @@
 ﻿using Abstraction.Domain;
 using Abstraction.Service;
+using Abstraction.Service.Exceptions;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service
 {
     public class ServiceBase<Entity> : IServiceBase<Entity> where Entity : BaseEntity
     {
         private readonly IBaseRepository<Entity> _baseRepository;
-        public static Guid UserId;
-
-        
         public ServiceBase(IBaseRepository<Entity> baseRepository)
         {
             _baseRepository = baseRepository;
@@ -29,8 +21,8 @@ namespace Service
             var entity = MapToEntity(dto);
             entity.DateCreated = DateTime.Now;
             entity.DateUpdated = DateTime.Now;
-           
-            
+
+
             return await _baseRepository.CreateAsync(entity);
         }
         public virtual Task<bool> UpdateAsync<DTO>(DTO dto)
@@ -47,15 +39,51 @@ namespace Service
 
         public virtual async Task<IList<DTO>> GetAllAsync<DTO>(Expression<Func<Entity, bool>> predicate = null)
         {
-            var entities = await _baseRepository.GetAll(predicate: predicate).ToListAsync();
-            IList<DTO> results = new List<DTO>();
-            foreach (var entity in entities)
-            {
-                results.Add(MapToDTO<DTO>(entity));
-            }
+            var entities =  _baseRepository.GetAll(predicate: predicate);
+            IList<DTO> results = entities.ProjectToType<DTO>().ToList();
+            
             return results;
 
         }
+        protected virtual async Task<bool> IsUniqueAsync(Entity uniqueOBJ, string nameOfUniqueProperty)
+
+        {
+            //Validate If This Property Exist
+            var propertyInfo = uniqueOBJ.GetType().GetProperty(nameOfUniqueProperty);
+            var value = propertyInfo.GetValue(uniqueOBJ, null);
+            if (value == null)
+            {// Will bw catched at Entity Service where it was called with incorrect property name
+                throw new ItemNotFoundException(nameOfUniqueProperty);
+            }
+            //Validate If This Property Was Used Before.
+            var param = Expression.Parameter(typeof(Entity));
+            var condition = Expression.Lambda<Func<Entity, bool>>
+                (Expression.Equal(
+            Expression.Property(param, nameOfUniqueProperty),
+            Expression.Constant(value, typeof(string))
+                ),
+                param
+                );
+            var entity = await _baseRepository.GetFirstAsync(condition);
+            return entity == null;
+
+
+        }
+        protected async Task<bool> CreateUniqueAsync<DTO>(DTO dto, string nameOfUniqueProperty,string nameOfOBJ)
+        {
+            var entity = MapToEntity(dto);
+            entity.DateCreated = DateTime.Now;
+            entity.DateUpdated = DateTime.Now;
+
+            bool isUnique = await IsUniqueAsync(entity, nameOfUniqueProperty);
+            if (isUnique)
+            {
+                return await _baseRepository.CreateAsync(entity);
+            }
+            throw new DuplicateUniquePropertyException( nameOfOBJ);
+
+        }
+
 
 
         public virtual Entity MapToEntity<DTO>(DTO dto)

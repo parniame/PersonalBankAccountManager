@@ -61,11 +61,20 @@ namespace PersonalBankAccountManager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to موجودی.
+        ///   Looks up a localized string similar to مقدار پرداختی یا برداشتی(به تومان).
         /// </summary>
         public static string AmountProp {
             get {
                 return ResourceManager.GetString("AmountProp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to موجودی(به تومان).
+        /// </summary>
+        public static string BankAccountAmountProp {
+            get {
+                return ResourceManager.GetString("BankAccountAmountProp", resourceCulture);
             }
         }
         
@@ -129,6 +138,24 @@ namespace PersonalBankAccountManager.Resources {
         public static string InvalidBirthDate {
             get {
                 return ResourceManager.GetString("InvalidBirthDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to باید در این قسمت تاریخ وارد شود.
+        /// </summary>
+        public static string InvalidDate {
+            get {
+                return ResourceManager.GetString("InvalidDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to   تاریخ انتخابی باید از تاریخ این لحظه بیشتر باشد.
+        /// </summary>
+        public static string InvalideFutureDate {
+            get {
+                return ResourceManager.GetString("InvalideFutureDate", resourceCulture);
             }
         }
         
@@ -264,6 +291,15 @@ namespace PersonalBankAccountManager.Resources {
         public static string StringLengthValidationMessage {
             get {
                 return ResourceManager.GetString("StringLengthValidationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to تاریخ  نهایی  .
+        /// </summary>
+        public static string TillThisDateProp {
+            get {
+                return ResourceManager.GetString("TillThisDateProp", resourceCulture);
             }
         }
         

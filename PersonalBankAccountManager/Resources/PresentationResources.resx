@@ -171,8 +171,8 @@
   <data name="NameProp" xml:space="preserve">
     <value>نام</value>
   </data>
-  <data name="AmountProp" xml:space="preserve">
-    <value>موجودی</value>
+  <data name="BankAccountAmountProp" xml:space="preserve">
+    <value>موجودی(به تومان)</value>
   </data>
   <data name="BankProp" xml:space="preserve">
     <value>نوع حساب</value>
@@ -188,5 +188,17 @@
   </data>
   <data name="Onlynumber" xml:space="preserve">
     <value>قسمت {0} فقط عدد میپذیرد</value>
+  </data>
+  <data name="InvalidDate" xml:space="preserve">
+    <value>باید در این قسمت تاریخ وارد شود</value>
+  </data>
+  <data name="InvalideFutureDate" xml:space="preserve">
+    <value>  تاریخ انتخابی باید از تاریخ این لحظه بیشتر باشد</value>
+  </data>
+  <data name="TillThisDateProp" xml:space="preserve">
+    <value>تاریخ  نهایی  </value>
+  </data>
+  <data name="AmountProp" xml:space="preserve">
+    <value>مقدار پرداختی یا برداشتی(به تومان)</value>
   </data>
 </root>

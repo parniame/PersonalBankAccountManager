@@ -19,6 +19,10 @@ namespace PersonalBankAccountManager.Controllers
         {
             return View();
         }
+        public IActionResult Test()
+        {
+            return View("test");
+        }
 
         public IActionResult Privacy()
         {

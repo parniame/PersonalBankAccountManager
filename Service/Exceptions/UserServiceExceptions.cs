@@ -18,16 +18,20 @@ namespace Service.Exceptions
 
     public class DuplicateUserNameException : UserServiceExceptions
     {
-        public DuplicateUserNameException(string userName) : base($"User with given userName [{userName}] already exists.", 1)
+        public DuplicateUserNameException(string userName) : base($" از قبل وجود دارد\u200E[{userName}] \u200E کاربر با این نام کاربری\u200E", 1)
         {
+           
+        }
+    }
+    public class UserDoseNotExistException : UserServiceExceptions
+    {
+        public UserDoseNotExistException(string userName) : base($" از قبل وجود ندارد\u200E[{userName}]\u200E کاربر با این نام کاربری\u200E", 1)
+        {
+           
         }
     }
 
-    public class RegistrationFailedException : UserServiceExceptions
-    {
-        public RegistrationFailedException(string message) : base(message, 2)
-        {
-        }
-    }
+
+   
 }
 

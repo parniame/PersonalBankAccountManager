@@ -1,13 +1,13 @@
-﻿@model BankViewModel
+﻿@model AddBankViewModel
 @{
     ViewData["Title"] = "AddBank";
     Layout = "_Layout";
 }
 <div class="card center">
     <div class="card-body">
-        <h5 class="card-title"> اضافه کردن نوع حساب</h5>
+        <h5 class="card-title"> اضافه کردن  بانک</h5>
 
-        <form asp-action="AddBankPost" method="post">
+        <form asp-action="AddBankPost" method="post" enctype="multipart/form-data">
 
             <div class="row mb-3 ">
                 <label asp-for="Name" class="col-sm-2 col-form-label">نام بانک</label>
@@ -15,6 +15,14 @@
                     <input asp-for="Name" class="form-control" id="inputText">
                 </div>
                 <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" asp-for="File">آپلود عکس</label>
+
+                <div class="col-sm-10">
+                    <input asp-for="File" type="File" class="form-control" />
+                </div>
+                <span asp-validation-for="File" class="text-danger"></span>
             </div>
 
             <div class="text-center">

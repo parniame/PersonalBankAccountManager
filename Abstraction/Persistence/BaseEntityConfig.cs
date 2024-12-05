@@ -18,20 +18,18 @@ namespace Abstraction.Persistence
 
         public virtual void Configure(EntityTypeBuilder<T> builder)
         {
-            Type type = typeof(T);
-            Type[] types = type.GetInterfaces();
+
             builder.ToTable(typeof(T).ToString());
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
 
             builder.Property(x => x.DateCreated)
-                       .HasColumnType(SqlDbType.DateTime.ToString()).HasDefaultValue(DateTime.Now)
-                       .IsRequired();
+                       .HasColumnType(SqlDbType.DateTime.ToString()).HasDefaultValue(DateTime.Now);
+
             builder.Property(x => x.DateUpdated)
-                    .HasColumnType(SqlDbType.DateTime.ToString())
-                    .HasColumnType(SqlDbType.DateTime.ToString()).HasDefaultValue(DateTime.Now)
-                    .IsRequired();
+                    .HasColumnType(SqlDbType.DateTime.ToString()).HasDefaultValue(DateTime.Now);
+                    
 
 
         }

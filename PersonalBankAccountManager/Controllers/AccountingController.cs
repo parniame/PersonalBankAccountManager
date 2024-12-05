@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PersonalBankAccountManager.Models;
 using Service.ServiceInterfaces;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace PersonalBankAccountManager.Controllers
 {
@@ -29,24 +30,40 @@ namespace PersonalBankAccountManager.Controllers
             if (ModelState.IsValid)
             {
                 
-                var result = await _userService.LoginAsync(model.Adapt<LoginCommand>());
-                
-                if (result)
+
+                try
                 {
-                    TempData["SuccessMessage"] = "با موفقیت وارد شدید";
-                    if (User.IsInRole("Admin"))
+                    var result = await _userService.LoginAsync(model.Adapt<LoginCommand>());
+                    if (result)
                     {
-                        return LocalRedirect("/Admin/Index");
-                    }
-                    if (User.IsInRole("Member"))
-                    {
-                        return LocalRedirect("/Member/Index");
+                        TempData["SuccessMessage"] = "با موفقیت وارد شدید";
+                        if (User.IsInRole("Admin"))
+                        {
+                            return LocalRedirect("/Admin/Index");
+                        }
+                        if (User.IsInRole("Member"))
+                        {
+                            return LocalRedirect("/Member/Index");
+                        }
+
+                        return LocalRedirect("/Home/Index");
                     }
 
-                    return LocalRedirect("/Home/Index");
+                }
+                catch (Exception e)
+                {
+                    
+                    _logger.LogError(e, $"در ورود اکانت یوزر{model.UserName}، مشکلی وجود  دارد");
+                    //If error is in enlish
+                    if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
+                        ViewData["ErrorMessage"] = e.Message;
+
                 }
 
-                ViewData["ErrorMessage"] = "ورود به مشکل مواجه شد";
+            }
+            if (ViewData["ErrorMessage"] == null)
+            {
+                ViewData["ErrorMessage"] = "ساخت اکانت با مشکل مواجه شد";
             }
             return View("Login");
         }
@@ -60,21 +77,30 @@ namespace PersonalBankAccountManager.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterPostAsync(RegisterViewModel model)
         {
-            if(model != null) { }
+
             if (ModelState.IsValid)
             {
 
-                try{
+                try
+                {
                     //registered users through home panel are always considered "Member"
-                    var result = await _userService.RegisterAsync(model.Adapt<RegisterCommand>(),"Member");
+                    var result = await _userService.RegisterAsync(model.Adapt<RegisterCommand>(), "Member");
                     TempData["SuccessMessage"] = "اکانت با موفقیت ساخته  شد";
                     return LocalRedirect("/Member/index");
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(e, "Something went wrong in registering new user.");
-                    ViewData["ErrorMessage"] = e.Message;
+                    _logger.LogError(e, $"در ساخت اکانت یوزر{model.UserName}، مشکلی وجود  دارد");
+                    //If error is in enlish
+                    if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
+                        ViewData["ErrorMessage"] = e.Message;
+
                 }
+
+            }
+            if (ViewData["ErrorMessage"] == null)
+            {
+                ViewData["ErrorMessage"] = "ساخت اکانت با مشکل مواجه شد";
             }
             return View("Register");
         }
@@ -82,7 +108,7 @@ namespace PersonalBankAccountManager.Controllers
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            var username = User.Identity?.Name;
+            var username = User.FindFirstValue(ClaimTypes.Name);
             if (!string.IsNullOrWhiteSpace(username))
             {
                 try
@@ -92,11 +118,21 @@ namespace PersonalBankAccountManager.Controllers
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(e, $"Something went wrong when trying to log out user [{username}].");
-                    ViewData["ErrorMessage"] = e.Message;
+                    _logger.LogError(e, $"در خروج به مشکل مواجه شد [{username}]یوزر با نام کاربری ");
+                    //If error is in enlish
+                    if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
+                        ViewData["ErrorMessage"] = e.Message;
+
                 }
+
             }
+            if (ViewData["ErrorMessage"] == null)
+            {
+                ViewData["ErrorMessage"] = "خروج از اکانت با مشکل مواجه شد";
+            }
+
             return LocalRedirect("/Home/Index");
         }
+
     }
 }

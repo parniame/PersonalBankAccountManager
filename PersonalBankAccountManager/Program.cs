@@ -9,7 +9,7 @@ using Mapster;
 using Service.ServiceInterfaces;
 using Service.ServiceClasses;
 using Service.Mapster;
-using Shared;
+
 using Microsoft.Extensions.Options;
 using Abstraction.Service;
 using Service;
@@ -69,10 +69,15 @@ namespace PersonalBankAccountManager
             //builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IBankService, BankService>();
             builder.Services.AddScoped<IBankAccountService, BankAccountService>();
+            builder.Services.AddScoped<ITransactionCategoryService, TransactionCategoryService>();
+            builder.Services.AddScoped<ITransactionPlanService, TransactionPlanService>();
 
 
             var app = builder.Build();
-
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {

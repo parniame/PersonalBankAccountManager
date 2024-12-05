@@ -19,17 +19,15 @@ namespace Models.Entities
         public string? Description { get; set; }
         public Guid? SecondBankAccountId { get; set; }
         public Guid? TransactionPlanId { get; set; }
-        //public DateTime? DateCreated { get; set; }
-        //public DateTime? DateUpdated { get; set; }
-        public ICollection<Document> TransActionDocuments { get; private set; }
-        
+
+
+        public List<Picture> TransActionDocuments { get; private set; }
         public User User { get; set; }// be eliminated if without use!
         public TransactionCategory Category { get; set; }
         public TransactionPlan TransactionPlan { get; set; }
         public BankAccount BankAccount { get; set; }
         public BankAccount SecondBankAccount { get; set; }
-        private Transaction() { }
-
+        
         protected override void Validate()
         {
             throw new NotImplementedException();

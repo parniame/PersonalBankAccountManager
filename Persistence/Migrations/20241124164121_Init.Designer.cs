@@ -351,7 +351,7 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("TillThisDate")
                         .HasColumnType("SmallDateTime");
 
-                    b.Property<string>("UniqueName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Transaction Plan Name");

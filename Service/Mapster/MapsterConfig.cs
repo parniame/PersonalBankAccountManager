@@ -25,8 +25,11 @@ namespace Service.Mapster
 
 
             TypeAdapterConfig<RegisterCommand, User>.NewConfig();
-                   
 
+            TypeAdapterConfig<TransactionPlanCommand, TransactionPlan>.NewConfig()
+                .Map(dest => dest.Name, src => src.UniqueName);
+            TypeAdapterConfig<Bank, BankCommand>.NewConfig()
+                .Map(dest => dest.Picture, src => src.Picture);
                 //TypeAdapterConfig<Category, CategoryDTO>.NewConfig()
                 //    .Map(dest => dest.Name, src => src.CategoryName)
                 //    .Map(dest => dest.Message, src => src.Description);

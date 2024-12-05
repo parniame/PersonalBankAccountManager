@@ -25,13 +25,7 @@ namespace Service.ServiceClasses
             _userManager = userManager;
             _signInManager = signInManager;
         }
-        //public async Task<IdentityResult> CreateUser(RegisterCommand user, string password)
-        //{
-        //    var data = TranslateToEntity<RegisterCommand>(user);
-        //    var result = await _userManager.CreateAsync(data, password);
-
-        //    return result;
-        //}
+        
 
         public async Task<List<UserResult>> GetAllUser()
         {
@@ -56,6 +50,10 @@ namespace Service.ServiceClasses
                 var signInResult = await _signInManager.PasswordSignInAsync(user, command.Password, command.RememberMe, false);
                 result = signInResult.Succeeded;
             }
+            else
+            {
+                throw new UserDoseNotExistException(command.UserName);
+            }
 
             return result;
         }
@@ -68,15 +66,12 @@ namespace Service.ServiceClasses
                 throw new DuplicateUserNameException(command.UserName);
 
             var user = TranslateToEntity<RegisterCommand>(command);
-            user.DateCreated = Convert.ToDateTime(DateTime.Now);
+            user.DateCreated = DateTime.Now;
 
             var registerResult = await _userManager.CreateAsync(user, command.Password);
             await _userManager.AddToRoleAsync(user, userRole);
             
 
-
-            if (!registerResult.Succeeded)
-                throw new RegistrationFailedException(registerResult.Errors.FirstOrDefault()?.Description ?? "Registration failed");
 
             return registerResult.Succeeded;
         }

@@ -16,8 +16,6 @@ namespace Models.Entities
         public Guid? BankId { get; set; }
         public string? Description { get; set; }
         public string? CardNumber  { get; set; }
-        //public DateTime? DateCreated { get; set; }
-        //public DateTime? DateUpdated { get; set; }
 
         public User User { get; set; }
         public Bank Bank { get; set; }

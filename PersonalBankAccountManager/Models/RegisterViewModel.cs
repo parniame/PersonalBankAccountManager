@@ -1,5 +1,6 @@
 ﻿using PersonalBankAccountManager.Resources;
-using Shared;
+using PersonalBankAccountManager.Resources.MyAttributes;
+
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
 
@@ -19,7 +20,7 @@ namespace PersonalBankAccountManager.Models
         public string LastName { get; set; }
 
         [Display(Name = "DateOfBirthProp", ResourceType = typeof(PresentationResources))]
-        [DataType(DataType.Date)]
+        [DataType(DataType.Date, ErrorMessageResourceName = "InvalidDate", ErrorMessageResourceType = typeof(PresentationResources))]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         [Birthdate(ErrorMessageResourceName = "InvalidBirthDate", ErrorMessageResourceType = typeof(PresentationResources))]
         public DateTime? DateOfBirth { get; set; }

@@ -1,5 +1,6 @@
 ﻿
 using Abstraction.Persistence;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Models.Entities;
@@ -18,8 +19,9 @@ namespace Persistence.TableConfigs
     {
         public override void Configure(EntityTypeBuilder<Transaction> builder)
         {
-            builder.ToTable(nameof(Transaction));
+            base.Configure(builder);
             
+            builder.ToTable(nameof(Transaction));
             builder.Property(x => x.Amount)
                 .IsRequired();
             builder.Property(x => x.UserId).IsRequired();
@@ -33,24 +35,28 @@ namespace Persistence.TableConfigs
             builder.HasOne<TransactionPlan>(x => x.TransactionPlan).WithOne().HasForeignKey<Transaction>(x => x.TransactionPlanId).OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(x => x.BankAccount).WithMany().HasForeignKey(x => x.BankAccountId).OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(x => x.SecondBankAccount).WithMany().HasForeignKey(x => x.SecondBankAccountId).OnDelete(DeleteBehavior.NoAction);
-            builder.OwnsMany(
-                transaction => transaction.TransActionDocuments,
-                doc =>
-                {
-                    doc.Property(transActionDocuments => transActionDocuments.FileAddress).HasColumnName("File Address");
-                    doc.WithOwner().HasForeignKey(transActionDocuments => transActionDocuments.TransactionId);
-                    doc.Property(transActionDocuments => transActionDocuments.Id);
-                    doc.HasKey(transActionDocuments => transActionDocuments.Id);
-                    doc.ToTable(nameof(Document));
+            builder.HasMany(x => x.TransActionDocuments).WithMany().UsingEntity<PictureTransaction>(
+                    builder => builder.HasOne<Picture>().WithMany().HasForeignKey( x => x.PictureId).OnDelete(DeleteBehavior.NoAction),
+                    builder => builder.HasOne<Transaction>().WithMany().HasForeignKey(x => x.TransactionId).OnDelete(DeleteBehavior.NoAction)
+                    );
+            //builder.OwnsMany(
+            //    transaction => transaction.TransActionDocuments,
+            //    doc =>
+            //    {
+            //        doc.Property(transActionDocuments => transActionDocuments.FileAddress).HasColumnName("File Address");
+            //        doc.WithOwner().HasForeignKey(transActionDocuments => transActionDocuments.TransactionId);
+            //        doc.Property(transActionDocuments => transActionDocuments.Id);
+            //        doc.HasKey(transActionDocuments => transActionDocuments.Id);
+            //        doc.ToTable(nameof(picture));
                     
-                    doc.Property(x => x.Id).ValueGeneratedOnAdd();
+            //        doc.Property(x => x.Id).ValueGeneratedOnAdd();
 
-                    doc.Property(x => x.FileAddress)
-                        .HasColumnType(SqlDbType.VarChar.ToString())
-                        .HasMaxLength(256)
-                        .IsRequired();
-                }
-                );
+            //        doc.Property(x => x.FileAddress)
+            //            .HasColumnType(SqlDbType.VarChar.ToString())
+            //            .HasMaxLength(256)
+            //            .IsRequired();
+            //    }
+            //    );
             
                 
         }
