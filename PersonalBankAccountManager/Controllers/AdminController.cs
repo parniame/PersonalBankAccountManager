@@ -7,6 +7,7 @@ using Models.Entities;
 using System.Security.Claims;
 using Service.ServiceClasses;
 using Persistence.Migrations;
+using PersonalBankAccountManager.Resources.Utilities;
 
 
 namespace PersonalBankAccountManager.Controllers
@@ -43,7 +44,7 @@ namespace PersonalBankAccountManager.Controllers
             {
 
                 try{
-                    var bankDTO = _bankService.MapToCustom<AddBankViewModel, BankCommand>(bankViewModel);
+                    var bankDTO = Utilities.MapToCustom<AddBankViewModel, BankCommand>(bankViewModel);
                     var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                     if (!string.IsNullOrEmpty(currentUserId))
                     {
@@ -62,7 +63,7 @@ namespace PersonalBankAccountManager.Controllers
                 catch (Exception e)
                 {
                     _logger.LogError(e, "در ساخت نوع حساب مشکلی به وجود آمد");
-                    ViewData["ErrorMessage"] = e.Message;
+                    TempData["ErrorMessage"] = e.Message;
                 }
             }
             return View("AddBank");
@@ -79,7 +80,7 @@ namespace PersonalBankAccountManager.Controllers
             {
                 try
                 {
-                    var transactionCategoryCommand = _bankService.MapToCustom<TransactionCategoryViewModel, TransactionCategoryCommand>(transactionCategoryViewModel);
+                    var transactionCategoryCommand = Utilities.MapToCustom<TransactionCategoryViewModel, TransactionCategoryCommand>(transactionCategoryViewModel);
                     transactionCategoryCommand.CreatorID = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
                     transactionCategoryCommand.UpdatorID = transactionCategoryCommand.CreatorID;
                     var result = await _transactionCategoryService.CreateAsync(transactionCategoryCommand);
@@ -89,7 +90,7 @@ namespace PersonalBankAccountManager.Controllers
                 catch (Exception e)
                 {
                     _logger.LogError(e, "در ساخت دسته بندی تراکنش مشکلی به وجود آمد");
-                    ViewData["ErrorMessage"] = e.Message;
+                    TempData["ErrorMessage"] = e.Message;
                 }
             }
             return View("AddTransactionCategory");

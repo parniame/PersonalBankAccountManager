@@ -2,6 +2,8 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+let first = true;
+
 $(document).ready(function () {
     let errorToast = document.getElementById('error-toast');
     if (!!errorToast) {
@@ -15,30 +17,71 @@ $(document).ready(function () {
         toastBlock.show();
     }
 })
-$(function () {
-    $.widget("custom.iconselectmenu", $.ui.selectmenu, {
-        _renderItem: function (ul, item) {
-            var li = $("<li>"),
-                wrapper = $("<div>", { text: item.label });
 
-            if (item.disabled) {
-                li.addClass("ui-state-disabled");
-            }
 
-            $("<span>", {
-                style: item.element.attr("data-style"),
-                "class": "ui-icon " + item.element.attr("data-class")
-            })
-                .appendTo(wrapper);
-
-            return li.append(wrapper).appendTo(ul);
+$(document).ready(function () {
+    if (first) {
+        $("#addCategory").submit();
+        first = false;
+    }
+    $('input[type=radio]').change(function () {
+        if ($('#IsWithdrawl1').is(':checked')) {
+            $('#isPositive').val($('#IsWithdrawl1').val());
+            $("#addCategory").submit();
+        }
+        if ($('#IsWithdrawl2').is(':checked')) {
+            $('#isPositive').val($('#IsWithdrawl2').val())
+            $("#addCategory").submit();
         }
     });
+});
+
+function SetPlanner(e) {
+
+
+    let plannerId = $('select#transactionPlan').val();
+    let amountInput = $("#transactionAmount");
+    let falseWithdrawlRadio = $("#IsWithdrawl1");
+    let trueWithdrawlRadio = $("#IsWithdrawl2");
+    if (plannerId) {
+        let amountId = "#" + plannerId + "-transactionPlanAmout";
+        let plannerAmount = $(amountId).val();
+        amountInput.val(plannerAmount);
+        amountInput.prop("readonly", true);
+
+        let withdrawlId = "#" + plannerId + "-transactionPlanIsWithdrawl";
+        let plannerWithdrawl = $(withdrawlId).val();
+        if (plannerWithdrawl) {
+            trueWithdrawlRadio.prop('checked', true);
+            $('#isPositive').val($('#IsWithdrawl2').val());
+            $("#addCategory").submit();
+            falseWithdrawlRadio.prop('disabled', true);
+        }
+        else {
+            falseWithdrawlRadio.prop('checked', true);
+            $('#isPositive').val($('#IsWithdrawl1').val());
+            $("#addCategory").submit();
+            trueWithdrawlRadio.prop('disabled', true);
+        }
+
+    }
+    else {
+        amountInput.prop("readonly", false);
+        trueWithdrawlRadio.prop('disabled', false);
+        falseWithdrawlRadio.prop('disabled', false);
+    }
+
+}
 
 
 
-    $("#Banks")
-        .iconselectmenu()
-        .iconselectmenu("menuWidget")
-        .addClass("ui-menu-icons avatar");
+
+$('#addTransactionForm').on('reset', function (e) {
+    console.log("hi");
+    let amountInput = $("#transactionAmount");
+    let falseWithdrawlRadio = $("#IsWithdrawl1");
+    let trueWithdrawlRadio = $("#IsWithdrawl2");
+    amountInput.prop("readonly", false);
+    trueWithdrawlRadio.prop('disabled', false);
+    falseWithdrawlRadio.prop('disabled', false);
 });

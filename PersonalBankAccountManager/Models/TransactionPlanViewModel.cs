@@ -6,6 +6,7 @@ namespace PersonalBankAccountManager.Models
 {
     public class TransactionPlanViewModel
     {
+        public Guid Id { get; set; }
         [Display(Name = "NameProp", ResourceType = typeof(PresentationResources))]
         [Required(ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = "RequiredValidationMessage")]
         public string UniqueName { get; set; }
@@ -13,7 +14,7 @@ namespace PersonalBankAccountManager.Models
         [Display(Name = "AmountProp", ResourceType = typeof(PresentationResources))]
         [Required(ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = "RequiredValidationMessage")]
         [Range(1, int.MaxValue, ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = "OnlyPositive")]
-        [RegularExpression("^[0-9]*$", ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = "Onlynumber")]
+        [RegularExpression("^\\d*(\\.\\d{1,2})?$", ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = "Onlynumber")]
         public decimal Amount { get; set; }
 
         public bool IsWithdrawl { get; set; }

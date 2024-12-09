@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Service.Mapster
 {
-    public class MapsterConfig
+    public class ServiceMapsterConfig
     {
         
             public static void RegisterMapping()
@@ -31,8 +31,9 @@ namespace Service.Mapster
             TypeAdapterConfig<Bank, BankCommand>.NewConfig()
                 .Map(dest => dest.Picture, src => src.Picture);
             TypeAdapterConfig<BankAccount, BankAccountCommand>.NewConfig()
-                .Map(dest => dest.BankPicture, src => src.Bank.Picture);
-
+                .Map(dest => dest.Bank, src => src.Bank);
+            TypeAdapterConfig<TransactionPlan, TransactionPlanCommand>.NewConfig()
+                .Map(dest => dest.UniqueName, src => src.Name);
                 
 
             }

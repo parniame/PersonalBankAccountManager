@@ -16,9 +16,9 @@ namespace Service.Exceptions
     }
     
 
-    public class OnlyJPGFormat : PictureServiceException
+    public class OnlyImageFormat : PictureServiceException
     {
-        public OnlyJPGFormat() : base($" تنها فرمت jpg قابل قبول است  ", 1)
+        public OnlyImageFormat() : base($"تنها فرمت jpg و png و gif و jpeg قابل قبول است", 1)
         {
 
         }

@@ -56,14 +56,14 @@ namespace PersonalBankAccountManager.Controllers
                     _logger.LogError(e, $"در ورود اکانت یوزر{model.UserName}، مشکلی وجود  دارد");
                     //If error is in enlish
                     if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
-                        ViewData["ErrorMessage"] = e.Message;
+                        TempData["ErrorMessage"] = e.Message;
 
                 }
 
             }
-            if (ViewData["ErrorMessage"] == null)
+            if (TempData["ErrorMessage"] == null)
             {
-                ViewData["ErrorMessage"] = "ساخت اکانت با مشکل مواجه شد";
+                TempData["ErrorMessage"] = "ساخت اکانت با مشکل مواجه شد";
             }
             return View("Login");
         }
@@ -93,14 +93,14 @@ namespace PersonalBankAccountManager.Controllers
                     _logger.LogError(e, $"در ساخت اکانت یوزر{model.UserName}، مشکلی وجود  دارد");
                     //If error is in enlish
                     if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
-                        ViewData["ErrorMessage"] = e.Message;
+                        TempData["ErrorMessage"] = e.Message;
 
                 }
 
             }
-            if (ViewData["ErrorMessage"] == null)
+            if (TempData["ErrorMessage"] == null)
             {
-                ViewData["ErrorMessage"] = "ساخت اکانت با مشکل مواجه شد";
+                TempData["ErrorMessage"] = "ساخت اکانت با مشکل مواجه شد";
             }
             return View("Register");
         }
@@ -121,14 +121,14 @@ namespace PersonalBankAccountManager.Controllers
                     _logger.LogError(e, $"در خروج به مشکل مواجه شد [{username}]یوزر با نام کاربری ");
                     //If error is in enlish
                     if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
-                        ViewData["ErrorMessage"] = e.Message;
+                        TempData["ErrorMessage"] = e.Message;
 
                 }
 
             }
-            if (ViewData["ErrorMessage"] == null)
+            if (TempData["ErrorMessage"] == null)
             {
-                ViewData["ErrorMessage"] = "خروج از اکانت با مشکل مواجه شد";
+                TempData["ErrorMessage"] = "خروج از اکانت با مشکل مواجه شد";
             }
 
             return LocalRedirect("/Home/Index");

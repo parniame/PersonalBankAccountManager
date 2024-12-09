@@ -13,6 +13,7 @@ using Service.Mapster;
 using Microsoft.Extensions.Options;
 using Abstraction.Service;
 using Service;
+using Hangfire;
 
 namespace PersonalBankAccountManager
 {
@@ -23,14 +24,9 @@ namespace PersonalBankAccountManager
             var builder = WebApplication.CreateBuilder(args);
             var connectionString = builder.Configuration.GetConnectionString("PersonalBankAccountManagerDBContextConnection") ?? throw new InvalidOperationException("Connection string 'OnlineTicketAndReservationDbContextConnection' not found.");
             builder.Services.AddDbContext<DbContext, PersonalBankAccountManagerDBContext>();
-            //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-            //builder.Services.AddDefaultIdentity<User>()
-            //    .AddEntityFrameworkStores<PersonalBankAccountManagerDBContext>()
-            //    .AddRoles<Role>()
-
-            //   .AddUserManager<User>();
-
+            string HangFireConn = "Data Source=.;Initial Catalog=hangfiredb;TrustServerCertificate=True;Integrated Security=SSPI";
+            //builder.Services.AddHangfire(x => x.UseSqlServerStorage(HangFireConn));
+            //builder.Services.AddHangfireServer();
             builder.Services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<PersonalBankAccountManagerDBContext>().AddDefaultTokenProviders();
             builder.Services.AddHttpContextAccessor();
@@ -42,12 +38,14 @@ namespace PersonalBankAccountManager
                 Options.Password.RequireLowercase = false;
                 Options.Password.RequireUppercase = false;
                 Options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier;
+                
             });
 
 
 
             TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
-            MapsterConfig.RegisterMapping();
+            ServiceMapsterConfig.RegisterMapping();
+            PresentationMapsterConfig.RegisterMapping();
             builder.Services.AddMvc();
             builder.Services.AddControllers();
             builder.Services.AddRazorPages();
@@ -59,10 +57,17 @@ namespace PersonalBankAccountManager
             {
                 option.LoginPath = "/Accounting/Login";
                 option.ExpireTimeSpan = TimeSpan.FromMinutes(3);
+               
 
             });
+            builder.Services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                //options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
 
-            
+
             builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             builder.Services.AddScoped(typeof(IServiceBase<>), typeof(ServiceBase<>));
             builder.Services.AddScoped<IUserService, UserService>();
@@ -71,6 +76,8 @@ namespace PersonalBankAccountManager
             builder.Services.AddScoped<IBankAccountService, BankAccountService>();
             builder.Services.AddScoped<ITransactionCategoryService, TransactionCategoryService>();
             builder.Services.AddScoped<ITransactionPlanService, TransactionPlanService>();
+            builder.Services.AddScoped<ITransactionService, TransactionService>();
+            builder.Services.AddScoped<ITransactionCategoryService,TransactionCategoryService>();
 
 
             var app = builder.Build();
@@ -85,6 +92,8 @@ namespace PersonalBankAccountManager
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            //app.UseHangfireDashboard("/hangfire");
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

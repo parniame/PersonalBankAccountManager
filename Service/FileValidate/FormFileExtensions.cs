@@ -20,15 +20,15 @@ namespace Service.FileValidate
             //-------------------------------------------
             if (postedFile.ContentType.ToLower() != "image/jpg"
 
-                       && postedFile.ContentType.ToLower() != "image/jpeg" 
-                        //&&
-                        //postedFile.ContentType.ToLower() != "image/pjpeg" &&
-                        //postedFile.ContentType.ToLower() != "image/gif" &&
-                        //postedFile.ContentType.ToLower() != "image/x-png" &&
-                        //postedFile.ContentType.ToLower() != "image/png"
+                       && postedFile.ContentType.ToLower() != "image/jpeg"
+                        &&
+                        postedFile.ContentType.ToLower() != "image/pjpeg" &&
+                        postedFile.ContentType.ToLower() != "image/gif" &&
+                        postedFile.ContentType.ToLower() != "image/x-png" &&
+                        postedFile.ContentType.ToLower() != "image/png"
                         )
             {
-                throw new OnlyJPGFormat();
+                throw new OnlyImageFormat();
                 
             }
 
@@ -36,12 +36,12 @@ namespace Service.FileValidate
             //  Check the image extension
             //-------------------------------------------
             if (Path.GetExtension(postedFile.FileName).ToLower() != ".jpg"
-                //&& Path.GetExtension(postedFile.FileName).ToLower() != ".png"
-                //&& Path.GetExtension(postedFile.FileName).ToLower() != ".gif"
+                && Path.GetExtension(postedFile.FileName).ToLower() != ".png"
+                && Path.GetExtension(postedFile.FileName).ToLower() != ".gif"
                 && Path.GetExtension(postedFile.FileName).ToLower() != ".jpeg"
                 )
             {
-                throw new OnlyJPGFormat();
+                throw new OnlyImageFormat();
             }
 
             //-------------------------------------------
@@ -90,10 +90,7 @@ namespace Service.FileValidate
             {
                 return false;
             }
-            finally
-            {
-                postedFile.OpenReadStream().Position = 0;
-            }
+            
 
             return true;
         }

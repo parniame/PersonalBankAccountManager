@@ -18,7 +18,7 @@ public class BaseServiceException : BaseException
 
 public class ItemNotFoundException : BaseServiceException
 {
-    public ItemNotFoundException(string itemName) : base($"وجود ندارد {itemName}  ")
+    public ItemNotFoundException(string itemName) : base($" این {itemName} وجود ندارد  ")
     {
         Code += 404;
     }
@@ -27,7 +27,7 @@ public class ItemNotFoundException : BaseServiceException
 
 public class DuplicateUniquePropertyException : BaseServiceException
 {
-    public DuplicateUniquePropertyException(string objName) : base($"از قبل موجود است  \u200E{objName}\u200E")
+    public DuplicateUniquePropertyException(string objName) : base($"این  {objName} از قبل موجود است ")
     {
         
         Code += 403;

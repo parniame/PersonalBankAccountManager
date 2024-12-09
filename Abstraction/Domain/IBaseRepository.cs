@@ -12,7 +12,7 @@ namespace Abstraction.Domain
     {
         Task<TSource?> GetByIdAsync(Guid id, bool noTraking = true);
         Task<TSource?> GetFirstAsync(Expression<Func<TSource, bool>> predicate = null, bool noTracking = true);
-        IQueryable<TSource> GetAll(Expression<Func<TSource, bool>> predicate, bool noTracking = true);
+        IQueryable<TSource> GetAll(Expression<Func<TSource, bool>> predicate = null, bool noTracking = true);
         IQueryable<TResult> GetAll<TResult>(Expression<Func<TSource, TResult>> selector, Expression<Func<TSource, bool>> predicate = null, Func<IQueryable<TSource>, IIncludableQueryable<TSource, object>> include = null, bool noTraking = true);
         Task<bool> CreateAsync(TSource TEntity);
         Task<bool> UpdateAsync(TSource TEntity);

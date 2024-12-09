@@ -8,6 +8,7 @@ namespace DataTransferObject
 {
     public class BankAccountCommand
     {
+        public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public string Title { get; set; }
         public decimal Amount { get; set; }
@@ -15,6 +16,6 @@ namespace DataTransferObject
         public string? Description { get; set; }
         public string? CardNumber { get; set; }
 
-        public PictureArgs BankPicture { get; set; }
+        public BankCommand Bank { get; set; }
     }
 }

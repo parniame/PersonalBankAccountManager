@@ -174,9 +174,6 @@
   <data name="BankAccountAmountProp" xml:space="preserve">
     <value>موجودی(به تومان)</value>
   </data>
-  <data name="BankProp" xml:space="preserve">
-    <value>نوع حساب</value>
-  </data>
   <data name="CardNumberProp" xml:space="preserve">
     <value>شماره کارت</value>
   </data>
@@ -187,7 +184,7 @@
     <value>تنها مقدار مثبت وارد شود</value>
   </data>
   <data name="Onlynumber" xml:space="preserve">
-    <value>قسمت {0} فقط عدد میپذیرد</value>
+    <value>قسمت {0} فقط عدد با حداکثر دو رقم اعشار میپذیرد</value>
   </data>
   <data name="InvalidDate" xml:space="preserve">
     <value>باید در این قسمت تاریخ وارد شود</value>
@@ -200,5 +197,8 @@
   </data>
   <data name="AmountProp" xml:space="preserve">
     <value>مقدار پرداختی یا برداشتی(به تومان)</value>
+  </data>
+  <data name="InvalidCardNumber" xml:space="preserve">
+    <value>قسمت {0} تنها شماره کارت ایرانی میپذیرد</value>
   </data>
 </root>

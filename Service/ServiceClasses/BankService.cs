@@ -54,7 +54,15 @@ namespace Service.ServiceClasses
 
             var result = await _baseRepository.CreateAsync(entity);
             if (fullAddress != null)
-                file.CopyTo(new FileStream(fullAddress, FileMode.Create));
+            {
+                using(var stream = new FileStream(fullAddress, FileMode.Create))
+                {
+                    stream.Position = 0;
+                    stream.Flush();
+                    await file.CopyToAsync(stream);
+                }
+            }
+                //file.CopyTo(new FileStream(fullAddress, FileMode.Create));
             else
                 throw new CodeErrorException();
 

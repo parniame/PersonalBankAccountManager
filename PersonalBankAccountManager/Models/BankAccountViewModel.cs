@@ -6,27 +6,25 @@ namespace PersonalBankAccountManager.Models
 {
     public class BankAccountViewModel
     {
-        [Display(Name = "NameProp", ResourceType = typeof(PresentationResources))]
+        public Guid Id { get; set; }
         public string Title { get; set; }
-
-        [Display(Name = "BankProp", ResourceType = typeof(PresentationResources))]
-        public string? Url { get; set; }
-
-        [Display(Name = "CardNumberProp", ResourceType = typeof(PresentationResources))]
+        public string? URL { get; set; }
         public string? CardNumber { get; set; }
     }
-    public static class BankAccountViewModelMapper
-    {
-        public static BankAccountViewModel MapToBankAccountViewModel(this BankAccountCommand bankAccount)
-        {
-           var bankAccountViewModel  = new BankAccountViewModel();
-            bankAccountViewModel.Title = bankAccount.Title;
-            if(bankAccount.BankPicture != null)
-            {
-                bankAccountViewModel.Url = bankAccount.BankPicture.FileAddress;
-            }
-            bankAccountViewModel.CardNumber = bankAccount.CardNumber;
-            return bankAccountViewModel;
-        }
-    }
+    //public static class BankAccountViewModelMapper
+    //{
+    //    public static BankAccountViewModel MapToBankAccountViewModel(this BankAccountCommand bankAccount)
+    //    {
+    //        var bankAccountViewModel = new BankAccountViewModel();
+    //        bankAccountViewModel.Id = bankAccount.Id;
+    //        bankAccountViewModel.Title = bankAccount.Title;
+    //        if (bankAccount.Bank != null)
+    //        {
+    //            if (bankAccount.Bank.Picture != null)
+    //                bankAccountViewModel.URL = bankAccount.Bank.Picture.FileAddress;
+    //        }
+    //        bankAccountViewModel.CardNumber = bankAccount.CardNumber;
+    //        return bankAccountViewModel;
+    //    }
+    //}
 }

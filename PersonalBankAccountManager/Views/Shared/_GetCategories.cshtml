@@ -1,0 +1,8 @@
+﻿@model IEnumerable<TransactionCategoryViewModel>;
+@foreach (var item in Model)
+{
+
+    <option value="@item.Id">@Html.DisplayFor(modelItem => item.Name)</option>
+
+
+}

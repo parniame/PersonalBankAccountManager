@@ -21,6 +21,15 @@ namespace Service.ServiceClasses
         {
             return await CreateUniqueAsync(transactionPlanCommand, "Name", "پلنر تراکنش");
         }
+        //public async Task<DTO?> GetByName<DTO>(string name)
+        //{
+        //    var entity = await _baseRepository.GetFirstAsync(x => x.Name == name);
+        //    if(entity == null)
+        //    {
+        //        return null;
+        //    }
+
+        //}
 
     }
 

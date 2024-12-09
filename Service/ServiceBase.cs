@@ -37,10 +37,10 @@ namespace Service
             return await _baseRepository.DeleteAsync(Id);
         }
 
-        public virtual async Task<IList<DTO>> GetAllAsync<DTO>(Expression<Func<Entity, bool>> predicate = null)
+        public  List<DTO> GetAll<DTO>()
         {
-            var entities =  _baseRepository.GetAll(predicate: predicate);
-            IList<DTO> results = entities.ProjectToType<DTO>().ToList();
+            var entities =  _baseRepository.GetAll();
+            List<DTO> results = entities.ProjectToType<DTO>().ToList();
             
             return results;
 
@@ -96,11 +96,6 @@ namespace Service
 
             return entity.Adapt<DTO>();
         }
-        public virtual TResult MapToCustom<TSource, TResult>(TSource src)
-        {
-            return src.Adapt<TResult>();
-        }
-
-
+        
     }
 }

@@ -8,6 +8,7 @@ namespace DataTransferObject
 {
     public class TransactionCategoryCommand
     {
+        public Guid Id { get; set; }
         public bool IsWithdrawl { get; set; }
         public string Name { get; set; }
 

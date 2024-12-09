@@ -28,15 +28,15 @@
                 <legend class="col-form-label col-sm-2 pt-0">نوع دسته بندی</legend>
                 <div class="col-sm-2">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" asp-for="IsWithdrawl" name="gridRadios" id="gridRadios1" value="0" checked>
+                        <input class="form-check-input" type="radio" asp-for="IsWithdrawl" name="IsWithdrawl" id="gridRadios1" value="False" checked>
                         <label class="form-check-label" asp-for="IsWithdrawl">
                             برداشت
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" asp-for="IsWithdrawl" type="radio" name="gridRadios" id="gridRadios2" value="1">
+                        <input class="form-check-input" asp-for="IsWithdrawl" type="radio" name="IsWithdrawl" id="gridRadios2" value="True">
                         <label class="form-check-label" asp-for="IsWithdrawl">
-                            پرداخت
+                            واریز
                         </label>
                     </div>
                     <span asp-validation-for="IsWithdrawl" class="text-danger"></span>
@@ -76,3 +76,4 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+@Html.Partial("_Footer");

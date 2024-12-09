@@ -79,15 +79,6 @@ namespace PersonalBankAccountManager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to نوع حساب.
-        /// </summary>
-        public static string BankProp {
-            get {
-                return ResourceManager.GetString("BankProp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to شماره کارت.
         /// </summary>
         public static string CardNumberProp {
@@ -138,6 +129,15 @@ namespace PersonalBankAccountManager.Resources {
         public static string InvalidBirthDate {
             get {
                 return ResourceManager.GetString("InvalidBirthDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to قسمت {0} تنها شماره کارت ایرانی میپذیرد.
+        /// </summary>
+        public static string InvalidCardNumber {
+            get {
+                return ResourceManager.GetString("InvalidCardNumber", resourceCulture);
             }
         }
         
@@ -232,7 +232,7 @@ namespace PersonalBankAccountManager.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to قسمت {0} فقط عدد میپذیرد.
+        ///   Looks up a localized string similar to قسمت {0} فقط عدد با حداکثر دو رقم اعشار میپذیرد.
         /// </summary>
         public static string Onlynumber {
             get {

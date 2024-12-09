@@ -10,5 +10,7 @@ namespace Service.ServiceInterfaces
 {
     public interface IBankAccountService : IServiceBase<BankAccount>
     {
+        Task<bool> ChangeAmmountAsync(decimal amount, bool isPositive, Guid bankAccountId);
+       
     }
 }
