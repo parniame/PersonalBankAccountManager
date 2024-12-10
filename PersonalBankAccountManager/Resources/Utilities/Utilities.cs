@@ -1,10 +1,5 @@
-﻿using Abstraction.Service.Exceptions;
-using DataTransferObject;
-using Hangfire;
-using Mapster;
-using Microsoft.AspNetCore.Mvc;
-using PersonalBankAccountManager.Controllers;
-using System.Security.Claims;
+﻿using Mapster;
+using PersonalBankAccountManager.Resources.Mapster;
 
 namespace PersonalBankAccountManager.Resources.Utilities
 {
@@ -16,6 +11,8 @@ namespace PersonalBankAccountManager.Resources.Utilities
         }
         public static List<TResult> ProjectToCustom<TSource, TResult>(List<TSource> src)
         {
+            var test1 = src.AsQueryable();
+            var test2 = test1.ProjectToType<TResult>();
             return src.AsQueryable().ProjectToType<TResult>().ToList();
         }
 

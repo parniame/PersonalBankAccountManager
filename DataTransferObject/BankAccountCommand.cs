@@ -16,6 +16,6 @@ namespace DataTransferObject
         public string? Description { get; set; }
         public string? CardNumber { get; set; }
 
-        public BankCommand Bank { get; set; }
+        public BankCommand Bank { get; set; } = new BankCommand();
     }
 }

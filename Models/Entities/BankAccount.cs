@@ -17,8 +17,8 @@ namespace Models.Entities
         public string? Description { get; set; }
         public string? CardNumber  { get; set; }
 
-        public User User { get; set; }
-        public Bank Bank { get; set; }
+        public User User { get; set; } = new User();
+        public Bank Bank { get; set; } = new Bank();
 
         protected override void Validate()
         {

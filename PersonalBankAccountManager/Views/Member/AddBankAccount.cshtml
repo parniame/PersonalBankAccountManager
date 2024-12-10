@@ -24,30 +24,32 @@
             </div>
 
             <fieldset class="row mb-3">
-                <legend class="col-form-label col-sm-2 pt-0">نوع بانک</legend>
-                <div class="col-sm-2" id="image-dropdown">
+                <legend class="col-form-label col-sm-2 ">نوع بانک</legend>
+                <div class="col-sm-10">
+                    <div class="col-sm-2 image-dropdown">
 
-     
-                    @foreach (var item in Model.BankViewModels)
-                    {
-                        string str = null;
-                        if (item.URL != null)
+
+                        @foreach (var item in Model.BankViewModels)
                         {
-                            var fullAddress = item.URL; //C:\Users\10\source\repos\PersonalBankAccountManager\PersonalBankAccountManager\wwwroot\images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
-                            var fileAddress = fullAddress.Split("wwwroot\\", 2)[1];//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
-                            var normalizedFileAddress = fileAddress.Replace("\\", "/");//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
-                            str = "../" + normalizedFileAddress;
+                            string str = null;
+                            if (item.URL != null)
+                            {
+                                var fullAddress = item.URL; //C:\Users\10\source\repos\PersonalBankAccountManager\PersonalBankAccountManager\wwwroot\images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                                var fileAddress = fullAddress.Split("wwwroot\\", 2)[1];//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                                var normalizedFileAddress = fileAddress.Replace("\\", "/");//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                                str = "../" + normalizedFileAddress;
+                            }
+
+
+                            <input data-val="true" class="form-check-input" type="radio" id="@item.Id" name="bankId" value="@item.Id">
+                            <label for="@item.Id" style="background-image : url(@str)">@Html.DisplayFor(modelItem => item.Name)</label>
                         }
 
-
-                        <input  data-val="true" class="form-check-input" type="radio" id="@item.Id"  name="bankId" value="@item.Id">
-                        <label for="@item.Id" style="background-image : url(@str)">@Html.DisplayFor(modelItem => item.Name)</label>
-                    }
-                    
+                    </div>
                 </div>
                 <span asp-validation-for="BankId" class="text-danger"></span>
             </fieldset>
-           
+
             <div class="row mb-3 ">
                 <label asp-for="Amount" class="col-sm-2 col-form-label"></label>
                 <div class="col-sm-10">

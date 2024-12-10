@@ -14,6 +14,7 @@ using Microsoft.Extensions.Options;
 using Abstraction.Service;
 using Service;
 using Hangfire;
+using PersonalBankAccountManager.Resources.Mapster;
 
 namespace PersonalBankAccountManager
 {

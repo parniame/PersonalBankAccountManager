@@ -114,7 +114,7 @@ namespace PersonalBankAccountManager.Controllers
                         TempData["SuccessMessage"] = "  پلنر تراکنش  با موفقیت ساخته شد";
                         //var selectedDate = DateTime.Now.AddSeconds(30);
 
-                        //BackgroundJob.Schedule(() => { TempData["PlannerNotif"] = $"پلنر به این نام {transactionPlanCommand.UniqueName} از زمان گذشته است"; }, selectedDate);
+                        //BackgroundJob.Schedule(() => _transactionPlanService.DeleteAsync(new Guid( )), selectedDate);
 
 
                         return LocalRedirect("/Member/index");
@@ -205,6 +205,13 @@ namespace PersonalBankAccountManager.Controllers
             }
 
             return RedirectToAction("AddTransaction", new { errorMessage = TempData["ErrorMessage"].ToString() });
+        }
+        public IActionResult GetBankAccounts()
+        {
+            //bring bankAccounts
+            var bankAccountCommands = _bankAccountService.GetAll<BankAccountCommand>();
+            List<BankAccountViewModel> bankAccounts = Utilities.ProjectToCustom<BankAccountCommand, BankAccountViewModel>(bankAccountCommands);
+            return View(bankAccounts);
         }
         public IActionResult GetCategories(bool isPositive)
         {

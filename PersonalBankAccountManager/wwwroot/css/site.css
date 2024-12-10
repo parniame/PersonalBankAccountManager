@@ -20,3 +20,18 @@ html {
 body {
   margin-bottom: 60px;
 }
+.datatable > tbody{
+    text-align: center;
+}
+.bankImage {
+    width: 200px;
+    height: 50px;
+    overflow: hidden;
+    object-fit: contain;
+    
+}
+/*.table > :not(:last-child) > :last-child > * {
+    border-bottom-color: currentColor;
+}
+*/
+                                    

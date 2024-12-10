@@ -24,10 +24,17 @@
 .datatable-bottom > div:last-child {
 	float: right;
 }
-
+.datatable-dropdown > label {
+	position: fixed;
+	left: 200px;
+}
 .datatable-selector {
 	padding: 6px;
+	position: fixed;
+	left: 135px;
+	top: 145px;
 }
+
 
 .datatable-input {
 	padding: 6px 12px;
@@ -41,11 +48,13 @@
 .datatable-pagination ul {
 	margin: 0;
 	padding-left: 0;
+	direction: ltr;
 }
 
 .datatable-pagination li {
 	list-style: none;
 	float: left;
+	
 }
 
 .datatable-pagination li.datatable-hidden {
@@ -110,8 +119,8 @@
 .datatable-table {
 	max-width: 100%;
 	width: 100%;
-	border-spacing: 0;
-	border-collapse: separate;
+	/*border-spacing: 0;
+	border-collapse: separate;*/
 }
 
 .datatable-table > tbody > tr > td,
@@ -126,7 +135,7 @@
 
 .datatable-table > thead > tr > th {
 	vertical-align: bottom;
-	text-align: left;
+	text-align: center;
 	border-bottom: 1px solid #d9d9d9;
 }
 
@@ -138,7 +147,7 @@
 
 .datatable-table th {
 	vertical-align: bottom;
-	text-align: left;
+	text-align: center;
 }
 
 .datatable-table th a {

@@ -9,7 +9,7 @@
     }
     , 100);
 $(document).ready(function () {
-    var list = $('#image-dropdown > input[type=radio]');
+    var list = $('.image-dropdown > input[type=radio]');
     list[0].checked = true;
     
 });
