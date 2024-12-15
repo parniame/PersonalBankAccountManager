@@ -30,8 +30,11 @@ body {
     object-fit: contain;
     
 }
-/*.table > :not(:last-child) > :last-child > * {
-    border-bottom-color: currentColor;
+.modal-footer {
+    justify-content: flex-start !important;
 }
-*/
-                                    
+.required-field > label::after,
+.required-field > legend::after {
+    content: "*";
+    color: red;
+}

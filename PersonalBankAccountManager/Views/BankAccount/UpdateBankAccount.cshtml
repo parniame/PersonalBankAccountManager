@@ -1,0 +1,106 @@
+﻿@model UpdateBankAccountViewModel;
+@{
+    ViewData["Title"] = "AddBankAccount";
+    Layout = "_Layout";
+}
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+
+<link rel="stylesheet" href="~/css/imageOption.css" asp-append-version="true" />
+<script src="~/js/imageOption.js"></script>
+<div class="card center">
+    <div class="card-body">
+        <h5 class="card-title">   تغییر حساب</h5>
+
+        <form asp-action="UpdateBankAccountPost"  method="post">
+            <input asp-for="Id" type="hidden" id="bankAccountId">
+            
+            <div class="row mb-3 required-field">
+                <label asp-for="Title" class="col-sm-2 col-form-label "></label>
+                <div class="col-sm-10">
+                    <input asp-for="Title" class="form-control" id="inputText">
+                </div>
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="row mb-3 required-field ">
+                <label asp-for="Amount" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <input asp-for="Amount" class="form-control disabled">
+                </div>
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+            <fieldset class="row mb-3">
+                <legend class="col-form-label col-sm-2  ">نوع بانک</legend>
+                <div class="col-sm-10">
+                    <div class="col-sm-2 image-dropdown">
+
+
+
+                        @foreach (var item in Model.BankViewModels)
+                        {
+                            if (item.Id != Model.BankId)
+                            {
+                                <input data-val="true" class="form-check-input" type="radio" id="@item.Id" name="bankId" value="@item.Id">
+
+                            }
+                            else
+                            {
+                                <input data-val="true" class="form-check-input" type="radio" id="@item.Id" name="bankId" value="@item.Id" checked>
+
+                            }
+                            string str = null;
+                            if (item.URL != null)
+                            {
+                                var fullAddress = item.URL; //C:\Users\10\source\repos\PersonalBankAccountManager\PersonalBankAccountManager\wwwroot\images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                                var fileAddress = fullAddress.Split("wwwroot\\", 2)[1];//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                                var normalizedFileAddress = fileAddress.Replace("\\", "/");//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                                str = "../" + normalizedFileAddress;
+                            }
+
+                            
+                            <label for="@item.Id" style="background-image : url(@str)">@Html.DisplayFor(modelItem => item.Name)</label>
+
+                        }
+
+                       
+
+                    </div>
+                </div>
+                <span asp-validation-for="BankId" class="text-danger"></span>
+            </fieldset>
+
+
+            <div class="row mb-3 ">
+                <label asp-for="CardNumber" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <input asp-for="CardNumber" class="form-control" id="inputText">
+                </div>
+                <span asp-validation-for="CardNumber" class="text-danger"></span>
+            </div>
+            <div class="row mb-3 ">
+                <label asp-for="Description" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                    <input asp-for="Description" class="form-control" id="inputText">
+                </div>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">ثبت</button>
+                <button type="reset" class="btn btn-secondary">پاک کردن</button>
+            </div>
+
+
+
+
+        </form>
+
+
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+@Html.Partial("_Footer");

@@ -12,7 +12,7 @@ namespace DataTransferObject
         public string Name { get;  set; }
         public Guid? CreatorID { get; set; }
         public Guid? UpdatorID { get; set; }
-       
+        
         public PictureArgs Picture { get; set; }
     }
 }

@@ -20,6 +20,12 @@ namespace Service.Exceptions
         {
         }
     }
+    public class NoBankAccountException : BankAccountServiceException
+    {
+        public NoBankAccountException() : base($"ابتدا یک حساب بانکی ایجاد کنید", 1)
+        {
+        }
+    }
 }
 //public class PictureServiceException : BaseException
 //{

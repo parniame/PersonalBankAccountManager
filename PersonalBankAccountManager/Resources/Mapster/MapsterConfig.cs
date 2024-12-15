@@ -10,16 +10,38 @@ namespace PersonalBankAccountManager.Resources.Mapster
 
         public static void RegisterMapping()
         {
-            
-            TypeAdapterConfig<BankAccountCommand, BankAccountViewModel>.NewConfig()
-                .Map(dest => dest.BankName,src => src.Bank.Name,srcCond => srcCond.Bank != null)
-                .Map(dest => dest.URL, src => src.Bank.Picture.FileAddress, srcCond => srcCond.Bank.Picture != null);
-            TypeAdapterConfig<BankCommand, BankViewModel>.NewConfig()
-                .Map(dest => dest.URL, src => src.Picture.FileAddress,srcCond => srcCond.Picture != null);
 
+            TypeAdapterConfig<BankAccountArgs, BankAccountViewModel>.NewConfig()
+                .Map(dest => dest.URL, src => src.URL, srcCond => srcCond.URL != null);
+            TypeAdapterConfig<BankArgs, BankViewModel>.NewConfig()
+                .Map(dest => dest.URL, src => src.URL, srcCond => srcCond.URL != null);
+            TypeAdapterConfig<TransactionPlanArgs, TransactionPlanViewModel>.NewConfig()
+                .Map(dest => dest.Name, src => src.Name)
+                .Map(dest => dest.Id, src => src.Id);
+            TypeAdapterConfig<BankAccountResult, BankAccountDetailsViewModel>.NewConfig()
+                .Map(dest => dest.BankName, src => src.BankName)
+                .Map(dest => dest.URL, src => src.URL);
+            TypeAdapterConfig<TransactionResult, TransactionWithoutDetails>.NewConfig()
+                .Map(dest => dest.IsWithdrawl, src => GetWithdrawlString(src.IsWithdrawl));
+            TypeAdapterConfig<TransactionResult, TransactionDetailsViewModel>.NewConfig()
+                .Map(dest => dest.CategoryName, src => src.Category.Name, srcCond => srcCond.Category != null);
+            TypeAdapterConfig<TransactionResult, UpdateTransactionViewModel>.NewConfig()
+              .Map(dest => dest.TransactionPlanViewModel, src => src.TransactionPlan)
+              .Map(dest => dest.CategoryId,src => src.Category.Id,srcCond => srcCond.Category != null)
+              .Map(dest => dest.BankAccountViewModel,src => src.BankAccount);
+            //TypeAdapterConfig<BankAccountResult, UpdateBankAccountViewModel>.NewConfig()
+            //    .Map(dest => dest.Bank, src => src.Bank);
 
 
         }
+        private static string GetWithdrawlString(bool isWithdrawl)
+        {
+            if (isWithdrawl)
+                return "واریز";
+            return "برداشت";
+        }
+
+
     }
 }
 

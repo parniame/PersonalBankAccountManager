@@ -41,18 +41,22 @@ namespace Service.ServiceClasses
             //Create Picture Object
             bankDTO.Picture = new PictureArgs { FileAddress = fullAddress };
 
-            var entity = MapToEntity(bankDTO);
-            entity.DateCreated = DateTime.Now;
-            entity.DateUpdated = DateTime.Now;
+            var bankEntity = MapToEntity(bankDTO);
+            bankEntity.DateCreated = DateTime.Now;
+            bankEntity.DateUpdated = DateTime.Now;
 
 
-            bool isUnique = await IsUniqueAsync(entity, "Name");
-            if (!isUnique)
+            var isUnique = await IsUniqueAsync(bankEntity, "Name");
+            if (isUnique == 0)
             {
                 throw new DuplicateUniquePropertyException( "بانک ");
             }
+            if(isUnique == -1)
+            {
+                return false;
+            }
 
-            var result = await _baseRepository.CreateAsync(entity);
+            var result = await _baseRepository.CreateAsync(bankEntity);
             if (fullAddress != null)
             {
                 using(var stream = new FileStream(fullAddress, FileMode.Create))
@@ -70,6 +74,7 @@ namespace Service.ServiceClasses
             return result;
         }
         public override async Task<bool> CreateAsync<DTO>(DTO dto)
+            where DTO : class
         {
             return await CreateUniqueAsync(dto, "Name", "بانک");
         }

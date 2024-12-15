@@ -27,25 +27,7 @@ namespace Persistence.TableConfigs
 
             builder.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.NoAction);
             builder.HasOne(x => x.Bank).WithMany().HasForeignKey(x => x.BankId).OnDelete(DeleteBehavior.NoAction);
-            //builder.OwnsOne(
-            //     banckAccount => banckAccount.Bank,
-
-            //     bank =>
-            //     {
-            //         bank.Property(banckAccount => banckAccount.Name);
-                     
-            //         bank.WithOwner().HasForeignKey(banckAccount => banckAccount.BankAccountId);
-            //         bank.Property(banckAccount => banckAccount.Id);
-            //         bank.HasKey(banckAccount => banckAccount.Id);
-
-            //         bank.ToTable(nameof(Bank));
-
-            //         bank.Property(x => x.Id).ValueGeneratedOnAdd();
-
-            //         bank.Property(x => x.Name).HasColumnType(SqlDbType.VarChar.ToString()).IsRequired();
-            //     }
-            //     );
-
+           
 
         }
     }

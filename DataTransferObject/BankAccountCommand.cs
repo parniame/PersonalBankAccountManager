@@ -12,10 +12,10 @@ namespace DataTransferObject
         public Guid UserId { get; set; }
         public string Title { get; set; }
         public decimal Amount { get; set; }
-        public Guid BankId { get; set; }
+        public Guid? BankId { get; set; }
         public string? Description { get; set; }
         public string? CardNumber { get; set; }
 
-        public BankCommand Bank { get; set; } = new BankCommand();
+        //public BankCommand Bank { get; set; } 
     }
 }

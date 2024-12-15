@@ -2,7 +2,7 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
-let first = true;
+
 
 $(document).ready(function () {
     let errorToast = document.getElementById('error-toast');
@@ -18,7 +18,7 @@ $(document).ready(function () {
     }
 })
 
-
+let first = true;
 $(document).ready(function () {
     if (first) {
         $("#addCategory").submit();
@@ -75,7 +75,30 @@ function SetPlanner(e) {
 
 
 
+function ShowDeleteModal(Id) {
 
+    let input = $("#entityIdInput");
+    console.log(input)
+    input.val(Id);
+
+    var thisModal = $("#delete-modal");
+    thisModal.modal("show");
+
+}
+function ShowDetailsModal(Id) {
+
+    let input = $("#bankAccountId");
+    let input2 = $("#transactiontId");
+    input.val(Id);
+   
+    input2.val(Id);
+
+    let form = $("#addDetails");
+    form.submit();
+    let thisModal = $("#details-modal");
+    thisModal.modal("show");
+
+}
 $('#addTransactionForm').on('reset', function (e) {
     console.log("hi");
     let amountInput = $("#transactionAmount");
@@ -85,3 +108,4 @@ $('#addTransactionForm').on('reset', function (e) {
     trueWithdrawlRadio.prop('disabled', false);
     falseWithdrawlRadio.prop('disabled', false);
 });
+$(".disabled").prop('disabled', true);

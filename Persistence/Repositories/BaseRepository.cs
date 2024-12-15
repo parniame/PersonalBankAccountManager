@@ -7,6 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Abstraction.Service.Exceptions;
 
 namespace Persistence.Repositories
 {
@@ -39,10 +40,29 @@ namespace Persistence.Repositories
         }
         public async Task<TSource?> GetByIdAsync(Guid id, bool noTracking = true)
         {
+            var test = _dbcontext.BankAccounts.Select(x => new
+            {
+                x.Bank,
+            }).ToList();
             var tSource = await _entitySet.FindAsync(id);
-            if (noTracking)
-                _dbcontext.Entry(tSource).State = EntityState.Detached;
+
+            if (noTracking & tSource != null)
+            {
+                TSource nonNull = tSource;
+                _dbcontext.Entry(nonNull).State = EntityState.Detached;
+            }
+
             return tSource;
+        }
+        public async Task<TSource?> GetByIdAsync(Guid id, Func<IQueryable<TSource>, IIncludableQueryable<TSource, object>> include, bool noTracking = true)
+        {
+          
+
+            IQueryable<TSource> query = noTracking ? _entitySet.AsNoTracking() : _entitySet.AsQueryable();
+            query = include(query);
+            var tsource = await query.FirstOrDefaultAsync(x => x.Id == id);
+            return tsource;
+
         }
         public async Task<TSource?> GetFirstAsync(Expression<Func<TSource, bool>> predicate, bool noTracking = true)
         {
@@ -60,18 +80,55 @@ namespace Persistence.Repositories
             return true;
 
         }
-        public async Task<bool> UpdateAsync(TSource TEntity)
+        public async Task<bool> UpdateAsync(TSource TEntity , List<string> unbindedProperties = null)
         {
+
             _entitySet.Update(TEntity);
+            var entry = _dbcontext.Entry(TEntity);
+            //Unbind some properties
+            if (unbindedProperties != null)
+            {
+                foreach (var propertyName in unbindedProperties)
+                {
+                    //Validate If This Property Exist
+                    var propertyInfo = TEntity.GetType().GetProperty(propertyName);
+
+                    var value = propertyInfo.GetValue(TEntity, null);
+                    if (propertyInfo == null)
+                    {
+                        return false;
+                    }
+                    //Unbind The property
+                    entry.Property(propertyName).IsModified = false;
+                }
+            }
+
+            entry.Property(x => x.DateCreated).IsModified = false;
+           
             await CommitAsync();
             return true;
         }
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var tSource = await GetByIdAsync(id);
+            var tSource = await GetByIdAsync(id, false);
+            if (tSource == null)
+            {
+                return false;
+            }
             _entitySet.Remove(tSource);
             await CommitAsync();
 
+            return true;
+
+        }
+        public async Task<bool> DeleteListAsync(Expression<Func<TSource, bool>> predicate)
+        {
+            var list = GetAll(predicate, false);
+            if (list.Any())
+            {
+                _entitySet.RemoveRange(list);
+                await CommitAsync();
+            }
             return true;
 
         }

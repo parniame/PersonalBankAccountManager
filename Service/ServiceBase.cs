@@ -1,9 +1,11 @@
 ﻿using Abstraction.Domain;
 using Abstraction.Service;
 using Abstraction.Service.Exceptions;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Service
 {
@@ -16,6 +18,7 @@ namespace Service
         }
 
         public virtual async Task<bool> CreateAsync<DTO>(DTO dto)
+            where DTO : class
         {
 
             var entity = MapToEntity(dto);
@@ -26,76 +29,108 @@ namespace Service
             return await _baseRepository.CreateAsync(entity);
         }
         public virtual Task<bool> UpdateAsync<DTO>(DTO dto)
+            where DTO : class
         {
             var entity = MapToEntity(dto);
-            entity.DateCreated = DateTime.Now;
             entity.DateUpdated = DateTime.Now;
             return _baseRepository.UpdateAsync(entity);
         }
         public virtual async Task<bool> DeleteAsync(Guid Id)
         {
+            var check = await _baseRepository.GetByIdAsync(Id);
+            if (check == null)
+            {
+                throw new ItemNotFoundException("آیدی");
+            }
             return await _baseRepository.DeleteAsync(Id);
         }
-
-        public  List<DTO> GetAll<DTO>()
+        public virtual async Task<DTO?> GetByIdAsync<DTO>(Guid Id, bool readOnly = true)
+            where DTO : class
         {
-            var entities =  _baseRepository.GetAll();
-            List<DTO> results = entities.ProjectToType<DTO>().ToList();
-            
+            var entity = await _baseRepository.GetByIdAsync(Id, false);
+            return entity == null ? null : MapToDTO<DTO>(entity);
+
+        }
+
+        public async Task<List<DTO>> GetAllAsync<DTO>()
+            where DTO : class
+        {
+            var entities = _baseRepository.GetAll();
+            List<DTO> results = await entities.ProjectToType<DTO>().ToListAsync();
+
             return results;
 
         }
-        protected virtual async Task<bool> IsUniqueAsync(Entity uniqueOBJ, string nameOfUniqueProperty)
+
+        //<summary>
+        //    -1: error
+        //    1:ok
+        //    0:not unique
+
+        //    </summary>
+        protected virtual async Task<int> IsUniqueAsync(Entity uniqueOBJ, string nameOfUniqueProperty)
 
         {
             //Validate If This Property Exist
             var propertyInfo = uniqueOBJ.GetType().GetProperty(nameOfUniqueProperty);
+
             var value = propertyInfo.GetValue(uniqueOBJ, null);
             if (value == null)
             {// Will bw catched at Entity Service where it was called with incorrect property name
-                throw new ItemNotFoundException(nameOfUniqueProperty);
+                return -1;
             }
+
+
             //Validate If This Property Was Used Before.
             var param = Expression.Parameter(typeof(Entity));
+
             var condition = Expression.Lambda<Func<Entity, bool>>
                 (Expression.Equal(
             Expression.Property(param, nameOfUniqueProperty),
-            Expression.Constant(value, typeof(string))
+            Expression.Constant(value, propertyInfo.PropertyType)
                 ),
                 param
                 );
             var entity = await _baseRepository.GetFirstAsync(condition);
-            return entity == null;
+            return entity == null ? 1 : 0;
 
 
         }
-        protected async Task<bool> CreateUniqueAsync<DTO>(DTO dto, string nameOfUniqueProperty,string nameOfOBJ)
+        protected async Task<bool> CreateUniqueAsync<DTO>(DTO dto, string nameOfUniqueProperty, string nameOfOBJ)
+        where DTO : class
         {
             var entity = MapToEntity(dto);
             entity.DateCreated = DateTime.Now;
             entity.DateUpdated = DateTime.Now;
 
-            bool isUnique = await IsUniqueAsync(entity, nameOfUniqueProperty);
-            if (isUnique)
+            var isUnique = await IsUniqueAsync(entity, nameOfUniqueProperty);
+            if (isUnique == 1)
             {
                 return await _baseRepository.CreateAsync(entity);
             }
-            throw new DuplicateUniquePropertyException( nameOfOBJ);
+            else if (isUnique == 0)
+            {
+                throw new DuplicateUniquePropertyException(nameOfOBJ);
+            }
+            return false;
+
 
         }
 
 
 
-        public virtual Entity MapToEntity<DTO>(DTO dto)
+        public virtual Entity MapToEntity<DTO>(DTO dto) where DTO : class
+
         {
             return dto.Adapt<Entity>();
         }
 
         public virtual DTO MapToDTO<DTO>(Entity entity)
+       where DTO : class
         {
 
             return entity.Adapt<DTO>();
         }
-        
+
     }
 }

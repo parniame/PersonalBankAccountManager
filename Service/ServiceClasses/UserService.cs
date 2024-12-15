@@ -34,11 +34,10 @@ namespace Service.ServiceClasses
             return result;
 
         }
-        public async Task<UserResult> GetCurrentUserAsync(string userName, string userId)
+        public async Task<User?> GetCurrentUserAsync(string userId)
         {
-            var user = await _userManager.FindByNameAsync(userName) ??
-                             await _userManager.FindByIdAsync(userId);
-            return TranslateToDTO<UserResult>(user);
+            var user =  await _userManager.FindByIdAsync(userId);
+            return user;
         }
         public async Task<bool> LoginAsync(LoginCommand command)
         {

@@ -8,6 +8,7 @@ namespace DataTransferObject
 {
     public class TransactionCommand
     {
+        public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public bool IsWithdrawl { get; set; }
         public string Title { get; set; }
@@ -15,7 +16,8 @@ namespace DataTransferObject
         public decimal Amount { get; set; }
         public Guid? CategoryId { get; set; }
         public string? Description { get; set; }
-        public Guid? SecondBankAccountId { get; set; }
         public Guid? TransactionPlanId { get; set; }
+        public Guid? SecondBankAccountId { get; set; }
+        
     }
 }

@@ -8,12 +8,12 @@ using System.Text.RegularExpressions;
 
 namespace PersonalBankAccountManager.Controllers
 {
-    public class AccountingController : Controller
+    public class AccountController : Controller
     {
         private readonly IUserService _userService;
-        private readonly ILogger<AccountingController> _logger;
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountingController(IUserService userService, ILogger<AccountingController> logger)
+        public AccountController(IUserService userService, ILogger<AccountController> logger)
         {
             _userService = userService;
             _logger = logger;
@@ -21,7 +21,7 @@ namespace PersonalBankAccountManager.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View();
+            return View("Login");
         }
 
         [HttpPost()]

@@ -79,6 +79,15 @@ namespace PersonalBankAccountManager.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to نام بانک.
+        /// </summary>
+        public static string BankNameProp {
+            get {
+                return ResourceManager.GetString("BankNameProp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to شماره کارت.
         /// </summary>
         public static string CardNumberProp {

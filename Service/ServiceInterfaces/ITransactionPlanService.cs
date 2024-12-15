@@ -10,5 +10,6 @@ namespace Service.ServiceInterfaces
 {
     public interface ITransactionPlanService : IServiceBase<TransactionPlan>
     {
+        Task<List<DTO>> GetAllAsync<DTO>(Guid userId) where DTO : class;
     }
 }

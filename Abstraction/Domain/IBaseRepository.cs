@@ -15,9 +15,10 @@ namespace Abstraction.Domain
         IQueryable<TSource> GetAll(Expression<Func<TSource, bool>> predicate = null, bool noTracking = true);
         IQueryable<TResult> GetAll<TResult>(Expression<Func<TSource, TResult>> selector, Expression<Func<TSource, bool>> predicate = null, Func<IQueryable<TSource>, IIncludableQueryable<TSource, object>> include = null, bool noTraking = true);
         Task<bool> CreateAsync(TSource TEntity);
-        Task<bool> UpdateAsync(TSource TEntity);
         Task<bool> DeleteAsync(Guid id);
         Task<int> CommitAsync();
-
+        Task<bool> DeleteListAsync(Expression<Func<TSource, bool>> predicate);
+        Task<TSource?> GetByIdAsync(Guid id, Func<IQueryable<TSource>, IIncludableQueryable<TSource, object>> include, bool noTracking = true);
+        Task<bool> UpdateAsync(TSource TEntity, List<string> unbindedProperties = null);
     }
 }

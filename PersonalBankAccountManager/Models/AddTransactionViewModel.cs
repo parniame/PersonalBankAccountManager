@@ -25,7 +25,7 @@ namespace PersonalBankAccountManager.Models
         public Guid? TransactionPlanId { get; set; }
 
         public List<BankAccountViewModel> BankAccountViewModels { get; set; } = new List<BankAccountViewModel>();
-        public List<TransactionPlanViewModel> TransactionPlanViewModels { get; set;} = new List<TransactionPlanViewModel>();
+        public List<TransactionPlanWithoutDetails> TransactionPlanViewModels { get; set;} = new List<TransactionPlanWithoutDetails>();
         
     }
 }

@@ -35,7 +35,7 @@ public class DuplicateUniquePropertyException : BaseServiceException
 }
 public class CodeErrorException : BaseServiceException
 {
-    public CodeErrorException() : base("در کد مشکلی وجود دارد")
+    public CodeErrorException() : base("در انجام عملیات مشکلی وجود دارد")
     {
         
         Code += 402;

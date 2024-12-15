@@ -1,8 +1,32 @@
-﻿@model IEnumerable<TransactionCategoryViewModel>;
-@foreach (var item in Model)
-{
-
-    <option value="@item.Id">@Html.DisplayFor(modelItem => item.Name)</option>
+﻿@model IEnumerable<CategoryViewModel>;
 
 
+
+@{
+    var categoryId = new Guid();
+    if (ViewData["categoryId"] != null)
+    {
+        categoryId = new Guid(ViewData["categoryId"]?.ToString());
+        <option value="">انتخاب کنید</option>
+    }
+    else if (ViewData["categoryId"] == null)
+    {
+        <option value="" selected>انتخاب کنید</option>
+    }
+    foreach (var item in Model)
+    {
+        if (item.Id == categoryId)
+        {
+            <option selected value="@item.Id">@Html.DisplayFor(modelItem => item.Name)</option>
+        }
+        else
+        {
+            <option value="@item.Id">@Html.DisplayFor(modelItem => item.Name)</option>
+
+        }
+
+
+
+    }
+    
 }

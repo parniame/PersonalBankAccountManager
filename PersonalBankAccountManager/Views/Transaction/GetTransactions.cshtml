@@ -1,0 +1,198 @@
+﻿@model IEnumerable<TransactionWithoutDetails>;
+@{
+    ViewData["Title"] = "AddTransactionPlan";
+    Layout = "_Layout";
+}
+<div class="col-lg-12">
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">تراکنش ها</h5>
+
+
+
+            <table class="table  table-hover table-bordered " id="transactionTable">
+                <thead>
+                    <tr>
+                        <th class="border-bottom-0">
+                            اسم تراکنش
+                        </th>
+                        <th class="border-bottom-0">
+                            حساب بانکی
+                        </th>
+                        <th class="border-bottom-0">مقدار</th>
+                        <th class="border-bottom-0">نوع تراکنش</th>
+                        <th class="border-bottom-0">زمان ساخت</th>
+                        <th class="border-bottom-0">زمان تغییر</th>
+                        <th class="border-bottom-0">اعمال</th>
+                        
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Title)
+                            </td>
+
+                            <td>
+
+                                @{
+                                    string str = null;
+                                   
+                                        
+
+                                            if (item.BankAccount.URL != null)
+                                            {
+                                                var fullAddress = item.BankAccount.URL; //C:\Users\10\source\repos\PersonalBankAccountManager\PersonalBankAccountManager\wwwroot\images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                                                var fileAddress = fullAddress.Split("wwwroot\\", 2)[1];//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                                                var normalizedFileAddress = fileAddress.Replace("\\", "/");//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                                                str = "../" + normalizedFileAddress;
+
+                                                <img src="@str" class="bankImage" alt="عکس بانک">
+
+                                            }
+                                            else
+                                            {
+                                                <label>@item.BankAccount.Title</label>
+                                            }
+                                        
+                                    
+                                }
+
+
+
+
+
+                            </td>
+
+                            <td>
+
+                                @Html.DisplayFor(modelItem => item.Amount)
+                            </td>
+                            <td>
+
+                                @Html.DisplayFor(modelItem => item.IsWithdrawl)
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DateCreated)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DateUpdated)
+                            </td>
+
+
+                            <td>
+                                <a type="button" class="btn  btn-outline-warning  btn-sm" asp-controller="Transaction" asp-action="UpdateTransaction" asp-route-transactionId="@item.Id">تغییر</a>|
+                                <button type="button" class="btn  btn-outline-info  btn-sm" onclick="ShowDetailsModal('@item.Id')" href="">جزئیات</button>|
+                                <button type="button" class="btn btn-danger  btn-sm" onclick="ShowDeleteModal('@item.Id')" href="">حذف</button>
+
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+            <!-- start: Delete Transaction Modal -->
+            <div class="modal fade delete-modal" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h3 class="modal-title">هشدار!</h3>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <h4> آیا از حذف مطمئن هستید؟</h4>
+                            <p>درصورت حذف، موجودی حساب های بانکی تغییری نخواهد داشت</p>
+                        </div>
+                        <!--/modal-body-collapse -->
+                        <div class="modal-footer">
+                            <!--Send Data To Delete Action -->
+                            <form method="post" asp-action="DeleteTransaction" asp-controller="Transaction">
+                                <div class="mb-3 d-none">
+                                    <input type="hidden" name="transactionId" class="form-control" id="entityIdInput" value="">
+                                </div>
+                                <button type="submit" class="btn btn-danger">بله</button>
+                            </form>
+
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">خیر</button>
+                        </div>
+                        <!--/modal-footer-collapse -->
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
+            <!-- start:  Transaction's Details Modal -->
+            <div class="modal fade " id="details-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h3 class="modal-title">جزئیات  تراکنش</h3>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                اگر این بخش را پر کرده باشید،اطلاعات نمایش داده میشود.
+                                میتوانید این اطلاعات را با تغییر دادن تراکنش در صفحه قبل وارد نمایید.
+                            </p>
+                            <table class="table datatable table-hover table-bordered " id="transactionTable">
+                                <thead>
+                                    <tr>
+                                        
+                                        <th class="border-bottom-0">
+                                            نام دسته بندی
+                                        </th>
+                                        <th class="border-bottom-0">
+                                            نام پلنر تراکنش 
+                                        </th>
+                                        <th class="border-bottom-0">توضیحات</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody id="details">
+                                    @{
+                                        await Html.PartialAsync("_GetTransactionDetails", new TransactionDetailsViewModel());
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <!--/modal-body-collapse -->
+                        <div class="modal-footer">
+
+
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">بستن</button>
+                        </div>
+                        <!--/modal-footer-collapse -->
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
+            <!--Get Details from action -->
+            <form id="addDetails" asp-action="GetTransactionDetails" method="post" data-ajax-update="#details" data-ajax="true">
+                <input id="transactiontId" type="hidden" name="transactiontId" value="" />
+
+
+            </form>
+        </div>
+    </div>
+
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.js" integrity="sha256-v2nySZafnswY87um3ymbg7p9f766IQspC5oqaqZVX2c=" crossorigin="anonymous"></script>
+    }
+}
+@Html.Partial("_Footer")
+                                        ;
+

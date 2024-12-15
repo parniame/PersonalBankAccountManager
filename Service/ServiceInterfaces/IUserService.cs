@@ -1,5 +1,6 @@
 ﻿using DataTransferObject;
 using Microsoft.AspNetCore.Identity;
+using Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Service.ServiceInterfaces
     public interface IUserService
     {
         //Task<IdentityResult> CreateUser(RegisterCommand user, string password,Guid userId);
-        Task<UserResult> GetCurrentUserAsync(string userName, string userId);
+        Task<User> GetCurrentUserAsync( string userId);
         Task<List<UserResult>> GetAllUser();
         Task<bool> LoginAsync(LoginCommand command);
         Task<bool> RegisterAsync(RegisterCommand command,string userRole);

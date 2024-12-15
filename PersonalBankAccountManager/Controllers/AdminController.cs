@@ -43,22 +43,30 @@ namespace PersonalBankAccountManager.Controllers
             if (ModelState.IsValid)
             {
 
-                try{
-                    var bankDTO = Utilities.MapToCustom<AddBankViewModel, BankCommand>(bankViewModel);
+                try
+                {
+                    var bankDTO = Translator.MapToCustom<AddBankViewModel, BankCommand>(bankViewModel);
                     var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                     if (!string.IsNullOrEmpty(currentUserId))
                     {
                         bankDTO.CreatorID = new Guid(currentUserId);
                         bankDTO.UpdatorID = bankDTO.CreatorID;
                     }
+                    var result = false;
                     if (bankViewModel.File != null)
-                        await _bankService.CreateBankWithFileAsync(bankDTO,bankViewModel.File);
+                        result = await _bankService.CreateBankWithFileAsync(bankDTO, bankViewModel.File);
                     else
-                        await _bankService.CreateAsync(bankDTO);
+                    {
+                        result = await _bankService.CreateAsync(bankDTO);
+                    }
 
 
-                    TempData["SuccessMessage"] = "نوع حساب با موفقیت ساخته شد";
-                    return LocalRedirect("/Admin/index");
+                    if (result)
+                    {
+                        TempData["SuccessMessage"] = "نوع حساب با موفقیت ساخته شد";
+                        return LocalRedirect("/Admin/index");
+                    }
+
                 }
                 catch (Exception e)
                 {
@@ -74,13 +82,13 @@ namespace PersonalBankAccountManager.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> AddTransactionCategoryPostAsync(TransactionCategoryViewModel transactionCategoryViewModel)
+        public async Task<IActionResult> AddTransactionCategoryPostAsync(AddTransactionCategoryViewModel transactionCategoryViewModel)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var transactionCategoryCommand = Utilities.MapToCustom<TransactionCategoryViewModel, TransactionCategoryCommand>(transactionCategoryViewModel);
+                    var transactionCategoryCommand = Translator.MapToCustom<AddTransactionCategoryViewModel, TransactionCategoryCommand>(transactionCategoryViewModel);
                     transactionCategoryCommand.CreatorID = new Guid(User.FindFirstValue(ClaimTypes.NameIdentifier));
                     transactionCategoryCommand.UpdatorID = transactionCategoryCommand.CreatorID;
                     var result = await _transactionCategoryService.CreateAsync(transactionCategoryCommand);

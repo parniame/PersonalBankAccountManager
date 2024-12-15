@@ -10,7 +10,10 @@ namespace Service.ServiceInterfaces
 {
     public interface IBankAccountService : IServiceBase<BankAccount>
     {
-        Task<bool> ChangeAmmountAsync(decimal amount, bool isPositive, Guid bankAccountId);
-       
+        
+        Task<bool> ChangeAmmountAsync(decimal amount, Guid userId, bool isPositive, Guid bankAccountId);
+        Task<bool> DeleteAsync(Guid Id, Guid userId);
+        Task<List<DTO>> GetAllAsync<DTO>(Guid userId) where DTO : class;
+        Task<DTO?> GetByIdAsync<DTO>(Guid Id, Guid userId, bool readOnly = true) where DTO : class;
     }
 }

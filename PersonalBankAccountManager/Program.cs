@@ -25,7 +25,7 @@ namespace PersonalBankAccountManager
             var builder = WebApplication.CreateBuilder(args);
             var connectionString = builder.Configuration.GetConnectionString("PersonalBankAccountManagerDBContextConnection") ?? throw new InvalidOperationException("Connection string 'OnlineTicketAndReservationDbContextConnection' not found.");
             builder.Services.AddDbContext<DbContext, PersonalBankAccountManagerDBContext>();
-            string HangFireConn = "Data Source=.;Initial Catalog=hangfiredb;TrustServerCertificate=True;Integrated Security=SSPI";
+            //string HangFireConn = "Data Source=.;Initial Catalog=hangfiredb;TrustServerCertificate=True;Integrated Security=SSPI";
             //builder.Services.AddHangfire(x => x.UseSqlServerStorage(HangFireConn));
             //builder.Services.AddHangfireServer();
             builder.Services.AddIdentity<User, Role>()
@@ -49,14 +49,16 @@ namespace PersonalBankAccountManager
             PresentationMapsterConfig.RegisterMapping();
             builder.Services.AddMvc();
             builder.Services.AddControllers();
+            builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
+
 
 
 
 
             builder.Services.ConfigureApplicationCookie(option =>
             {
-                option.LoginPath = "/Accounting/Login";
+                option.LoginPath = "/Account/Login";
                 option.ExpireTimeSpan = TimeSpan.FromMinutes(3);
                
 

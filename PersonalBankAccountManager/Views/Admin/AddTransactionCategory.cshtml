@@ -1,4 +1,4 @@
-﻿@model TransactionCategoryViewModel;
+﻿@model AddTransactionCategoryViewModel;
 @{
     ViewData["Title"] = "AddTransactionCategory";
     Layout = "_Layout";
@@ -10,7 +10,7 @@
 
         <form asp-action="AddTransactionCategoryPost" asp-controller="Admin" method="post">
 
-            <div class="row mb-3 ">
+            <div class="row mb-3 required-field ">
                 <label asp-for="Name" class="col-sm-2 col-form-label"> </label>
                 <div class="col-sm-10">
                     <input asp-for="Name" class="form-control" id="inputText">
@@ -18,10 +18,10 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
            
-            <fieldset class="row mb-3">
+            <fieldset class="row mb-3 required-field">
                 <legend class="col-form-label col-sm-2 pt-0">نوع دسته بندی</legend>
                 <div class="col-sm-2">
-                    <div class="form-check">
+                    <div class="form-check ">
                         <input data-val="true" class="form-check-input" type="radio" id="IsWithdrawl" name="IsWithdrawl" value="False" checked>
                         <label class="form-check-label" asp-for="IsWithdrawl">
                         برداشت

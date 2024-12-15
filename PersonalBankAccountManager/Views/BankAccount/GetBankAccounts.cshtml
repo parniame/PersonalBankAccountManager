@@ -1,0 +1,158 @@
+﻿@model IEnumerable<BankAccountWithoutDetailsViewModel>;
+@{
+    ViewData["Title"] = "AddTransactionPlan";
+    Layout = "_Layout";
+}
+<div class="col-lg-12">
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">حساب ها</h5>
+
+
+
+            <table class="table datatable table-hover table-bordered " id="bankAccountTable">
+                <thead>
+                    <tr>
+                        <th class="border-bottom-0">
+                            اسم حساب بانکی
+
+                        </th>
+                        <th class="border-bottom-0">موجودی</th>
+                        <th class="border-bottom-0">زمان ساخت</th>
+                        <th class="border-bottom-0">زمان تغییر</th>
+                        <th class="border-bottom-0">اعمال</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Title)
+                            </td>
+
+
+
+                            <td>
+
+                                @Html.DisplayFor(modelItem => item.Amount)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DateCreated)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DateUpdated)
+                            </td>
+
+
+                            <td>
+                                <a type="button" class="btn  btn-outline-warning  btn-sm" asp-controller="BankAccount" asp-action="UpdateBankAccount" asp-route-bankAccountId="@item.Id">تغییر</a>|
+                                <button type="button" class="btn  btn-outline-info  btn-sm" onclick="ShowDetailsModal('@item.Id')" href="">جزئیات</button>|
+                                <button type="button" class="btn btn-danger  btn-sm" onclick="ShowDeleteModal('@item.Id')" href="">حذف</button>
+                                
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+            <!-- start: Delete BankAccount Modal -->
+            <div class="modal fade delete-modal" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h3 class="modal-title">هشدار!</h3>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <h4> آیا از حذف مطمئن هستید؟</h4>
+                            <p> با پاک کردن این حساب بانکی، تمامی تراکنش های مربوط به آن هم پاک میشود</p>
+                        </div>
+                        <!--/modal-body-collapse -->
+                        <div class="modal-footer">
+                            <!--Send Data To Delete Action -->
+                            <form method="post" asp-action="DeleteBankAccount" asp-controller="BankAccount">
+                                <div class="mb-3 d-none">
+                                    <input type="hidden" name="bankAccountId" class="form-control" id="entityIdInput" value="">
+                                </div>
+                                <button type="submit" class="btn btn-danger">بله</button>
+                            </form>
+
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">خیر</button>
+                        </div>
+                        <!--/modal-footer-collapse -->
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal -->
+            <!-- start:  BankAccount`s Details Modal -->
+            <div class="modal fade " id="details-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h3 class="modal-title">جزئیات حساب بانکی</h3>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                اگر این بخش را پر کرده باشید،اطلاعات نمایش داده میشود.
+                                میتوانید این اطلاعات را با تغییر دادن حساب بانکی در صفحه قبل وارد نمایید.
+                            </p>
+                            <table class="table datatable table-hover table-bordered " id="bankAccountTable">
+                                <thead>
+                                    <tr>
+                                        <th class="border-bottom-0">بانک</th>
+                                        <th class="border-bottom-0">
+                                            شماره کارت
+                                        </th>
+                                        <th class="border-bottom-0">توضیحات</th>
+                                        
+
+                                    </tr>
+                                </thead>
+                                <tbody id="details">
+                                    @{
+                                        await Html.PartialAsync("_GetBankAccountDetails", new BankAccountDetailsViewModel());
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <!--/modal-body-collapse -->
+                        <div class="modal-footer">
+
+
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">بستن</button>
+                        </div>
+                        <!--/modal-footer-collapse -->
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!-- /.modal --> 
+             <!--Get Details from action -->
+            <form id="addDetails" asp-action="GetBankAccountDetails" method="post" data-ajax-update="#details" data-ajax="true">
+                <input id="bankAccountId" type="hidden" name="bankAccountId" value="" />
+
+
+            </form>
+        </div>
+    </div>
+
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.js" integrity="sha256-v2nySZafnswY87um3ymbg7p9f766IQspC5oqaqZVX2c=" crossorigin="anonymous"></script>
+    }
+}
+@Html.Partial("_Footer")
+                                        ;
+

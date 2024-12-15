@@ -39,24 +39,7 @@ namespace Persistence.TableConfigs
                     builder => builder.HasOne<Picture>().WithMany().HasForeignKey( x => x.PictureId).OnDelete(DeleteBehavior.NoAction),
                     builder => builder.HasOne<Transaction>().WithMany().HasForeignKey(x => x.TransactionId).OnDelete(DeleteBehavior.NoAction)
                     );
-            //builder.OwnsMany(
-            //    transaction => transaction.TransActionDocuments,
-            //    doc =>
-            //    {
-            //        doc.Property(transActionDocuments => transActionDocuments.FileAddress).HasColumnName("File Address");
-            //        doc.WithOwner().HasForeignKey(transActionDocuments => transActionDocuments.TransactionId);
-            //        doc.Property(transActionDocuments => transActionDocuments.Id);
-            //        doc.HasKey(transActionDocuments => transActionDocuments.Id);
-            //        doc.ToTable(nameof(picture));
-                    
-            //        doc.Property(x => x.Id).ValueGeneratedOnAdd();
-
-            //        doc.Property(x => x.FileAddress)
-            //            .HasColumnType(SqlDbType.VarChar.ToString())
-            //            .HasMaxLength(256)
-            //            .IsRequired();
-            //    }
-            //    );
+            
             
                 
         }

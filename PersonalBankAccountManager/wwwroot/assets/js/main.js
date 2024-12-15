@@ -283,7 +283,7 @@
      */
     //const datatables = select('.datatable', true)
     //datatables.forEach(datatable => {
-       
+
     //    new simpleDatatables.DataTable(datatable, {
     //        labels: {
     //            placeholder: "جستوجو..",
@@ -312,29 +312,59 @@
     //    });
     //})
     const bankAccountTable = select('#bankAccountTable');
-    new simpleDatatables.DataTable(bankAccountTable, {
-        labels: {
-            placeholder: "جستوجو نام حساب بانکی ..",
-            searchTitle: "سرچ درون جدول",
-            pageTitle: "صفحه {page} ",
-            perPage: "تعداد سطر در هر صفحه",
-            noRows: "هیچ سطری یافت نشد",
-            info: "نمایش  {start} تا {end} از {rows} سطر",
-            noResults: "جوابی برای سرچ شما پیدا نشد",
-        },
-        perPageSelect: [5, ["همه", -1]],
-        columns: [{
-            select: 1,
-            sortSequence: ["desc", "asc"]
-        },
-        {
-            select: 2,
-            sortable : false
-        }
-        
-        ]
-    });
-    
+    if (bankAccountTable) {
+        new simpleDatatables.DataTable(bankAccountTable, {
+            labels: {
+                placeholder: "جستوجو نام حساب بانکی ..",
+                searchTitle: "سرچ درون جدول",
+                pageTitle: "صفحه {page} ",
+                perPage: "تعداد سطر در هر صفحه",
+                noRows: "هیچ سطری یافت نشد",
+                info: "نمایش  {start} تا {end} از {rows} سطر",
+                noResults: "جوابی برای سرچ شما پیدا نشد",
+            },
+            perPageSelect: [3,5, ["همه", -1]],
+            columns: [{
+                select: 1,
+                sortSequence: ["desc", "asc"]
+            },
+            {
+                select: 2,
+                sortable: false
+            }
+
+            ]
+        });
+    }
+
+
+    const transactionTable = select('#transactionTable');
+    if (transactionTable) {
+        new simpleDatatables.DataTable(transactionTable, {
+            labels: {
+                placeholder: "جستوجو نام تراکنش  ..",
+                searchTitle: "سرچ درون جدول",
+                pageTitle: "صفحه {page} ",
+                perPage: "تعداد سطر در هر صفحه",
+                noRows: "هیچ سطری یافت نشد",
+                info: "نمایش  {start} تا {end} از {rows} سطر",
+                noResults: "جوابی برای سرچ شما پیدا نشد",
+            },
+            perPageSelect: [3,5, ["همه", -1]],
+            columns: [{
+                select: 1,
+                sortSequence: ["desc", "asc"]
+            },
+            {
+                select: 2,
+                sortSequence: ["desc", "asc"]
+            }
+
+            ]
+        });
+
+    }
+
 
     /**
      * Autoresize echart charts

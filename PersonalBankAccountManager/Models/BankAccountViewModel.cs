@@ -9,8 +9,8 @@ namespace PersonalBankAccountManager.Models
         public Guid Id { get; set; }
         public string Title { get; set; }
         public string? URL { get; set; }
-        public string? CardNumber { get; set; }
-        public string BankName { get; set; }
+        
+
     }
     //public static class BankAccountViewModelMapper
     //{

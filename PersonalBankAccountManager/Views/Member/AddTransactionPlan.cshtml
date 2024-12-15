@@ -1,4 +1,4 @@
-﻿@model TransactionPlanViewModel;
+﻿@model AddTransactionPlanViewModel;
 @{
     ViewData["Title"] = "AddTransactionPlan";
     Layout = "_Layout";
@@ -10,21 +10,21 @@
 
         <form asp-action="AddTransactionPlanPost" >
 
-            <div class="row mb-3 ">
+            <div class="row mb-3 required-field">
                 <label asp-for="UniqueName" class="col-sm-2 col-form-label"> </label>
                 <div class="col-sm-10">
                     <input asp-for="UniqueName" class="form-control" id="inputText">
                 </div>
                 <span asp-validation-for="UniqueName" class="text-danger"></span>
             </div>
-            <div class="row mb-3 ">
+            <div class="row mb-3 required-field">
                 <label asp-for="Amount" class="col-auto col-form-label"> </label>
                 <div class="col-auto">
                     <input asp-for="Amount" class="form-control" id="inputText">
                 </div>
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
-            <fieldset class="row mb-3">
+            <fieldset class="row mb-3 required-field">
                 <legend class="col-form-label col-sm-2 pt-0">نوع دسته بندی</legend>
                 <div class="col-sm-2">
                     <div class="form-check">
@@ -43,7 +43,7 @@
 
                 </div>
             </fieldset>
-            <div class="row mb-3 ">
+            <div class="row mb-3 required-field">
                 <label asp-for="TillThisDate" class="col-sm-2 col-form-label"> </label>
                 <div class="col-sm-10">
                     <input asp-for="TillThisDate" class="form-control" id="inputText">
