@@ -31,19 +31,17 @@ namespace Persistence.Repositories
             return noTraking ? query.AsNoTracking() : query;
 
         }
-        public IQueryable<TResult> GetAll<TResult>(Expression<Func<TSource, TResult>> selector, Expression<Func<TSource, bool>> predicate = null, Func<IQueryable<TSource>, IIncludableQueryable<TSource, object>> include = null, bool noTracking = true)
-        {
-            IQueryable<TSource> query = noTracking ? _entitySet.AsNoTracking() : _entitySet.AsQueryable();
-            query = predicate == null ? query : query.Where(predicate);
-            query = include == null ? query : include(query);
-            return query.Select<TSource, TResult>(selector);
-        }
+        
+        //public IQueryable<TResult> GetAll<TResult>(Expression<Func<TSource, TResult>> selector, Expression<Func<TSource, bool>> predicate = null, Func<IQueryable<TSource>, IIncludableQueryable<TSource, object>> include = null, bool noTracking = true)
+        //{
+        //    IQueryable<TSource> query = noTracking ? _entitySet.AsNoTracking() : _entitySet.AsQueryable();
+        //    query = predicate == null ? query : query.Where(predicate);
+        //    query = include == null ? query : include(query);
+        //    return query.Select<TSource, TResult>(selector);
+        //}
         public async Task<TSource?> GetByIdAsync(Guid id, bool noTracking = true)
         {
-            var test = _dbcontext.BankAccounts.Select(x => new
-            {
-                x.Bank,
-            }).ToList();
+            
             var tSource = await _entitySet.FindAsync(id);
 
             if (noTracking & tSource != null)

@@ -16,8 +16,9 @@ namespace Models.Entities
         public DateTime TillThisDate { get; set; }
         public string? Description { get; set; }
         public Guid UserId { get; set; }
-
+       
         public User User { get; set; }
+        public Transaction? Transaction { get; set; }
 
         protected override void Validate()
         {

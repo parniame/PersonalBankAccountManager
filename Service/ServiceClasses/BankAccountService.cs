@@ -1,5 +1,6 @@
 ﻿using Abstraction.Domain;
 using Abstraction.Service.Exceptions;
+using DataTransferObject;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Models.Entities;
@@ -63,7 +64,7 @@ namespace Service.ServiceClasses
             throw new ItemNotFoundException("حساب بانکی");
 
 
-           
+
         }
         public async Task<bool> DeleteAsync(Guid Id, Guid userId)
         {
@@ -133,18 +134,23 @@ namespace Service.ServiceClasses
 
 
         }
-        public override Task<bool> UpdateAsync<DTO>(DTO dto)
-            where DTO : class
+        public async Task<bool> UpdateAsync(BankAccountCommand dto)
+
         {
-            var entity = MapToEntity(dto);
-            entity.DateUpdated = DateTime.Now;
-            var list = new List<string>
+            var dtoCheck = await GetByIdAsync<BankAccountCommand>(dto.Id);
+            if (dtoCheck.UserId == dto.UserId)
+            {
+                var entity = MapToEntity(dto);
+                entity.DateUpdated = DateTime.Now;
+                var list = new List<string>
             {
                 "UserId",
                 "Amount"
             };
+                return await _bankAccountRepository.UpdateAsync(entity, list);
+            }
 
-            return _bankAccountRepository.UpdateAsync(entity, list);
+            throw new CodeErrorException();
         }
     }
 }

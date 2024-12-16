@@ -8,5 +8,7 @@ namespace PersonalBankAccountManager.Models
         public Guid Id { get; set; }
         [Display(Name = "NameProp", ResourceType = typeof(PresentationResources))]
         public string Name { get; set; }
+        public decimal Amount { get; set; }
+        public bool IsWithdrawl { get; set; }
     }
 }

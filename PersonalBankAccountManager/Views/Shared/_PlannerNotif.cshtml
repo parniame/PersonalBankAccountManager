@@ -1,22 +1,17 @@
-﻿@* 
-@if (TempData[""])
+﻿@if (!string.IsNullOrWhiteSpace(ViewData["PlannerNotif"]?.ToString()))
 {
-
-
-    <div class="position-fixed top-0 start-0 p-3" style="z-index: 11">
-        <div id="success-toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="position-fixed bottom-0 start-0 p-3" style="z-index: 11">
+        <div id="error-toast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
-                <strong class="me-auto">پیام موفقیت</strong>
+                <strong class="me-auto">متن ارور</strong>
                 <button type="button" class="btn-close btn-lg me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
             <div class="d-flex">
                 <div id="error-toast-body" class="toast-body">
-                    @(Model ?? "موعد پلنر تراکنش")
+                    @(ViewData["PlannerNotif"]?.ToString() ?? "مشکلی وجود دارد")
                 </div>
 
             </div>
         </div>
     </div>
-
 }
- *@

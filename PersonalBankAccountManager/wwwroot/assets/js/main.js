@@ -311,7 +311,7 @@
     //        ]
     //    });
     //})
-    const bankAccountTable = select('#bankAccountTable');
+    const bankAccountTable = select('#bankAccountTablte');
     if (bankAccountTable) {
         new simpleDatatables.DataTable(bankAccountTable, {
             labels: {
@@ -338,7 +338,7 @@
     }
 
 
-    const transactionTable = select('#transactionTable');
+    const transactionTable = select('#transactionTabtle');
     if (transactionTable) {
         new simpleDatatables.DataTable(transactionTable, {
             labels: {
@@ -350,7 +350,8 @@
                 info: "نمایش  {start} تا {end} از {rows} سطر",
                 noResults: "جوابی برای سرچ شما پیدا نشد",
             },
-            perPageSelect: [3,5, ["همه", -1]],
+            searchable: false,
+            paging:false,
             columns: [{
                 select: 1,
                 sortSequence: ["desc", "asc"]

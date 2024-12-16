@@ -17,7 +17,7 @@ namespace Models.Entities
         public decimal Amount { get; set; }
         public Guid?  CategoryId { get; set; }
         public string? Description { get; set; }
-        public Guid? SecondBankAccountId { get; set; }
+        //public Guid? SecondBankAccountId { get; set; }
         public Guid? TransactionPlanId { get; set; }
 
 

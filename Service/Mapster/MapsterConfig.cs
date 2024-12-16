@@ -37,7 +37,13 @@ namespace Service.Mapster
 
             TypeAdapterConfig<TransactionPlan, TransactionPlanArgs>.NewConfig()
                 .Map(dest => dest.Name, src => src.Name)
-                .Map(dest => dest.Id, src => src.Id);
+                .Map(dest => dest.Id, src => src.Id)
+                ;
+            TypeAdapterConfig<TransactionPlan, TransactionPlanResult>.NewConfig()
+                .Map(dest => dest.Name, src => src.Name)
+                .Map(dest => dest.Id, src => src.Id)
+                .Map(dest => dest .Transaction, src => src.Transaction);
+                
             TypeAdapterConfig<Bank, BankArgs>.NewConfig()
                 .Map(dest => dest.Picture, src => src.Picture)
                 .Map(dest => dest.URL, src => src.Picture.FileAddress);
@@ -47,11 +53,11 @@ namespace Service.Mapster
                 .Map(dest => dest.Bank, src => src.Bank)
                  .Map(dest => dest.BankName, src => src.Bank.Name)
                 .Map(dest => dest.URL, src => src.Bank.Picture.FileAddress);
-            TypeAdapterConfig<Transaction, TransactionResult>.NewConfig()
+            TypeAdapterConfig<Transaction, TransactionArgs>.NewConfig()
                 .Map(dest => dest.Category, src => src.Category)
                 .Map(dest => dest.TransactionPlan, src => src.TransactionPlan)
                 .Map(dest => dest.BankAccount, src => src.BankAccount);
-            TypeAdapterConfig<TransactionResult, Transaction>.NewConfig()
+            TypeAdapterConfig<TransactionArgs, Transaction>.NewConfig()
                  .Map(dest => dest.Title, src => src.Title)
                  .Map(dest => dest.Description, src => src.Description)
                  .Map(dest => dest.CategoryId, src => src.CategoryId)

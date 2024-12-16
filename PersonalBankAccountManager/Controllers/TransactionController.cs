@@ -21,27 +21,29 @@ namespace PersonalBankAccountManager.Controllers
         private readonly ITransactionService _transactionService;
         private readonly ITransactionPlanService _transactionPlanService;
         private readonly ITransactionCategoryService _categoryService;
+        
         private readonly Translator _translator;
         private readonly ILogger<TransactionController> _logger;
 
-        public TransactionController(IBankAccountService bankAccountService, ITransactionService transactionService, ITransactionPlanService transactionPlanService, ITransactionCategoryService categoryService, ILogger<TransactionController> logger, IBankService bankService)
+        public TransactionController(IBankAccountService bankAccountService, ITransactionService transactionService, ITransactionPlanService transactionPlanService, ILogger<TransactionController> logger, ITransactionCategoryService categoryService)
         {
             _bankAccountService = bankAccountService;
             _transactionService = transactionService;
             _transactionPlanService = transactionPlanService;
-            _categoryService = categoryService;
-            _translator = new Translator(bankService, bankAccountService, transactionService);
-            _logger = logger;
 
+            _translator = new Translator(bankAccountService, transactionService);
+            _logger = logger;
+            _categoryService = categoryService;
         }
 
         //create
         [HttpGet]
-        [RestoreModelStateFromTempData]
+
         public async Task<IActionResult> AddTransaction(string? errorMessage)
         {
             try
             {
+                
                 if (errorMessage != null)
                 {
                     TempData["ErrorMessage"] = errorMessage;
@@ -58,28 +60,29 @@ namespace PersonalBankAccountManager.Controllers
 
 
                     var transactionPlanCommands = await _transactionPlanService.GetAllAsync<TransactionPlanArgs>(new Guid(currentUserId));
-                    var transactionCategoryViewModels = Translator.ProjectToCustom<TransactionPlanArgs, TransactionPlanWithoutDetails>(transactionPlanCommands);
+                    var transactionCategoryViewModels = Translator.ProjectToCustom<TransactionPlanArgs, TransactionPlanViewModel>(transactionPlanCommands);
 
                     addTransactionViewModel.BankAccountViewModels = bankAccounts;
                     addTransactionViewModel.TransactionPlanViewModels = transactionCategoryViewModels;
+                    
                     return View(addTransactionViewModel);
 
                 }
-                throw new CodeErrorException();
+
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "در ساخت  پلنر تراکنش  مشکلی به وجود آمد");
+                _logger.LogError(e, "در اوردن صفحه درج   تراکنش  مشکلی به وجود آمد");
                 //If error is in english
                 if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
                     TempData["ErrorMessage"] = e.Message;
             }
             if (TempData["ErrorMessage"] == null)
             {
-                TempData["ErrorMessage"] = "ساخت پلنر تراکنش با مشکل مواجه شد";
+                TempData["ErrorMessage"] = "اوردن صفحه درج تراکنش با مشکل مواجه شد";
             }
 
-            return View("Index");
+            return RedirectToAction("Index", "Member", new { errorMessage = TempData["ErrorMessage"] });
         }
 
 
@@ -91,6 +94,7 @@ namespace PersonalBankAccountManager.Controllers
             {
                 try
                 {
+                    
                     var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                     if (!string.IsNullOrEmpty(currentUserId))
                     {
@@ -99,20 +103,20 @@ namespace PersonalBankAccountManager.Controllers
                         var isPositive = addTransactionViewModel.IsWithdrawl;
 
                         var amountChangeResult = await _bankAccountService.ChangeAmmountAsync(amount, new Guid(currentUserId), isPositive, bankAccountId);
-                        if (!amountChangeResult)
+                        if (amountChangeResult)
                         {
-                            throw new CodeErrorException();
+                            var transactionCommand = Translator.MapToCustom<AddTransactionViewModel, TransactionCommand>(addTransactionViewModel);
+
+                            transactionCommand.UserId = new Guid(currentUserId);
+                            var result = await _transactionService.CreateAsync(transactionCommand);
+                            TempData["SuccessMessage"] = "   تراکنش  با موفقیت ساخته شد";
+                            return LocalRedirect("/Member/index");
                         }
 
-                        var transactionCommand = Translator.MapToCustom<AddTransactionViewModel, TransactionCommand>(addTransactionViewModel);
 
-                        transactionCommand.UserId = new Guid(currentUserId);
-                        var result = await _transactionService.CreateAsync(transactionCommand);
-                        TempData["SuccessMessage"] = "   تراکنش  با موفقیت ساخته شد";
-                        return LocalRedirect("/Member/index");
                     }
 
-                    throw new CodeErrorException();
+
 
                 }
                 catch (Exception e)
@@ -134,14 +138,39 @@ namespace PersonalBankAccountManager.Controllers
 
         public IActionResult GetCategories(bool isPositive, Guid categoryId = new Guid())
         {
-            if (categoryId != Guid.Empty)
+            List<CategoryViewModel> categories = new List<CategoryViewModel>();
+            try
             {
-                ViewData["categoryId"] = categoryId;
+                if (categoryId != Guid.Empty)
+                {
+                    ViewData["categoryId"] = categoryId;
+                }
+
+                
+                //bring categories.. 
+                var transactionCategoryCommands = _categoryService.GetAllWithFilter<CategoryArgs>(isPositive);
+                var transactionCategories = Translator.ProjectToCustom<CategoryArgs, CategoryViewModel>(transactionCategoryCommands);
+                return PartialView("_GetCategories", transactionCategories);
             }
-            //bring categories.. 
-            var transactionCategoryCommands = _categoryService.GetAllWithFilter<CategoryArgs>(isPositive);
-            var transactionCategories = Translator.ProjectToCustom<CategoryArgs, CategoryViewModel>(transactionCategoryCommands);
-            return PartialView("_GetCategories", transactionCategories);
+            catch (Exception e)
+            {
+                _logger.LogError(e, "در اوردن کتگوری ها    مشکلی به وجود آمد");
+                //If error is in english
+                if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
+                    TempData["ErrorMessage"] = e.Message;
+
+            }
+
+            if (TempData["ErrorMessage"] == null)
+            {
+                TempData["ErrorMessage"] = "اوردن کتگوری   با مشکل مواجه شد";
+
+            }
+
+            return RedirectToAction("AddTransaction", new { errorMessage = TempData["ErrorMessage"].ToString() });
+
+
+
         }
         //Read
         [HttpGet]
@@ -165,7 +194,7 @@ namespace PersonalBankAccountManager.Controllers
                     var transactionWithoutDetails = await _translator.GetTransactionAsync(guid);
                     return View(transactionWithoutDetails);
                 }
-                throw new CodeErrorException();
+
             }
             catch (Exception e)
             {
@@ -200,7 +229,7 @@ namespace PersonalBankAccountManager.Controllers
                 }
 
 
-                throw new CodeErrorException();
+
 
             }
             catch (Exception e)
@@ -229,13 +258,13 @@ namespace PersonalBankAccountManager.Controllers
                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (!string.IsNullOrEmpty(currentUserId))
                 {
-                    var transactionResult = await _transactionService.GetByIdAsync<TransactionResult>(transactiontId, new Guid(currentUserId));
-                    var details = Translator.MapToCustom<TransactionResult, TransactionDetailsViewModel>(transactionResult);
+                    var transactionResult = await _transactionService.GetByIdAsync<TransactionArgs>(transactiontId, new Guid(currentUserId));
+                    var details = Translator.MapToCustom<TransactionArgs, TransactionDetailsViewModel>(transactionResult);
                     return PartialView("_GetTransactionDetails", details);
 
 
                 }
-                throw new CodeErrorException();
+
             }
             catch (Exception e)
             {
@@ -270,15 +299,15 @@ namespace PersonalBankAccountManager.Controllers
                 if (!string.IsNullOrEmpty(currentUserId))
                 {
                     var guid = new Guid(currentUserId);
-                    var transactionResult = await _transactionService.GetByIdAsync<TransactionResult>(transactionId, guid);
-                    var result = Translator.MapToCustom<TransactionResult, UpdateTransactionViewModel>(transactionResult);
+                    var transactionResult = await _transactionService.GetByIdAsync<TransactionArgs>(transactionId, guid);
+                    var result = Translator.MapToCustom<TransactionArgs, UpdateTransactionViewModel>(transactionResult);
 
                     return View(result);
 
 
                 }
 
-                throw new CodeErrorException();
+
 
             }
             catch (Exception e)
@@ -319,7 +348,7 @@ namespace PersonalBankAccountManager.Controllers
 
 
 
-                    throw new CodeErrorException();
+
                 }
                 catch (Exception e)
                 {

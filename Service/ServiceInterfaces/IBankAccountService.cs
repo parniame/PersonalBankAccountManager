@@ -1,4 +1,5 @@
 ﻿using Abstraction.Service;
+using DataTransferObject;
 using Models.Entities;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,6 @@ namespace Service.ServiceInterfaces
         Task<bool> DeleteAsync(Guid Id, Guid userId);
         Task<List<DTO>> GetAllAsync<DTO>(Guid userId) where DTO : class;
         Task<DTO?> GetByIdAsync<DTO>(Guid Id, Guid userId, bool readOnly = true) where DTO : class;
+        Task<bool> UpdateAsync(BankAccountCommand dto);
     }
 }

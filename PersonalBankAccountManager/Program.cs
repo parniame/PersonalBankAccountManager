@@ -25,9 +25,9 @@ namespace PersonalBankAccountManager
             var builder = WebApplication.CreateBuilder(args);
             var connectionString = builder.Configuration.GetConnectionString("PersonalBankAccountManagerDBContextConnection") ?? throw new InvalidOperationException("Connection string 'OnlineTicketAndReservationDbContextConnection' not found.");
             builder.Services.AddDbContext<DbContext, PersonalBankAccountManagerDBContext>();
-            //string HangFireConn = "Data Source=.;Initial Catalog=hangfiredb;TrustServerCertificate=True;Integrated Security=SSPI";
-            //builder.Services.AddHangfire(x => x.UseSqlServerStorage(HangFireConn));
-            //builder.Services.AddHangfireServer();
+            string HangFireConn = "Data Source=.;Initial Catalog=hangfiredb;TrustServerCertificate=True;Integrated Security=SSPI";
+            builder.Services.AddHangfire(x => x.UseSqlServerStorage(HangFireConn));
+            builder.Services.AddHangfireServer();
             builder.Services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<PersonalBankAccountManagerDBContext>().AddDefaultTokenProviders();
             builder.Services.AddHttpContextAccessor();
@@ -95,7 +95,7 @@ namespace PersonalBankAccountManager
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            //app.UseHangfireDashboard("/hangfire");
+            app.UseHangfireDashboard("/hangfire");
 
 
             app.UseHttpsRedirection();

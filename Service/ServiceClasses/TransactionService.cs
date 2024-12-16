@@ -1,5 +1,6 @@
 ﻿using Abstraction.Domain;
 using Abstraction.Service.Exceptions;
+using DataTransferObject;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Models.Entities;
@@ -33,6 +34,17 @@ namespace Service.ServiceClasses
         {
             return await _transactionRepository.DeleteListAsync(x => x.BankAccountId == bankAccountId); ;
         }
+        public async Task<bool> DeletePlannerAsync(Guid plannerId)
+        {
+            var transactions =  _transactionRepository.GetAll(x => x.TransactionPlanId == plannerId,false).ToList();
+            
+            foreach(var transaction in transactions)
+            {
+                transaction.TransactionPlanId = null;
+            }
+            await _transactionRepository.CommitAsync();
+            return true;
+        }
         public async Task<List<DTO>> GetAllAsync<DTO>(Guid userId)
         where DTO : class
         {
@@ -64,7 +76,7 @@ namespace Service.ServiceClasses
                     if (check.UserId == userId)
                     {
 
-
+                        
                         return await _transactionRepository.DeleteAsync(Id);
                     }
                     throw new CodeErrorException();
@@ -101,12 +113,15 @@ namespace Service.ServiceClasses
             }
             throw new ItemNotFoundException("تراکنش ");
         }
-        public Task<bool> UpdateAsync<DTO>(DTO dto)
-            where DTO : class
+        public async Task<bool> UpdateAsync(TransactionCommand dto)
+
         {
-            var entity = MapToEntity(dto);
-            entity.DateUpdated = DateTime.Now;
-            var list = new List<string>
+            var dtoCheck = await GetByIdAsync<TransactionCommand>(dto.Id);
+            if (dtoCheck.UserId == dto.UserId)
+            {
+                var entity = MapToEntity(dto);
+                entity.DateUpdated = DateTime.Now;
+                var list = new List<string>
             {
                 "UserId",
                 "Amount",
@@ -117,8 +132,14 @@ namespace Service.ServiceClasses
 
 
             };
-            return _transactionRepository.UpdateAsync(entity, list);
+                return await _transactionRepository.UpdateAsync(entity, list);
+            }
+
+            throw new CodeErrorException();
         }
 
+
     }
+
 }
+

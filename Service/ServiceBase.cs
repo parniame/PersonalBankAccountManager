@@ -75,7 +75,7 @@ namespace Service
             var propertyInfo = uniqueOBJ.GetType().GetProperty(nameOfUniqueProperty);
 
             var value = propertyInfo.GetValue(uniqueOBJ, null);
-            if (value == null)
+            if (propertyInfo == null)
             {// Will bw catched at Entity Service where it was called with incorrect property name
                 return -1;
             }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataTransferObject
 {
-    public class TransactionResult
+    public class TransactionArgs
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }

@@ -14,12 +14,23 @@ namespace PersonalBankAccountManager.Resources.Utilities
         private readonly IBankService _bankService;
         private readonly IBankAccountService _bankAccountService;
         private readonly ITransactionService _transactionService;
-        private dynamic BankAccountWithDetailsModel = new ExpandoObject();
-        public Translator(IBankService bankService, IBankAccountService bankAccountService, ITransactionService transactionService)
+        private readonly ITransactionPlanService _transactionPlanService;
+
+        public Translator(ITransactionPlanService transactionPlanService)
+        {
+            _transactionPlanService = transactionPlanService;
+        }
+
+        public Translator(IBankAccountService bankAccountService, ITransactionService transactionService)
+        {
+            _bankAccountService = bankAccountService;
+            _transactionService = transactionService;
+        }
+
+        public Translator(IBankService bankService, IBankAccountService bankAccountService)
         {
             _bankService = bankService;
             _bankAccountService = bankAccountService;
-            _transactionService = transactionService;
         }
 
         public static TResult MapToCustom<TSource, TResult>(TSource src)
@@ -39,6 +50,7 @@ namespace PersonalBankAccountManager.Resources.Utilities
             List<BankAccountViewModel> bankAccounts = ProjectToCustom<BankAccountArgs, BankAccountViewModel>(bankAccountCommands);
             return bankAccounts;
         }
+
         public async Task<List<BankViewModel>> GetBankViewModelsAsync()
         {
             //bring banks
@@ -55,12 +67,21 @@ namespace PersonalBankAccountManager.Resources.Utilities
             
             return bankAccounts;
         }
+        public async Task<List<TransactionPlanWithoutDetails>> TransactionPlanWithoutDetailsAsync(Guid userId)
+        {
+            //bring plans
+            var transactionResults = await _transactionPlanService.GetAllAsync<TransactionPlanResult>(userId);
+
+            List<TransactionPlanWithoutDetails> transactionPlanWithoutDetails = ProjectToCustom<TransactionPlanResult, TransactionPlanWithoutDetails>(transactionResults);
+
+            return transactionPlanWithoutDetails;
+        }
         public async Task<List<TransactionWithoutDetails>> GetTransactionAsync(Guid userId)
         {
             //bring transactions
-            var transactionResults = await _transactionService.GetAllAsync<TransactionResult>(userId);
+            var transactionResults = await _transactionService.GetAllAsync<TransactionArgs>(userId);
 
-            List<TransactionWithoutDetails> transactionWithoutDetails = ProjectToCustom<TransactionResult, TransactionWithoutDetails>(transactionResults);
+            List<TransactionWithoutDetails> transactionWithoutDetails = ProjectToCustom<TransactionArgs, TransactionWithoutDetails>(transactionResults);
 
             return transactionWithoutDetails;
         }

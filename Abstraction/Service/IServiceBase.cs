@@ -29,6 +29,5 @@ namespace Abstraction.Service
         Task<bool> UpdateAsync<DTO>(DTO dto) where DTO : class;
         Task<bool> DeleteAsync(Guid Id);
         
-        
     }
 }
