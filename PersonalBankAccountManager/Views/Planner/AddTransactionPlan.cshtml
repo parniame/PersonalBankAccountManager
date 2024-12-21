@@ -46,7 +46,10 @@
             <div class="row mb-3 required-field">
                 <label asp-for="TillThisDate" class="col-sm-2 col-form-label"> </label>
                 <div class="col-sm-10">
-                    <input asp-for="TillThisDate" class="form-control" id="inputText">
+                   
+                    <input type="text" class="form-control" id="date-planner" placeholder="تا   تاریخ">
+                    <input type="hidden" asp-for="TillThisDate" id="TillThisDate" name="TillThisDate" placeholder="مقدار میلادی تاریخ">
+
                 </div>
                 <span asp-validation-for="TillThisDate" class="text-danger"></span>
             </div>

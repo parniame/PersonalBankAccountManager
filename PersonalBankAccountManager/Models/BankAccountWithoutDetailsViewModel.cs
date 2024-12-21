@@ -13,6 +13,8 @@ namespace PersonalBankAccountManager.Models
         public decimal Amount { get; set; }
 
         public DateTime? DateCreated { get; set; }
+        public string? DateCreatedFarsi {  get; set; }
+        public string? DateUpdatedFarsi { get; set; }
         public DateTime? DateUpdated { get; set; }
 
 

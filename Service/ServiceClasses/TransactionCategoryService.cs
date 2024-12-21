@@ -24,5 +24,11 @@ namespace Service.ServiceClasses
 
             return categories.ProjectToType<DTO>().ToList();
         }
+        public List<string> GetAllNameWithFilter(bool isPositive)
+        {
+            var categories = _transactionCategoryRepository.GetAll<string>(x => x.Name,x => x.IsWithdrawl == isPositive,null, true);
+            return categories.ToList();
+            
+        }
     }
 }

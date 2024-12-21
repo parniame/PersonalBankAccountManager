@@ -4,6 +4,9 @@
     Layout = "_Layout";
 }
 @Html.Partial("_dataTableHeader");
+<style>
+
+</style>
 <div class="col-lg-12">
 
     <div class="card">
@@ -16,6 +19,7 @@
                 <thead>
                     <tr>
                         <th class="border-bottom-0"> اسم  پلنر </th>
+                        <th class="hidden">وضعیت</th>
                         <th class="border-bottom-0">مقدار</th>
                         <th class="border-bottom-0">نوع تراکنش</th>
                         <th class="border-bottom-0">محدوددیت زمانی </th>
@@ -28,12 +32,30 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr>
+                        @* <tr class="@(task.duedo >= DateTime.Now.AddHours(-1) ? "due-in-one-hour" : task.duedo >= DateTime.Now ? "overdue" : "")"> *@
+                        <tr class="@(item.IsPaid? "table-success" : item.IsOverdue? "table-danger" : "" )">
                             <td>
                                 @Html.DisplayFor(modelItem => item.Name)
                             </td>
 
+                            <td class="hidden">
+                                @{
+                                    if (item.IsPaid)
+                                    {
+                                        
+                                        <label>پرداخت شده</label>
+                                    }
+                                    else if (item.IsOverdue)
+                                    {
+                                        <label> زمان  پرداخت گذشته</label>
+                                    }
+                                    else
+                                    {
+                                        <label> هنوز پرداخت نشده</label>
+                                    }
 
+                                }
+                            </td>
 
                             <td>
 
@@ -43,21 +65,22 @@
 
                                 @Html.DisplayFor(modelItem => item.IsWithdrawl)
                             </td>
+                            <td class="ltr">
+
+                                @Html.DisplayFor(modelItem => item.TillThisDateFarsi)
+                            </td>
+                            <td data-order="@item.DateCreated" class="ltr">
+                                @Html.DisplayFor(modelItem => item.DateCreatedFarsi)
+                            </td>
+                            <td data-order="@item.DateUpdated" class="ltr">
+                                @Html.DisplayFor(modelItem => item.DateUpdatedFarsi)
+                            </td>
+
+
                             <td>
 
-                                @Html.DisplayFor(modelItem => item.TillThisDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.DateCreated)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.DateUpdated)
-                            </td>
-
-
-                            <td>
-                                <a type="button" class="btn  btn-outline-warning  btn-sm" asp-controller="Planner" asp-action="UpdateBankAccount" asp-route-plannerId="@item.Id">تغییر</a>|
-                                <button type="button" class="btn  btn-outline-info  btn-sm" onclick="ShowDetailsModalPlan('@item.Description')" href="">جزئیات</button>|
+                                <a type="button" class="btn  btn-outline-warning  btn-sm" asp-controller="Planner" asp-action="UpdatePlanner" asp-route-plannerId="@item.Id">تغییر</a>|
+                                <button type="button" class="btn  btn-outline-info  btn-sm" onclick="ShowDetailsModal('@item.Id','@item.IsPaid')" href="">جزئیات</button>|
                                 <button type="button" class="btn btn-danger  btn-sm" onclick="ShowDeleteModal('@item.Id')" href="">حذف</button>
 
                             </td>
@@ -66,15 +89,20 @@
 
                 </tbody>
                 <tfoot>
-                <th class="border-bottom-0"> اسم  پلنر </th>
-                <th class="border-bottom-0">مقدار</th>
-                <th class="border-bottom-0">نوع تراکنش</th>
-                <th class="border-bottom-0">محدوددیت زمانی </th>
-                <th class="border-bottom-0">زمان ساخت</th>
-                <th class="border-bottom-0">زمان تغییر</th>
-                <th class="border-bottom-0">اعمال</th>
+                    <tr>
+                        <th class="border-bottom-0"> اسم  پلنر </th>
+                        <th class="hidden">وضعیت</th>
+                        <th class="border-bottom-0">مقدار</th>
+                        <th class="border-bottom-0">نوع تراکنش</th>
+                        <th class="border-bottom-0 ltr">محدوددیت زمانی </th>
+                        <th class="border-bottom-0 ltr">زمان ساخت</th>
+                        <th class="border-bottom-0 ltr">زمان تغییر</th>
+                        <th class="border-bottom-0">اعمال</th>
+                    </tr>
+                    
                 </tfoot>
             </table>
+
             <!-- start: Delete Planner Modal -->
             <div class="modal fade delete-modal" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -109,31 +137,44 @@
             <!-- /.modal -->
             <!-- start:  Planner`s Details Modal -->
             <div class="modal fade " id="details-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header">
 
-                            <h3 class="modal-title">جزئیات حساب بانکی</h3>
+                            <h3 class="modal-title">جزئیات پلنر </h3>
                             <button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
                         </div>
                         <div class="modal-body">
                             <p>
                                 اگر این بخش را پر کرده باشید،اطلاعات نمایش داده میشود.
-                                میتوانید این اطلاعات را با تغییر دادن حساب بانکی در صفحه قبل وارد نمایید.
+                                اگر پرداخت شده واطلاعات تراکنش نیست،تراکنش پاک شده است
+                                میتوانید این اطلاعات را با تغییر دادن پلنر در صفحه قبل وارد نمایید.
                             </p>
-                            <table class="table datatable table-hover table-bordered " >
+                            <table class="table datatable table-hover table-bordered scoll-tree ">
                                 <thead>
                                     <tr>
-                                        
-                                        <th class="border-bottom-0">توضیحات</th>
+
+                                        <th class="border-bottom-0 ">توضیحات</th>
+                                        <th class="border-bottom-0 hidden_row">نام تراکنش</th>
+                                        <th class="border-bottom-0 hidden_row">نام حساب بانکی</th>
+                                        <th class="border-bottom-0 hidden_row">نام  دسته بندی</th>
+                                        <th class="border-bottom-0 hidden_row">زمان  پرداخت توسط تراکنش</th>
+                                        <th class="border-bottom-0 hidden_row">زمان اپدیت تراکنش</th>
+                                        <th class="border-bottom-0 hidden_row">یادداشت تراکنش</th>
+
 
 
                                     </tr>
                                 </thead>
                                 <tbody id="details">
-                                    <td id="description"></td>
+                                    @{
+                                        await Html.PartialAsync("_GetPlannerDetails", new TransactionPlanDtailsViewModel());
+                                    }
                                 </tbody>
                             </table>
+                            
+                            <button class="detailButton hidden" onclick="showHideRow();"> جزئیات تراکنش</button>
+
                         </div>
                         <!--/modal-body-collapse -->
                         <div class="modal-footer">
@@ -146,6 +187,7 @@
                     <!-- /.modal-content -->
                 </div>
                 <!-- /.modal-dialog -->
+                
             </div>
             <!-- /.modal -->
             <!--Get Details from action -->
@@ -158,6 +200,7 @@
     </div>
 
 </div>
+
 @Html.Partial("_dataTableFooter");
 @section Scripts {
     @{

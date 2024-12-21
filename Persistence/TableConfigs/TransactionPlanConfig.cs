@@ -20,7 +20,7 @@ namespace Persistence.TableConfigs
             base.Configure(builder);
             
             builder.ToTable(nameof(TransactionPlan));
-            builder.Property(x => x.TillThisDate).HasColumnType(SqlDbType.SmallDateTime.ToString()).IsRequired();
+            builder.Property(x => x.TillThisDate).HasColumnType(SqlDbType.DateTime.ToString()).IsRequired();
             builder.Property(x => x.Name).HasColumnName("Transaction Plan Name").IsRequired();
             builder.Property(x => x.Amount).IsRequired();
 

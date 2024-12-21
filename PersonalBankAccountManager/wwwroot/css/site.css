@@ -30,6 +30,12 @@ body {
     object-fit: contain;
     
 }
+.transactionImage {
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+    object-fit: contain;
+}
 .modal-footer {
     justify-content: flex-start !important;
 }
@@ -37,4 +43,7 @@ body {
 .required-field > legend::after {
     content: "*";
     color: red;
+}
+.hidden_row ,.hidden{
+    display: none;
 }

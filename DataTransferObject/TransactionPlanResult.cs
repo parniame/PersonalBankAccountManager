@@ -13,6 +13,7 @@ namespace DataTransferObject
         public string Name { get; set; }
         public decimal Amount { get; set; }
         public bool IsWithdrawl { get; set; }
+        public bool IsPaid { get; set; }
         public DateTime TillThisDate { get; set; }
         public DateTime? DateCreated { get; set; }
         public DateTime? DateUpdated { get; set; }

@@ -1,10 +1,33 @@
-﻿@model string
-<tr>
-    
-
-    <td>
-        @Model
+﻿@model TransactionPlanDtailsViewModel
+<tr >
+    <td  >
+        @Html.DisplayFor(modelItem => modelItem.Description)
+    </td>
+    <td class="hidden_row">
+        @if(Model.Title == null)
+        {
+            <label>تراکنش پاک شده</label>
+        }
+        @Html.DisplayFor(modelItem => modelItem.Title)
+    </td>
+    <td class="hidden_row">
+        @Html.DisplayFor(modelItem => modelItem.BankAccount.Title)
+    </td>
+    <td class="hidden_row">
+        @Html.DisplayFor(modelItem => modelItem.CategoryName)
     </td>
     
+    <td class="hidden_row ltr">
+        @Html.DisplayFor(modelItem => modelItem.TransactionDateCreatedFarsi)
+    </td>
+
+    <td class="hidden_row ltr">
+        @Html.DisplayFor(modelItem => modelItem.DateUpdatedFarsi)
+    </td>
+    <td class="hidden_row">
+        @Html.DisplayFor(modelItem => modelItem.TransactionDescription)
+    </td>
+
 
 <tr>
+    

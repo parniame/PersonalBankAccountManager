@@ -8,6 +8,7 @@ namespace DataTransferObject
 {
     public class PictureArgs
     {
+        public Guid Id { get; set; }
         public string FileAddress { get;  set; }
     }
 }

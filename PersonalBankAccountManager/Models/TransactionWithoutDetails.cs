@@ -6,6 +6,8 @@
         public string Title { get; set; }
         public decimal Amount { get; set; }
         public string IsWithdrawl { get; set; }
+        public string? DateCreatedFarsi { get; set; }
+        public string? DateUpdatedFarsi { get; set; }
         public DateTime? DateCreated { get; set; }
         public DateTime? DateUpdated { get; set; }
         public BankAccountViewModel BankAccount { get; set; }

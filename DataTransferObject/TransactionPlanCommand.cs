@@ -9,6 +9,7 @@ namespace DataTransferObject
     public class TransactionPlanCommand
     {
        
+        public Guid Id { get; set; }
         public string UniqueName { get; set; }
         public decimal Amount { get; set; }
         public bool IsWithdrawl { get; set; }

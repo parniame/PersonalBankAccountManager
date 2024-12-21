@@ -1,6 +1,6 @@
 ﻿
 using Abstraction.Domain;
-using Domain;
+
 //using Domain.Abstraction;
 using System;
 using System.Collections.Generic;
@@ -20,9 +20,6 @@ namespace Models.Entities
         public User? Creator { get; set; }
         public User? Updator { get; set; }
 
-        protected override void Validate()
-        {
-            throw new NotImplementedException();
-        }
+      
     }
 }

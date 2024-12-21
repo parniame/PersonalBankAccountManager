@@ -1,0 +1,170 @@
+﻿@model dynamic;
+@{
+    ViewData["Title"] = "AddBankAccount";
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <form action="Compare" method="post">
+
+
+        <input type="text" class="form-control" id="date-min" placeholder="  از تاریخ">
+        <input type="hidden" id="from" name="from" placeholder="مقدار میلادی تاریخ">
+
+        <input type="text" class="form-control" id="date-max" placeholder=" تا تاریخ ">
+        <input type="hidden" id="to" name="to" placeholder="مقدار میلادی تاریخ">
+        <input class="btn btn-primary" type="submit" value="تایید" />
+    </form>
+    <h1>مقادیر</h1>
+    <div class="row">
+        <div class="col-sm">
+            <table class="table  table-hover table-bordered " id="transaction1">
+                <thead>
+                    <tr>
+                        <td >&nbsp;</td>
+                        <th class="border-bottom-0"> کلی </th>
+                        <th class="border-bottom-0"> واریزی</th>
+                        <th class="border-bottom-0"> برداشتی</th>
+
+
+
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <th>
+                            مقدار
+                        </th>
+                        <td>
+                            @Model.CompareViewModel.TotalAmount
+
+                        </td>
+                        
+                        <td>
+                            @Model.CompareViewModel.AmountIn
+
+                        </td>
+                        <td>
+                            @Model.CompareViewModel.AmountOut
+
+                        </td>
+
+
+
+
+                    </tr>
+                    <tr>
+                        <th>
+                            تعداد
+                        </th>
+                        <td>
+                            @Model.CompareViewModel.CountAll
+
+                        </td>
+
+                        <td>
+                            @Model.CompareViewModel.CountAmountIn
+
+                        </td>
+                        <td>
+                            @Model.CompareViewModel.CountAmountOut
+
+                        </td>
+
+
+
+
+                    </tr>
+
+
+                </tbody>
+
+            </table>
+        </div>
+
+
+        <div class="col-sm">
+            <table class="table  table-hover table-bordered " >
+                <thead>
+                    <tr>
+                        <th class="border-bottom-0">
+                            اسم تراکنش
+                        </th>
+                        <th class="border-bottom-0">
+                            حساب بانکی
+                        </th>
+                        <th class="border-bottom-0">مقدار</th>
+                        <th class="border-bottom-0">نوع تراکنش</th>
+                        <th class="border-bottom-0">زمان ساخت</th>
+                        
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (dynamic item in Model.List)
+                    {
+                        <tr>
+                            <td>
+                                 @item.Title
+                            </td>
+
+                            <td>
+
+                                @{
+                                    string str = null;
+
+
+
+                                    if (item.BankAccount.URL != null)
+                                    {
+                                        var fullAddress = item.BankAccount.URL; //C:\Users\10\source\repos\PersonalBankAccountManager\PersonalBankAccountManager\wwwroot\images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                                        var fileAddress = fullAddress.Split("wwwroot\\", 2)[1];//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                                        var normalizedFileAddress = fileAddress.Replace("\\", "/");//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                                        str = "../" + normalizedFileAddress;
+
+                                        <img src="@str" class="bankImage" alt="عکس بانک">
+
+                                    }
+                                    else
+                                    {
+                                        <label>@item.BankAccount.Title</label>
+                                    }
+
+
+                                }
+
+
+
+
+
+                            </td>
+
+                            <td>
+
+                                @item.Amount
+                            </td>
+                            <td>
+
+                                @item.IsWithdrawl
+                            </td>
+
+                            <td data-search="@item.DateCreated" ,data-order="@item.DateCreated">
+                                @item.DateCreatedFarsi
+                            </td>
+                           
+
+
+                            
+                        </tr>
+                    }
+
+                </tbody>
+                
+            </table>
+        </div>
+
+    </div>
+</div>

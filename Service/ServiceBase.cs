@@ -35,19 +35,19 @@ namespace Service
             entity.DateUpdated = DateTime.Now;
             return _baseRepository.UpdateAsync(entity);
         }
-        public virtual async Task<bool> DeleteAsync(Guid Id)
-        {
-            var check = await _baseRepository.GetByIdAsync(Id);
-            if (check == null)
-            {
-                throw new ItemNotFoundException("آیدی");
-            }
-            return await _baseRepository.DeleteAsync(Id);
-        }
+        //public virtual async Task<bool> DeleteAsync(Guid Id)
+        //{
+        //    var check = await _baseRepository.GetByIdAsync(Id);
+        //    if (check == null)
+        //    {
+        //        throw new ItemNotFoundException("آیدی");
+        //    }
+        //    return await _baseRepository.DeleteAsync(Id);
+        //}
         public virtual async Task<DTO?> GetByIdAsync<DTO>(Guid Id, bool readOnly = true)
             where DTO : class
         {
-            var entity = await _baseRepository.GetByIdAsync(Id, false);
+            var entity = await _baseRepository.GetByIdAsync(Id, readOnly);
             return entity == null ? null : MapToDTO<DTO>(entity);
 
         }
@@ -74,7 +74,7 @@ namespace Service
             //Validate If This Property Exist
             var propertyInfo = uniqueOBJ.GetType().GetProperty(nameOfUniqueProperty);
 
-            var value = propertyInfo.GetValue(uniqueOBJ, null);
+            
             if (propertyInfo == null)
             {// Will bw catched at Entity Service where it was called with incorrect property name
                 return -1;
@@ -82,8 +82,13 @@ namespace Service
 
 
             //Validate If This Property Was Used Before.
+            var value = propertyInfo.GetValue(uniqueOBJ, null);
+            if (value == null)
+            {
+                return 1;
+            }
             var param = Expression.Parameter(typeof(Entity));
-
+            
             var condition = Expression.Lambda<Func<Entity, bool>>
                 (Expression.Equal(
             Expression.Property(param, nameOfUniqueProperty),

@@ -13,6 +13,7 @@ namespace Models.Entities
         public string Name { get; set; }
         public decimal Amount { get; set; }
         public bool IsWithdrawl { get; set; }
+        public bool IsPaid { get; set; }
         public DateTime TillThisDate { get; set; }
         public string? Description { get; set; }
         public Guid UserId { get; set; }
@@ -20,10 +21,7 @@ namespace Models.Entities
         public User User { get; set; }
         public Transaction? Transaction { get; set; }
 
-        protected override void Validate()
-        {
-            throw new NotImplementedException();
-        }
+        
 
     }
 }

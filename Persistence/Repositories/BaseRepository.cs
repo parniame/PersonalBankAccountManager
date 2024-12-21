@@ -1,13 +1,7 @@
 ﻿using Abstraction.Domain;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using Abstraction.Service.Exceptions;
 
 namespace Persistence.Repositories
 {
@@ -31,14 +25,14 @@ namespace Persistence.Repositories
             return noTraking ? query.AsNoTracking() : query;
 
         }
-        
-        //public IQueryable<TResult> GetAll<TResult>(Expression<Func<TSource, TResult>> selector, Expression<Func<TSource, bool>> predicate = null, Func<IQueryable<TSource>, IIncludableQueryable<TSource, object>> include = null, bool noTracking = true)
-        //{
-        //    IQueryable<TSource> query = noTracking ? _entitySet.AsNoTracking() : _entitySet.AsQueryable();
-        //    query = predicate == null ? query : query.Where(predicate);
-        //    query = include == null ? query : include(query);
-        //    return query.Select<TSource, TResult>(selector);
-        //}
+
+        public IQueryable<TResult> GetAll<TResult>(Expression<Func<TSource, TResult>> selector, Expression<Func<TSource, bool>> predicate = null, Func<IQueryable<TSource>, IIncludableQueryable<TSource, object>> include = null, bool noTracking = true)
+        {
+            IQueryable<TSource> query = noTracking ? _entitySet.AsNoTracking() : _entitySet.AsQueryable();
+            query = predicate == null ? query : query.Where(predicate);
+            query = include == null ? query : include(query);
+            return query.Select<TSource, TResult>(selector);
+        }
         public async Task<TSource?> GetByIdAsync(Guid id, bool noTracking = true)
         {
             

@@ -8,6 +8,7 @@ namespace DataTransferObject
 {
     public class UserResult
     {
+        public Guid Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateOnly? DateOfBirth { get; set; }
@@ -18,7 +19,6 @@ namespace DataTransferObject
         public string RoleName { get; set; }
         public DateTime? DateCreated { get; set; }
         public string? CreatorName { get; set; }
-        
         public DateTime? DateUpdated { get; set; }
         public string? UpdatorName { get; set; }
         

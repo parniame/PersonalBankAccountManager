@@ -1,0 +1,84 @@
+﻿@model UpdateTransactionPlanViewModel;
+@{
+    ViewData["Title"] = "AddTransactionPlan";
+    Layout = "_Layout";
+}
+<link href="~/dist/mds.bs.datetimepicker.style.css" rel="stylesheet" />
+<div class="card center">
+    <div class="card-body">
+        <h5 class="card-title"> تغییر پلنر تراکنش</h5>
+
+        <form asp-action="UpdatePlannerPost" asp-controller="Planner">
+            <input asp-for="IsPaid" type="hidden">
+            <input asp-for="Id" type="hidden">
+            <input asp-for="OldDateTime" value="@Model.TillThisDate" type="hidden">
+            <div class="row mb-3 required-field">
+                <label asp-for="UniqueName" class="col-sm-2 col-form-label"> </label>
+                <div class="col-sm-10">
+                    <input asp-for="UniqueName" class="form-control" id="inputText">
+                </div>
+                <span asp-validation-for="UniqueName" class="text-danger"></span>
+            </div>
+            <div class="row mb-3 required-field">
+                <label asp-for="Amount" class="col-auto col-form-label"> </label>
+                <div class="col-auto">
+                    <input asp-for="Amount" class="form-control @(Model.IsPaid? "disabled" : "" )" id="inputText">
+                </div>
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+            <fieldset class="row mb-3 required-field">
+                <legend class="col-form-label col-sm-2 pt-0">نوع دسته بندی</legend>
+                <div class="col-sm-2">
+                    <div class="form-check">
+                        <input class="form-check-input @(Model.IsPaid? "disabled" : "" ) " type="radio" asp-for="IsWithdrawl" name="IsWithdrawl" id="gridRadios1" value="False" asp-for="IsWithdrawl">
+                        <label class="form-check-label" asp-for="IsWithdrawl">
+                            برداشت
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input @(Model.IsPaid? "disabled" : "" ) " asp-for="IsWithdrawl" type="radio" name="IsWithdrawl" id="gridRadios2" value="True" asp-for="IsWithdrawl">
+                        <label class="form-check-label" asp-for="IsWithdrawl">
+                            واریز
+                        </label>
+                    </div>
+                    <span asp-validation-for="IsWithdrawl" class="text-danger"></span>
+
+                </div>
+            </fieldset>
+            <div class="row mb-3 required-field">
+                <label asp-for="TillThisDate" class="col-sm-2 col-form-label"> </label>
+                <div class="col-sm-10">
+                    <input asp-for="TillThisDate" type="hidden" class="form-control"  value="@Model.TillThisDate">
+                    <input type="text" class="form-control @(Model.IsPaid? "disabled" : "" )" id="date-planner" placeholder="@Model.TillThisDateFarsi">
+
+
+                </div>
+                <span asp-validation-for="TillThisDate" class="text-danger"></span>
+            </div>
+            <div class="row mb-3 ">
+                <label asp-for="Description" class="col-sm-2 col-form-label"> </label>
+                <div class="col-sm-10">
+                    <input asp-for="Description" class="form-control" id="inputText">
+                </div>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">ثبت</button>
+                <button type="reset" class="btn btn-secondary">پاک کردن</button>
+            </div>
+
+
+
+
+        </form><!-- End Horizontal Form -->
+
+
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+@Html.Partial("_Footer");

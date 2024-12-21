@@ -1,12 +1,4 @@
-﻿
-using Abstraction.Domain;
-using Domain;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace Models.Entities
 {
@@ -23,9 +15,7 @@ namespace Models.Entities
         public Guid? UpdatorID { get; set; }
         public User? Updator { get; set; }
        
-        //public virtual ICollection<BankAccount> BankAccounts { get; set; } = new List<BankAccount>();
-        //public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
-        //public virtual ICollection<TransactionPlan> TransactionPlans { get; set; } = new List<TransactionPlan>();
+        
 
     }
 }

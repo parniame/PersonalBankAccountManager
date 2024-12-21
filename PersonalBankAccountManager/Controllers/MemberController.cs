@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using PersonalBankAccountManager.Models;
 using PersonalBankAccountManager.Resources.Utilities;
 using Service.ServiceInterfaces;
+using Shared;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 
@@ -16,29 +17,30 @@ namespace PersonalBankAccountManager.Controllers
     [Authorize(Roles = "Member")]
     public class MemberController : Controller
     {
-       
+
         private readonly ILogger<MemberController> _logger;
+        private readonly ITransactionService _transactionService;
 
-        public MemberController( ILogger<MemberController> logger)
+        public MemberController(ILogger<MemberController> logger, ITransactionService transactionService)
         {
-           
+
             _logger = logger;
-            
+            _transactionService = transactionService;
         }
 
-        public IActionResult Index(string? errorMessage)
+        public async Task<IActionResult> Index(string? errorMessage)
         {
-            var selectedDate = DateTime.Now.AddSeconds(30);
-            var scheduleControler = new ScheduleController();
-            scheduleControler.CreatePlannerTimer("random", selectedDate);
-            if (errorMessage != null)
+
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!string.IsNullOrEmpty(currentUserId))
             {
-                TempData["ErrorMessage"] = errorMessage;
+                var test = await _transactionService.GetTransactionWithCategoriesChartAsync(new Guid (currentUserId));
             }
-            return View();
+            return View("Charts");
         }
 
-    
+
+
 
     }
 }

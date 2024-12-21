@@ -1,5 +1,7 @@
-﻿using Abstraction.Service.Exceptions;
+﻿using Abstraction.Domain;
+using Abstraction.Service.Exceptions;
 using DataTransferObject;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -19,24 +21,43 @@ namespace Service.ServiceClasses
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IBaseRepository<TransactionPlan> _planRepo;
+        private readonly IBaseRepository<Transaction> _transcationRepo;
+        private readonly IBaseRepository<BankAccount> _bankAccountRepo;
 
-        public UserService(UserManager<User> userManager, SignInManager<User> signInManager)
+        public UserService(UserManager<User> userManager, SignInManager<User> signInManager, IBaseRepository<TransactionPlan> baseRepository, IBaseRepository<Transaction> transcationRepo, IBaseRepository<BankAccount> bankAccountRepo)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _planRepo = baseRepository;
+            _transcationRepo = transcationRepo;
+            _bankAccountRepo = bankAccountRepo;
         }
-        
 
-        public async Task<List<UserResult>> GetAllUser()
+
+        public async Task<List<UserResult>> GetAllUser(Guid userId)
         {
-            List<User> data = await _userManager.Users.ToListAsync();
-            List<UserResult> result = data.Any() ? data.Select(TranslateToDTO<UserResult>).ToList() : new List<UserResult>();
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                throw new ItemNotFoundException("کاربر ");
+            List<User> users = await _userManager.Users.Where(x => x.Id != userId).Include(x => x.Creator).Include(x => x.Updator).ToListAsync();
+            List<UserResult> result = new List<UserResult>();
+            if (users.Any())
+            {
+                foreach (User data in users)
+                {
+                    var dto = await TranslateToDTO(data);
+                    result.Add(dto);
+                }
+
+            }
             return result;
 
         }
         public async Task<User?> GetCurrentUserAsync(string userId)
         {
-            var user =  await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId);
+
             return user;
         }
         public async Task<bool> LoginAsync(LoginCommand command)
@@ -59,7 +80,7 @@ namespace Service.ServiceClasses
 
         public async Task<bool> RegisterAsync(RegisterCommand command, string userRole)
         {
-            
+
             var duplicateUser = await _userManager.FindByNameAsync(command.UserName);
             if (duplicateUser != null)
                 throw new DuplicateUserNameException(command.UserName);
@@ -69,7 +90,7 @@ namespace Service.ServiceClasses
 
             var registerResult = await _userManager.CreateAsync(user, command.Password);
             await _userManager.AddToRoleAsync(user, userRole);
-            
+
 
 
             return registerResult.Succeeded;
@@ -83,10 +104,47 @@ namespace Service.ServiceClasses
 
             await _signInManager.SignOutAsync();
         }
-
-        public DTO TranslateToDTO<DTO>(User entity)
+        public async Task DeleteUserAsync(Guid userId)
         {
-            return entity.Adapt<DTO>();
+            
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                throw new ItemNotFoundException("کاربر ");
+
+            //delete transactions+ bankAccount + planners
+            var result1 = await _transcationRepo.DeleteListAsync(x => x.UserId == userId);
+            if (result1)
+            {
+                var result2 = await _planRepo.DeleteListAsync(x => x.UserId == userId);
+                if (result2)
+                {
+                    var result3 = await _bankAccountRepo.DeleteListAsync(x => x.UserId == userId);
+                    if (result3)
+                    {
+                        await _userManager.DeleteAsync(user);
+                        return;
+                    }
+                
+                }
+                
+
+
+            }
+            throw new CodeErrorException();
+
+
+
+            
+
+
+
+        }
+
+        public async Task<UserResult> TranslateToDTO(User entity)
+        {
+            var dto = entity.Adapt<UserResult>();
+            dto.RoleName = (await _userManager.GetRolesAsync(entity))[0];
+            return dto;
         }
 
         public User TranslateToEntity<DTO>(DTO dto)

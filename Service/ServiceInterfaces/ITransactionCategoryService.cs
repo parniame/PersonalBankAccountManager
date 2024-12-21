@@ -10,6 +10,7 @@ namespace Service.ServiceInterfaces
 {
     public interface ITransactionCategoryService : IServiceBase<TransactionCategory>
     {
+        List<string> GetAllNameWithFilter(bool isPositive);
         List<DTO> GetAllWithFilter<DTO>(bool isPositive);
         
     }

@@ -22,21 +22,6 @@ namespace Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entities.PictureTransaction", b =>
-                {
-                    b.Property<Guid>("PictureId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TransactionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("PictureId", "TransactionId");
-
-                    b.HasIndex("TransactionId");
-
-                    b.ToTable("PictureTransaction");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
@@ -149,15 +134,11 @@ namespace Persistence.Migrations
                     b.Property<Guid?>("CreatorID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("DateCreated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValue(new DateTime(2024, 12, 2, 23, 44, 13, 918, DateTimeKind.Local).AddTicks(2306));
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime");
 
-                    b.Property<DateTime?>("DateUpdated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValue(new DateTime(2024, 12, 2, 23, 44, 13, 918, DateTimeKind.Local).AddTicks(2664));
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -195,15 +176,11 @@ namespace Persistence.Migrations
                     b.Property<string>("CardNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("DateCreated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValue(new DateTime(2024, 12, 2, 23, 44, 13, 917, DateTimeKind.Local).AddTicks(8076));
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime");
 
-                    b.Property<DateTime?>("DateUpdated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValue(new DateTime(2024, 12, 2, 23, 44, 13, 917, DateTimeKind.Local).AddTicks(8490));
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Description")
                         .HasMaxLength(250)
@@ -295,15 +272,11 @@ namespace Persistence.Migrations
                     b.Property<Guid?>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("DateCreated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValue(new DateTime(2024, 12, 2, 23, 44, 13, 920, DateTimeKind.Local).AddTicks(2212));
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime");
 
-                    b.Property<DateTime?>("DateUpdated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValue(new DateTime(2024, 12, 2, 23, 44, 13, 920, DateTimeKind.Local).AddTicks(2631));
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Description")
                         .HasMaxLength(250)
@@ -312,7 +285,7 @@ namespace Persistence.Migrations
                     b.Property<bool>("IsWithdrawl")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("SecondBankAccountId")
+                    b.Property<Guid?>("PictureId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Title")
@@ -331,7 +304,9 @@ namespace Persistence.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("SecondBankAccountId");
+                    b.HasIndex("PictureId")
+                        .IsUnique()
+                        .HasFilter("[PictureId] IS NOT NULL");
 
                     b.HasIndex("TransactionPlanId")
                         .IsUnique()
@@ -351,15 +326,11 @@ namespace Persistence.Migrations
                     b.Property<Guid?>("CreatorID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("DateCreated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValue(new DateTime(2024, 12, 2, 23, 44, 13, 918, DateTimeKind.Local).AddTicks(4590));
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime");
 
-                    b.Property<DateTime?>("DateUpdated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValue(new DateTime(2024, 12, 2, 23, 44, 13, 918, DateTimeKind.Local).AddTicks(4934));
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime");
 
                     b.Property<bool>("IsWithdrawl")
                         .HasColumnType("bit");
@@ -389,19 +360,18 @@ namespace Persistence.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime?>("DateCreated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValue(new DateTime(2024, 12, 2, 23, 44, 13, 923, DateTimeKind.Local).AddTicks(2038));
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime");
 
-                    b.Property<DateTime?>("DateUpdated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("DateTime")
-                        .HasDefaultValue(new DateTime(2024, 12, 2, 23, 44, 13, 923, DateTimeKind.Local).AddTicks(2391));
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Description")
                         .HasMaxLength(250)
                         .HasColumnType("NVarChar");
+
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsWithdrawl")
                         .HasColumnType("bit");
@@ -412,7 +382,7 @@ namespace Persistence.Migrations
                         .HasColumnName("Transaction Plan Name");
 
                     b.Property<DateTime>("TillThisDate")
-                        .HasColumnType("SmallDateTime");
+                        .HasColumnType("DateTime");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -441,19 +411,13 @@ namespace Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DateCreated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2024, 12, 2, 23, 44, 13, 923, DateTimeKind.Local).AddTicks(5491));
+                        .HasColumnType("datetime");
 
                     b.Property<DateTime?>("DateOfBirth")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2024, 12, 2, 23, 44, 13, 923, DateTimeKind.Local).AddTicks(5076));
+                        .HasColumnType("datetime");
 
                     b.Property<DateTime?>("DateUpdated")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValue(new DateTime(2024, 12, 2, 23, 44, 13, 923, DateTimeKind.Local).AddTicks(5688));
+                        .HasColumnType("datetime");
 
                     b.Property<string>("Email")
                         .HasMaxLength(320)
@@ -528,21 +492,6 @@ namespace Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("User", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Entities.PictureTransaction", b =>
-                {
-                    b.HasOne("Models.Entities.Picture", null)
-                        .WithMany()
-                        .HasForeignKey("PictureId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Models.Entities.Transaction", null)
-                        .WithMany()
-                        .HasForeignKey("TransactionId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -648,17 +597,17 @@ namespace Persistence.Migrations
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("Models.Entities.BankAccount", "SecondBankAccount")
-                        .WithMany()
-                        .HasForeignKey("SecondBankAccountId")
+                    b.HasOne("Models.Entities.Picture", "TransActionDocument")
+                        .WithOne()
+                        .HasForeignKey("Models.Entities.Transaction", "PictureId")
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Models.Entities.TransactionPlan", "TransactionPlan")
-                        .WithOne()
+                        .WithOne("Transaction")
                         .HasForeignKey("Models.Entities.Transaction", "TransactionPlanId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("Models.Entities.User", "User")
+                    b.HasOne("Models.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -668,11 +617,9 @@ namespace Persistence.Migrations
 
                     b.Navigation("Category");
 
-                    b.Navigation("SecondBankAccount");
+                    b.Navigation("TransActionDocument");
 
                     b.Navigation("TransactionPlan");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Models.Entities.TransactionCategory", b =>
@@ -718,6 +665,11 @@ namespace Persistence.Migrations
                     b.Navigation("Creator");
 
                     b.Navigation("Updator");
+                });
+
+            modelBuilder.Entity("Models.Entities.TransactionPlan", b =>
+                {
+                    b.Navigation("Transaction");
                 });
 #pragma warning restore 612, 618
         }

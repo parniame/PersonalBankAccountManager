@@ -4,28 +4,15 @@
     Layout = "_Layout";
 }
 @Html.Partial("_dataTableHeader");
+
 <div class="col-lg-12">
 
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">تراکنش ها</h5>
 
-            
-           @*  <table border="0" cellspacing="5" cellpadding="5">
-                
-                <tbody>
-                    <p>فیلتر بر اساس روز ساخت</p>
-                    <tr>
-                        <td>از تاریخ</td>
-                        <td><input type="text" id="min" name="min"></td>
-                    </tr>
-                    <tr>
-                        <td>تا تاریخ</td>
-                        <td><input type="text" id="max" name="max"></td>
-                    </tr>
-                </tbody>
-            </table>
- *@
+
+
             <table class="table  table-hover table-bordered " id="transactionTable">
                 <thead>
                     <tr>
@@ -40,7 +27,7 @@
                         <th class="border-bottom-0">زمان ساخت</th>
                         <th class="border-bottom-0">زمان تغییر</th>
                         <th class="border-bottom-0">اعمال</th>
-                        
+
 
                     </tr>
                 </thead>
@@ -53,33 +40,7 @@
                             </td>
 
                             <td>
-
-                                @{
-                                    string str = null;
-                                   
-                                        
-
-                                            if (item.BankAccount.URL != null)
-                                            {
-                                                var fullAddress = item.BankAccount.URL; //C:\Users\10\source\repos\PersonalBankAccountManager\PersonalBankAccountManager\wwwroot\images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
-                                                var fileAddress = fullAddress.Split("wwwroot\\", 2)[1];//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
-                                                var normalizedFileAddress = fileAddress.Replace("\\", "/");//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
-                                                str = "../" + normalizedFileAddress;
-
-                                                <img src="@str" class="bankImage" alt="عکس بانک">
-
-                                            }
-                                            else
-                                            {
-                                                <label>@item.BankAccount.Title</label>
-                                            }
-                                        
-                                    
-                                }
-
-
-
-
+                                @Html.DisplayFor(modelItem => item.BankAccount.Title)
 
                             </td>
 
@@ -92,11 +53,11 @@
                                 @Html.DisplayFor(modelItem => item.IsWithdrawl)
                             </td>
 
-                            <td>
-                                @Html.DisplayFor(modelItem => item.DateCreated)
+                            <td data-order="@item.DateCreated" class="ltr">
+                                @Html.DisplayFor(modelItem => item.DateCreatedFarsi)
                             </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.DateUpdated)
+                            <td data-order="@item.DateUpdated" class="ltr">
+                                @Html.DisplayFor(modelItem => item.DateUpdatedFarsi)
                             </td>
 
 
@@ -111,13 +72,17 @@
 
                 </tbody>
                 <tfoot>
-                <th class="border-bottom-0"> اسم تراکن</th>
-                <th class="border-bottom-0"> حساب بانکی</th>
-                <th class="border-bottom-0">مقدار</th>
-                <th class="border-bottom-0">نوع تراکنش</th>
-                <th class="border-bottom-0">زمان ساخت</th>
-                <th class="border-bottom-0">زمان تغییر</th>
-                <th class="border-bottom-0">اعمال</th>
+                    <tr>
+                        <th class="border-bottom-0"> اسم تراکنش</th>
+                        <th class="border-bottom-0"> حساب بانکی</th>
+                        <th class="border-bottom-0">مقدار</th>
+                        <th class="border-bottom-0">نوع تراکنش</th>
+                        <th class="border-bottom-0 ltr">زمان ساخت</th>
+                        <th class="border-bottom-0 ltr">زمان تغییر</th>
+                        <th class="border-bottom-0">اعمال</th>
+
+                    </tr>
+
 
                 </tfoot>
             </table>
@@ -167,27 +132,13 @@
                                 اگر این بخش را پر کرده باشید،اطلاعات نمایش داده میشود.
                                 میتوانید این اطلاعات را با تغییر دادن تراکنش در صفحه قبل وارد نمایید.
                             </p>
-                            <table class="table datatable table-hover table-bordered " id="transactionTable">
-                                <thead>
-                                    <tr>
-                                        
-                                        <th class="border-bottom-0">
-                                            نام دسته بندی
-                                        </th>
-                                        <th class="border-bottom-0">
-                                            نام پلنر تراکنش 
-                                        </th>
-                                        <th class="border-bottom-0">توضیحات</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody id="details">
-                                    @{
-                                        await Html.PartialAsync("_GetTransactionDetails", new TransactionDetailsViewModel());
-                                    }
+                            <div id="details">
+                                @{
+                                    await Html.PartialAsync("_GetTransactionDetails", new TransactionDetailsViewModel());
+                                }
 
-                                </tbody>
-                            </table>
+                            </div>
+
                         </div>
                         <!--/modal-body-collapse -->
                         <div class="modal-footer">
@@ -205,13 +156,13 @@
             <!--Get Details from action -->
             <form id="addDetails" asp-action="GetTransactionDetails" method="post" data-ajax-update="#details" data-ajax="true">
                 <input id="transactiontId" type="hidden" name="transactiontId" value="" />
-
-
             </form>
         </div>
     </div>
 
 </div>
+
+
 
 @Html.Partial("_dataTableFooter");
 @section Scripts {
@@ -220,5 +171,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.js" integrity="sha256-v2nySZafnswY87um3ymbg7p9f766IQspC5oqaqZVX2c=" crossorigin="anonymous"></script>
     }
 }
-@Html.Partial("_Footer")                ;
+@Html.Partial("_Footer")
+
 

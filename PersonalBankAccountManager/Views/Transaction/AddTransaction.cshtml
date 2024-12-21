@@ -23,7 +23,7 @@
             در صورت انتخاب پلنر تراکنش، ورودی های مورد نظر به صورت خودکار پر خواهد شد و قابل تغییر نخواهد بود.
             در صورت نیاز به تغییر پلنر تراکنش، در صفحه مربوطه آن را تغییر دهید.
         </p>
-        <form asp-action="AddTransactionPost" method="post" id="addTransactionForm">
+        <form asp-action="AddTransactionPost" method="post" id="addTransactionForm" enctype="multipart/form-data">
 
             <div class="row mb-3  required-field">
                 <label asp-for="Title" class="col-sm-2 col-form-label"></label>
@@ -39,30 +39,6 @@
                 </div>
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
-            <fieldset class="row mb-3 required-field">
-                <legend class="col-form-label col-sm-2 ">نوع دسته بندی</legend>
-                <div class="col-sm-2">
-                    <div class="form-check">
-                        <input data-val="true" class="form-check-input" type="radio" id="IsWithdrawl1" name="IsWithdrawl" value="False" checked>
-                        <label class="form-check-label" asp-for="IsWithdrawl">
-                            برداشت
-                        </label>
-
-
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" id="IsWithdrawl2" name="IsWithdrawl" type="radio" value="True">
-                        <label class="form-check-label" asp-for="IsWithdrawl">
-                            واریز
-                        </label>
-
-
-                    </div>
-
-                    <span asp-validation-for="IsWithdrawl" class="text-danger"></span>
-
-                </div>
-            </fieldset>
             <fieldset class="row mb-3 required-field">
                 <legend class="col-form-label col-sm-2 ">انتخاب حساب بانکی</legend>
                 <div class="col-sm-10">
@@ -82,17 +58,46 @@
 
                             <input data-val="true" class="form-check-input" type="radio" id="@item.Id" name="BankAccountId" value="@item.Id">
                             <label for="@item.Id" style="background-image : url(@str)">@Html.DisplayFor(modelItem => item.Title)</label>
-                            @* <p> موجودی : @item.Amount</p>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li> *@
+
                         }
 
                     </div>
                 </div>
                 <span asp-validation-for="BankAccountId" class="text-danger"></span>
             </fieldset>
+            <fieldset class="row mb-3 required-field" id="iswithdrawlForm">
+                <legend class="col-form-label col-sm-2 ">نوع دسته بندی</legend>
+                <div class="col-sm-2">
+                    <div class="form-check">
+                        <input data-val="true" class="form-check-input" type="radio" id="IsWithdrawl1" name="IsWithdrawl" value="False" asp-for="IsWithdrawl" checked>
+                        <label class="form-check-label" asp-for="IsWithdrawl">
+                            برداشت
+                        </label>
 
+
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" id="IsWithdrawl2" name="IsWithdrawl" type="radio" value="True" asp-for="IsWithdrawl">
+                        <label class="form-check-label" asp-for="IsWithdrawl">
+                            واریز
+                        </label>
+
+
+                    </div>
+
+                    <span asp-validation-for="IsWithdrawl" class="text-danger"></span>
+
+                </div>
+            </fieldset>
+
+            <div class="row mb-3">
+                <label class="col-sm-2 col-form-label" asp-for="File">آپلود عکس</label>
+
+                <div class="col-sm-10">
+                    <input asp-for="File" type="File" class="form-control" />
+                </div>
+                <span asp-validation-for="File" class="text-danger"></span>
+            </div>
             <div class="row mb-3 ">
                 <label asp-for="CategoryId" class="col-sm-2 col-form-label">انتخاب دسته بندی  </label>
                 <div class="col-sm-10">
@@ -108,21 +113,27 @@
             <div class="row mb-3 ">
                 <label asp-for="TransactionPlanId" class="col-sm-2 col-form-label">انتخاب پلنر تراکنش برای انجام   </label>
                 <div class="col-sm-10">
-                    <select class="form-select"  id="transactionPlan" asp-for="TransactionPlanId" onchange="SetPlanner(Event)">
-                        <option value="" selected>انتخاب کنید</option>
+                    <select class="form-select" id="transactionPlan" asp-for="TransactionPlanId" onchange="SetPlanner(Event)">
+                        <option id="optionDefault" value="">انتخاب کنید</option>
                         @foreach (var item in Model.TransactionPlanViewModels)
                         {
+                            if (!item.IsPaid)
+                            {
+                                <option value="@item.Id">@Html.DisplayFor(modelItem => item.Name)</option>
 
-                            <option value="@item.Id">@Html.DisplayFor(modelItem => item.Name)</option>
+                            }
 
                         }
                     </select>
                 </div>
-              
-              
+
+
                 @foreach (var item in Model.TransactionPlanViewModels)
                 {
-
+                    var selectedTime = item.TillThisDate;
+                    var now = DateTime.Now;
+                    bool isOverdue = selectedTime <= now;
+                    <input type="hidden" class="form-control" value="@isOverdue" id="@item.Id-isOverdue">
                     <input type="hidden" class="form-control" value="@item.Amount" id="@item.Id-transactionPlanAmout">
                     <input type="hidden" class="form-control" value="@item.IsWithdrawl" id="@item.Id-transactionPlanIsWithdrawl">
 
@@ -146,8 +157,34 @@
 
 
         </form>
+        <!-- start: Set Planner Modal -->
+        <div class="modal fade " id="setter-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <h3 class="modal-title">هشدار!</h3>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <h4> آیا از انتخاب مطمئن هستید؟</h4>
+                        <p> تاریخ نهایی این پلنر گذشته است!</p>
+                    </div>
+                    <!--/modal-body-collapse -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger" onclick="select()">بله</button>
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal" onclick="deSelect()">خیر</button>
+                    </div>
+                    <!--/modal-footer-collapse -->
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
         <form id="addCategory" asp-action="GetCategories" method="post" data-ajax-update="#categories" data-ajax="true">
             <input id="isPositive" type="hidden" name="isPositive" value="False" />
+            <input id="categoryId" type="hidden" name="categoryId" value="" />
 
 
         </form>

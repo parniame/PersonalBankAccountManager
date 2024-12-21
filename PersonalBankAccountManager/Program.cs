@@ -15,6 +15,11 @@ using Abstraction.Service;
 using Service;
 using Hangfire;
 using PersonalBankAccountManager.Resources.Mapster;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using PersonalBankAccountManager.Resources.MyAttributes;
+using PersonalBankAccountManager.Controllers;
+using PersonalBankAccountManager.Resources.FirstData;
 
 namespace PersonalBankAccountManager
 {
@@ -48,9 +53,10 @@ namespace PersonalBankAccountManager
             ServiceMapsterConfig.RegisterMapping();
             PresentationMapsterConfig.RegisterMapping();
             builder.Services.AddMvc();
-            builder.Services.AddControllers();
+            //builder.Services.AddControllers();
+            builder.Services.AddAuthorization();
             builder.Services.AddControllersWithViews();
-            builder.Services.AddRazorPages();
+            //builder.Services.AddRazorPages();
 
 
 
@@ -81,8 +87,16 @@ namespace PersonalBankAccountManager
             builder.Services.AddScoped<ITransactionPlanService, TransactionPlanService>();
             builder.Services.AddScoped<ITransactionService, TransactionService>();
             builder.Services.AddScoped<ITransactionCategoryService,TransactionCategoryService>();
-
-
+            builder.Services.AddScoped<IPictureService,PictureService>();
+            //builder.Services.AddSingleton<ITempDataDictionary>();
+            //        services.AddSingleton<Consumer>(
+            //s => new Consumer(p => MyHelper.DoSomething(s.GetService<IFileVersionProvider>(), p));
+            //builder.Services.AddSingleton<SetTempDataModelStateAttribute>(
+            
+            //    s => new SetTempDataModelStateAttribute(p => PlannerController(s.GetService<TempDataDictionaryFactory>(), p));
+            //        builder.Services.AddSingleton<SetTempDataModelStateAttribute>(
+            //s => new SetTempDataModelStateAttribute(s.GetService<ITempDataDictionary>(),s.GetService<ViewDataDictionary>());
+            //builder.Services.AddSingleton<ViewDataDictionary>();
             var app = builder.Build();
             if (app.Environment.IsDevelopment())
             {
@@ -111,40 +125,20 @@ namespace PersonalBankAccountManager
             //    pattern: "{controller=Home}/{action=Index}/{id?}");
             app.UseEndpoints(endpoint =>
             {
-                endpoint.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoint.MapRazorPages();
+                endpoint.MapControllerRoute(name: "default", pattern: "{controller=Account}/{action=Login}/{id?}");
+                //endpoint.MapRazorPages();
             });
+
             using (var scope = app.Services.CreateScope())
             {
-               
-                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
-                var roles = new[] { "Admin", "Member" };
-                foreach (var role in roles)
-                {
-                    if (!await roleManager.RoleExistsAsync(role))
-                    {
-                        await roleManager.CreateAsync(new Role(role));
-                    }
 
-                }
+                await FirstData.CreateRolesAsync(scope);
 
 
             }
             using (var scope = app.Services.CreateScope())
             {
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-                string userName = "Admin1";
-                if( await userManager.FindByNameAsync(userName) ==  null) {
-                    var user = new User();
-                    user.UserName = userName;
-                    user.FirstName = "Parnia";
-                    user.LastName = "Minaee";
-                    user.Email = "Minaeeparnia@gmail.com";
-                    user.PasswordHash = userManager.PasswordHasher.HashPassword(user,"123");
-                    await userManager.CreateAsync(user);
-                    await userManager.AddToRoleAsync(user,"Admin");
-
-                }
+                await FirstData.CreateRolesAsync(scope);
 
             }
 

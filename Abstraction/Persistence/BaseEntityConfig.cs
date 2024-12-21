@@ -3,12 +3,7 @@ using Abstraction.Domain;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Abstraction.Persistence
 {
@@ -25,11 +20,13 @@ namespace Abstraction.Persistence
 
 
             builder.Property(x => x.DateCreated)
-                       .HasColumnType(SqlDbType.DateTime.ToString()).HasDefaultValue(DateTime.Now);
+                       .HasColumnType("datetime");
+            //.HasDefaultValue(new DateTime(2024, 11, 25, 21, 29, 52, 990, DateTimeKind.Local).AddTicks(6358));
 
             builder.Property(x => x.DateUpdated)
-                    .HasColumnType(SqlDbType.DateTime.ToString()).HasDefaultValue(DateTime.Now);
-                    
+                    .HasColumnType("datetime");
+            //.HasDefaultValue(new DateTime(2024, 11, 25, 21, 29, 52, 990, DateTimeKind.Local).AddTicks(6358));
+
 
 
         }

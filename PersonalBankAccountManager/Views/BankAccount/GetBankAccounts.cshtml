@@ -20,7 +20,7 @@
                         <th class="border-bottom-0">زمان ساخت</th>
                         <th class="border-bottom-0">زمان تغییر</th>
                         <th class="border-bottom-0">اعمال</th>
-                        
+
                     </tr>
                 </thead>
                 <tbody>
@@ -37,11 +37,11 @@
 
                                 @Html.DisplayFor(modelItem => item.Amount)
                             </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.DateCreated)
+                            <td data-order="@item.DateCreated" class="ltr">
+                                @Html.DisplayFor(modelItem => item.DateCreatedFarsi)
                             </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.DateUpdated)
+                            <td data-order="@item.DateUpdated" class="ltr">
+                                @Html.DisplayFor(modelItem => item.DateUpdatedFarsi)
                             </td>
 
 
@@ -49,18 +49,21 @@
                                 <a type="button" class="btn  btn-outline-warning  btn-sm" asp-controller="BankAccount" asp-action="UpdateBankAccount" asp-route-bankAccountId="@item.Id">تغییر</a>|
                                 <button type="button" class="btn  btn-outline-info  btn-sm" onclick="ShowDetailsModal('@item.Id')" href="">جزئیات</button>|
                                 <button type="button" class="btn btn-danger  btn-sm" onclick="ShowDeleteModal('@item.Id')" href="">حذف</button>
-                                
+
                             </td>
                         </tr>
                     }
 
                 </tbody>
                 <tfoot>
-                <th class="border-bottom-0">سم حساب بانکی</th>
-                <th class="border-bottom-0">موجودی</th>
-                <th class="border-bottom-0">زمان ساخت</th>
-                <th class="border-bottom-0">زمان تغییر</th>
-                <th class="border-bottom-0">اعمال</th>
+                    <tr>
+                        <th class="border-bottom-0">سم حساب بانکی</th>
+                        <th class="border-bottom-0">موجودی</th>
+                        <th class="border-bottom-0">زمان ساخت</th>
+                        <th class="border-bottom-0">زمان تغییر</th>
+                        
+                    </tr>
+
                 </tfoot>
             </table>
             <!-- start: Delete BankAccount Modal -->
@@ -117,7 +120,7 @@
                                             شماره کارت
                                         </th>
                                         <th class="border-bottom-0">توضیحات</th>
-                                        
+
 
                                     </tr>
                                 </thead>
@@ -141,8 +144,8 @@
                 </div>
                 <!-- /.modal-dialog -->
             </div>
-            <!-- /.modal --> 
-             <!--Get Details from action -->
+            <!-- /.modal -->
+            <!--Get Details from action -->
             <form id="addDetails" asp-action="GetBankAccountDetails" method="post" data-ajax-update="#details" data-ajax="true">
                 <input id="bankAccountId" type="hidden" name="bankAccountId" value="" />
 

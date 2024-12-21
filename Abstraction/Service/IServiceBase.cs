@@ -13,21 +13,12 @@ namespace Abstraction.Service
     {
         Entity MapToEntity<DtO>(DtO dto) where DtO : class;
         DtO MapToDTO<DtO>(Entity entity) where DtO : class;
-
-        Task<DTO> GetByIdAsync<DTO>(Guid Id, bool readOnly = true) where DTO : class;
-        //Task<DTO> GetAsync<DTO>(Expression<Func<Entity, bool>> predicate = null, bool readOnly = true);
-
+        Task<DTO> GetByIdAsync<DTO>(Guid Id, bool readOnly = true) where DTO : class; 
         Task<List<DTO>> GetAllAsync<DTO>()
             where DTO : class;
-        //Task<IList<DTO>> GetAllAsync<DTO>(Expression<Func<Entity, bool>> predicate) where DTO : class;
-        //Task<IList<DTOResult>> GetAll<EntityResult, DTOResult>(Expression<Func<Entity, EntityResult>> selector,
-        //Expression<Func<Entity, bool>> predicate = null,
-        //Func<IQueryable<Entity>,
-        //IIncludableQueryable<Entity, object>> include = null,
-        //bool noTraking = true);
         Task<bool> CreateAsync<DTO>(DTO dto) where DTO : class;
         Task<bool> UpdateAsync<DTO>(DTO dto) where DTO : class;
-        Task<bool> DeleteAsync(Guid Id);
+        //Task<bool> DeleteAsync(Guid Id);
         
     }
 }

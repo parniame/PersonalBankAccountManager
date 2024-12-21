@@ -1,15 +1,49 @@
 ﻿@model TransactionDetailsViewModel
-<tr>
-   
 
-    <td>
-        @Html.DisplayFor(modelItem => modelItem.CategoryName)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => modelItem.TransactionPlanName)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => modelItem.Description)
-    </td>
+<table class="table datatable table-hover table-bordered ">
+    <thead>
+        <tr>
+
+            <th class="border-bottom-0">
+                نام دسته بندی
+            </th>
+            <th class="border-bottom-0">
+                نام پلنر تراکنش
+            </th>
+            <th class="border-bottom-0">توضیحات</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+
+
+            <td>
+                @Html.DisplayFor(modelItem => modelItem.CategoryName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => modelItem.TransactionPlanName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => modelItem.Description)
+            </td>
+
+        <tr>
+    </tbody>
+</table>
+
+@{
+    string str = null;
+    if (Model.URL != null)
+    {
+        var fullAddress = Model.URL; //C:\Users\10\source\repos\PersonalBankAccountManager\PersonalBankAccountManager\wwwroot\images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+        var fileAddress = fullAddress.Split("wwwroot\\", 2)[1];//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+        var normalizedFileAddress = fileAddress.Replace("\\", "/");//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+        str = "../" + normalizedFileAddress;
+        <h2> سند تراکنش</h2>
+        <img class="transactionImage" src="@str" />
+    }
+
     
-<tr>
+
+}

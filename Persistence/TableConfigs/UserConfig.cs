@@ -31,7 +31,8 @@ namespace Persistence.TableConfigs
                 .HasMaxLength(50)
                 .IsRequired();
             builder.Property(x => x.DateOfBirth)
-                           .HasColumnType("datetime").HasDefaultValue(DateTime.Now);
+                           .HasColumnType("datetime");
+                           //.HasDefaultValue(new DateTime(2024, 11, 25, 21, 29, 52, 990, DateTimeKind.Local).AddTicks(6358));
             //          .HasConversion(
             //d => d.ToString(),
             //d => Convert.ToDateTime(d)
@@ -43,11 +44,16 @@ namespace Persistence.TableConfigs
                 .HasColumnType(SqlDbType.VarChar.ToString())
                 .HasMaxLength(12);
             builder.Property(x => x.DateCreated)
-                           .HasColumnType("datetime").HasDefaultValue(DateTime.Now);
+                           .HasColumnType("datetime");
+                           //.HasDefaultValue(new DateTime(2024, 11, 25, 21, 29, 52, 990, DateTimeKind.Local).AddTicks(6358));
 
             builder.Property(x => x.DateUpdated)
-                    .HasColumnType("datetime")
-                    .HasDefaultValue(DateTime.Now);
+                    .HasColumnType("datetime");
+                    //.HasDefaultValue(new DateTime(2024, 11, 25, 21, 29, 52, 990, DateTimeKind.Local).AddTicks(6358));
+            //                  .HasConversion(
+            //d => d.ToString(),
+            //d => Convert.ToDateTime(d)
+            //);
 
 
             builder.HasOne(x => x.Updator).WithMany().HasForeignKey(x => x.UpdatorID).OnDelete(DeleteBehavior.NoAction);

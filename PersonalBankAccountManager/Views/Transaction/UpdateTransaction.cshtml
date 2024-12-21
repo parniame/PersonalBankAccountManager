@@ -24,8 +24,8 @@
             بنابراین مقدار تراکنش، واریزی یا
             پلنر تراکنش قابل تغییر نخواهد بود.
         </p>
-        <form asp-action="UpdateTransactionPost" method="post" id="addTransactionForm">
-            <input asp-for="Id" type="hidden" >
+        <form asp-action="UpdateTransactionPost" method="post" id="addTransactionForm" enctype="multipart/form-data">
+            <input asp-for="Id" type="hidden">
             <div class="row mb-3  required-field">
                 <label asp-for="Title" class="col-sm-2 col-form-label"></label>
                 <div class="col-sm-10">
@@ -44,7 +44,7 @@
                 <legend class="col-form-label col-sm-2 ">نوع دسته بندی</legend>
                 <div class="col-sm-2">
                     <div class="form-check">
-                        <input data-val="true" class="form-check-input disabled" type="radio" id="IsWithdrawl1" name="IsWithdrawl" value="False" checked>
+                        <input data-val="true" class="form-check-input disabled  " type="radio" id="IsWithdrawl1" name="IsWithdrawl" value="False" asp-for="IsWithdrawl">
                         <label class="form-check-label">
                             برداشت
                         </label>
@@ -52,7 +52,7 @@
 
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input disabled" id="IsWithdrawl2" name="IsWithdrawl" type="radio" value="True">
+                        <input class="form-check-input disabled " id="IsWithdrawl2" name="IsWithdrawl" type="radio" value="True" asp-for="IsWithdrawl">
                         <label class="form-check-label">
                             واریز
                         </label>
@@ -81,7 +81,7 @@
                             }
 
 
-                            <input data-val="true" class="form-check-input disabled" checked type="radio" id="@Model.BankAccountViewModel.Id">
+                            <input data-val="true" class="form-check-input " checked type="radio" id="@Model.BankAccountViewModel.Id">
                             <label for="@Model.BankAccountViewModel.Id" style="background-image : url(@str)">@Html.DisplayFor(modelItem => modelItem.BankAccountViewModel.Title)</label>
 
                         }
@@ -90,15 +90,74 @@
                 </div>
 
             </fieldset>
+            <div class="row mb-3" id="fileForm">
+                @if (Model.FileArgs != null)
+                {
+
+                    <div id="updateTransactionFileAsk">
+                        <fieldset class="row mb-3 required-field">
+                            <legend class="col-form-label col-sm-2 ">آیا میخواهید عکس را نگه دارید؟</legend>
+                            <div class="col-sm-2">
+                                <div class="form-check">
+                                    @* without asp-for because it would choose false by default *@
+                                    <input data-val="true" class="form-check-input  " type="radio" value="True" name="KeepFile" checked>
+                                    <label class="form-check-label">
+                                        بله
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input  " type="radio" value="False" name="KeepFile">
+                                    <label class="form-check-label">
+                                        خیر
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div id="img">
+                            @if(Model.FileArgs != null){
+                                var fullAddress = Model.FileArgs.FileAddress; //C:\Users\10\source\repos\PersonalBankAccountManager\PersonalBankAccountManager\wwwroot\images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                                var fileAddress = fullAddress.Split("wwwroot\\", 2)[1];//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                                var normalizedFileAddress = fileAddress.Replace("\\", "/");//images\0c91b3fb-fd9f-4763-9aff-8597206ba6e5.png
+                                str = "../" + normalizedFileAddress;
+
+                                <img class="transactionImage" src="@str" />
+                                <input type="hidden" asp-for="FileArgs.Id" />
+                                <input type="hidden" asp-for="FileArgs.FileAddress" />
+                            }
+
+                        </div>
+                    </div>
+                    <div id="updateTransactionFileNotKeep" class="hidden_row">
+                        <label class="col-sm-2 col-form-label" asp-for="File">آپلود عکس</label>
+
+                        <div class="col-sm-10">
+                            <input asp-for="File" type="File" class="form-control" />
+                        </div>
+                        <span asp-validation-for="File" class="text-danger"></span>
+                    </div>
+
+                }
+                else
+                {
+                    <label class="col-sm-2 col-form-label" asp-for="File">آپلود عکس</label>
+
+                    <div class="col-sm-10">
+                        <input asp-for="File" type="File" class="form-control" />
+                    </div>
+                    <span asp-validation-for="File" class="text-danger"></span>
+                }
+
+
+            </div>
 
             <div class="row mb-3 ">
                 <label asp-for="CategoryId" class="col-sm-2 col-form-label">انتخاب دسته بندی  </label>
                 <div class="col-sm-10">
                     <select class="form-select" id="categories" asp-for="CategoryId">
                         @{
-                            TempData["categoryId"] = Model.CategoryId;
+
                             Html.Partial("_GetCategories", new List<CategoryViewModel>());
-                           
+
                         }
 
                     </select>
@@ -111,7 +170,18 @@
                 <label asp-for="TransactionPlanViewModel.Id" class="col-sm-2 col-form-label">انتخاب پلنر تراکنش برای انجام   </label>
                 <div class="col-sm-10">
                     <select class="form-select disabled" id="transactionPlan" asp-for="TransactionPlanViewModel.Id" onchange="SetPlanner(Event)">
-                        <option value="@Model.TransactionPlanViewModel.Id" selected>@Html.DisplayFor(modelItem => modelItem.TransactionPlanViewModel.Name)</option>
+                        @{
+                            if (Model.TransactionPlanViewModel == null)
+                            {
+                                <option value="" selected>غیرقابل انتخاب</option>
+                            }
+                            else
+                            {
+                                <option value="@Model.TransactionPlanViewModel.Id" selected>@Html.DisplayFor(modelItem => modelItem.TransactionPlanViewModel.Name)</option>
+                            }
+                        }
+
+
 
                     </select>
                 </div>

@@ -2,6 +2,8 @@
 using DataTransferObject;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Models.Entities;
 using PersonalBankAccountManager.Models;
 using PersonalBankAccountManager.Resources.Utilities;
 using Service.ServiceInterfaces;
@@ -14,16 +16,17 @@ namespace PersonalBankAccountManager.Controllers
     [Authorize(Roles = "Member")]
     public class BankAccountController : Controller
     {
-        private readonly IBankAccountService _bankAccountService; 
+        private readonly IBankAccountService _bankAccountService;
         private readonly ILogger<BankAccountController> _logger;
         private readonly Translator _translator;
+
 
 
 
         public BankAccountController(IBankAccountService bankAccountService, IBankService bankService, ILogger<BankAccountController> logger)
         {
             _bankAccountService = bankAccountService;
-            
+
             _logger = logger;
             _translator = new Translator(bankService, bankAccountService);
 
@@ -40,10 +43,9 @@ namespace PersonalBankAccountManager.Controllers
                 {
                     TempData["ErrorMessage"] = errorMessage;
                 }
-                var addBankAccountViewModel = new AddBankAccountViewModel();
-                //bring banks
-                List<BankViewModel> banks = await _translator.GetBankViewModelsAsync();
-                addBankAccountViewModel.BankViewModels = banks;
+                var addBankAccountViewModel = await _translator.GetBankAccountViewModelAsync();
+
+
                 return View(addBankAccountViewModel);
             }
             catch (Exception e)
@@ -58,7 +60,7 @@ namespace PersonalBankAccountManager.Controllers
                 TempData["ErrorMessage"] = "اوردن صفحه درج حساب بانکی با مشکل مواجه شد";
             }
 
-            return RedirectToAction("Index", "Member", new { errorMessage = TempData["ErrorMessage"] });
+            return RedirectToAction("Index", "Member");
 
 
         }
@@ -66,13 +68,15 @@ namespace PersonalBankAccountManager.Controllers
         [HttpPost]
         public async Task<IActionResult> AddBankAccountPostAsync(AddBankAccountViewModel addBankAccountView)
         {
-            if (ModelState.IsValid)
+            try  
             {
-                try
+                if (ModelState.IsValid)
                 {
+
                     var bankAccountCommand = Translator.MapToCustom<AddBankAccountViewModel, BankAccountCommand>(addBankAccountView);
 
                     var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    
                     if (!string.IsNullOrEmpty(currentUserId))
                     {
                         bankAccountCommand.UserId = new Guid(currentUserId);
@@ -80,22 +84,27 @@ namespace PersonalBankAccountManager.Controllers
                         if (result)
                         {
                             TempData["SuccessMessage"] = " حساب با موفقیت ساخته شد";
-                            return LocalRedirect("/Member/index");
+                            return RedirectToAction("GetBankAccounts");
 
                         }
 
                     }
-
-
                 }
-                catch (Exception e)
+                else
                 {
-                    _logger.LogError(e, "در ساخت  حساب مشکلی به وجود آمد");
-                    //If error is in english
-                    if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
-                        TempData["ErrorMessage"] = e.Message;
+                    var addBankAccountViewModel = await _translator.GetBankAccountViewModelAsync();
 
+
+                    return View("AddBankAccount", addBankAccountViewModel);
                 }
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "در ساخت  حساب مشکلی به وجود آمد");
+                //If error is in english
+                if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
+                    TempData["ErrorMessage"] = e.Message;
 
             }
             if (TempData["ErrorMessage"] == null)
@@ -104,16 +113,13 @@ namespace PersonalBankAccountManager.Controllers
 
             }
 
-            return RedirectToAction("AddBankAccount", new { errorMessage = TempData["ErrorMessage"]?.ToString() });
+            return RedirectToAction("Index", "Member");
         }
         //Read
         [HttpGet]
-        public async Task<IActionResult> GetBankAccounts(string? errorMessage)
+        public async Task<IActionResult> GetBankAccounts()
         {
-            if (errorMessage != null)
-            {
-                TempData["ErrorMessage"] = errorMessage;
-            }
+           
             try
             {
                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -127,6 +133,7 @@ namespace PersonalBankAccountManager.Controllers
                 }
 
             }
+            
             catch (Exception e)
             {
                 _logger.LogError(e, "در اوردن صفحه   حساب مشکلی به وجود آمد");
@@ -141,8 +148,8 @@ namespace PersonalBankAccountManager.Controllers
                 TempData["ErrorMessage"] = "اوردن صفحه  حساب با مشکل مواجه شد";
 
             }
-
-            return RedirectToAction("Index", "Member", new { errorMessage = TempData["ErrorMessage"] });
+            TempData.Keep("SuccessMessage");
+            return RedirectToAction("Index", "Member");
 
         }
         //Details
@@ -174,7 +181,7 @@ namespace PersonalBankAccountManager.Controllers
             }
 
 
-            return RedirectToAction("GetBankAccounts", new { errorMessage = TempData["ErrorMessage"] });
+            return RedirectToAction("GetBankAccounts");
         }
         //Delete
         public async Task<IActionResult> DeleteBankAccount(Guid bankAccountId)
@@ -188,7 +195,7 @@ namespace PersonalBankAccountManager.Controllers
                     if (result)
                     {
                         TempData["SuccessMessage"] = " حساب با موفقیت حذف شد";
-                        return LocalRedirect("/Member/index");
+                        return RedirectToAction("GetBankAccounts");
                     }
 
                 }
@@ -224,10 +231,9 @@ namespace PersonalBankAccountManager.Controllers
                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (!string.IsNullOrEmpty(currentUserId))
                 {
-                    var guid = new Guid(currentUserId);
-                    var bankAccountCommand = await _bankAccountService.GetByIdAsync<BankAccountResult>(bankAccountId, guid);
-                    var result = Translator.MapToCustom<BankAccountResult, UpdateBankAccountViewModel>(bankAccountCommand);
-                    result.BankViewModels = await _translator.GetBankViewModelsAsync();
+
+                    var result = await _translator.GetUpdateBankAccountViewModelAsync(new Guid(currentUserId), bankAccountId);
+
                     return View(result);
 
 
@@ -258,32 +264,50 @@ namespace PersonalBankAccountManager.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateBankAccountPostAsync(UpdateBankAccountViewModel updateBankAccountViewModel)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
+
                     var bankAccountCommand = Translator.MapToCustom<UpdateBankAccountViewModel, BankAccountCommand>(updateBankAccountViewModel);
-
-
-                    var result = await _bankAccountService.UpdateAsync(bankAccountCommand);
-                    if (result)
+                    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    if (!string.IsNullOrEmpty(currentUserId))
                     {
-                        TempData["SuccessMessage"] = " حساب با موفقیت تغییر داده شد";
-                        return LocalRedirect("/Member/index");
+                        bankAccountCommand.UserId = new Guid(currentUserId);
+                        var result = await _bankAccountService.UpdateAsync(bankAccountCommand);
+                        if (result)
+                        {
+                            TempData["SuccessMessage"] = " حساب با موفقیت تغییر داده شد";
+                            return RedirectToAction("GetBankAccounts");
+
+                        }
 
                     }
 
 
 
                 }
-                catch (Exception e)
+                else
                 {
-                    _logger.LogError(e, "در تغییر  حساب مشکلی به وجود آمد");
-                    //If error is in english
-                    if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
-                        TempData["ErrorMessage"] = e.Message;
+                    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    if (!string.IsNullOrEmpty(currentUserId))
+                    {
+
+                        var result = await _translator.GetUpdateTransactionPlanViewModelAsync(new Guid(currentUserId), updateBankAccountViewModel.Id);
+
+                        return View("UpdateBankAccount", result);
+
+
+                    }
 
                 }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "در تغییر  حساب مشکلی به وجود آمد");
+                //If error is in english
+                if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
+                    TempData["ErrorMessage"] = e.Message;
 
             }
             if (TempData["ErrorMessage"] == null)
@@ -292,7 +316,7 @@ namespace PersonalBankAccountManager.Controllers
 
             }
 
-            return RedirectToAction("GetBankAccounts", new { errorMessage = TempData["ErrorMessage"]?.ToString() });
+            return RedirectToAction("GetBankAccounts");
 
         }
     }

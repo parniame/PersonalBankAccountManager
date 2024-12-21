@@ -35,10 +35,12 @@
                 <div class="col-sm-10">
                     <div class="col-sm-2 image-dropdown">
 
-
+                        <input data-val="true" id="first" class="form-check-input" type="radio" name="bankId" value="">
+                        <label style="background-image : url(@null)" for="first">لطفا انتخاب کنید</label>
 
                         @foreach (var item in Model.BankViewModels)
                         {
+                            
                             if (item.Id != Model.BankId)
                             {
                                 <input data-val="true" class="form-check-input" type="radio" id="@item.Id" name="bankId" value="@item.Id">

@@ -67,6 +67,11 @@ namespace PersonalBankAccountManager.Controllers
             }
             return View("Login");
         }
+        [HttpGet]
+        public IActionResult Profile()
+        {
+            return View("UserProfile");
+        }
 
         [HttpGet]
         public IActionResult Register()
@@ -115,6 +120,7 @@ namespace PersonalBankAccountManager.Controllers
                 {
                     await _userService.LogoutAsync(username);
                     TempData["SuccessMessage"] = "با موفقیت خارج شدید";
+                    return View("Login");
                 }
                 catch (Exception e)
                 {
@@ -131,7 +137,7 @@ namespace PersonalBankAccountManager.Controllers
                 TempData["ErrorMessage"] = "خروج از اکانت با مشکل مواجه شد";
             }
 
-            return LocalRedirect("/Home/Index");
+            return RedirectToAction("Index");
         }
 
     }

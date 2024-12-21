@@ -1,6 +1,7 @@
 ﻿using Abstraction.Domain;
 using Abstraction.Service.Exceptions;
 using DataTransferObject;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Models.Entities;
@@ -27,6 +28,7 @@ namespace Service.ServiceClasses
             _transactionService = transactionService;
             _userService = userService;
         }
+
 
         public async Task<bool> ChangeAmmountAsync(decimal amount, Guid userId, bool isPositive, Guid bankAccountId)
         {
@@ -87,6 +89,17 @@ namespace Service.ServiceClasses
 
             throw new ItemNotFoundException("حساب بانکی");
         }
+        public async Task<bool> DeleteBankAsync(Guid bankId)
+        {
+            var transactions = _bankAccountRepository.GetAll(x => x.BankId == bankId, false).ToList();
+
+            foreach (var transaction in transactions)
+            {
+                transaction.BankId = null;
+            }
+            await  _bankAccountRepository.CommitAsync();
+            return true;
+        }
         public async Task<DTO?> GetByIdAsync<DTO>(Guid Id, Guid userId, bool readOnly = true)
             where DTO : class
         {
@@ -137,17 +150,21 @@ namespace Service.ServiceClasses
         public async Task<bool> UpdateAsync(BankAccountCommand dto)
 
         {
-            var dtoCheck = await GetByIdAsync<BankAccountCommand>(dto.Id);
-            if (dtoCheck.UserId == dto.UserId)
+            var dtoCheck = await _bankAccountRepository.GetByIdAsync(dto.Id);
+            if (dtoCheck != null)
             {
-                var entity = MapToEntity(dto);
-                entity.DateUpdated = DateTime.Now;
-                var list = new List<string>
+                if (dtoCheck.UserId == dto.UserId)
+                {
+                    var entity = MapToEntity(dto);
+                    entity.DateUpdated = DateTime.Now;
+                    var list = new List<string>
             {
                 "UserId",
                 "Amount"
             };
-                return await _bankAccountRepository.UpdateAsync(entity, list);
+                    return await _bankAccountRepository.UpdateAsync(entity, list);
+                }
+
             }
 
             throw new CodeErrorException();

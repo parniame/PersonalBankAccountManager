@@ -26,6 +26,12 @@ namespace Service.Exceptions
         {
         }
     }
+    public class NoTransactionException : BankAccountServiceException
+    {
+        public NoTransactionException() : base($"ابتدا یک تراکنش  ایجاد کنید", 1)
+        {
+        }
+    }
 }
 //public class PictureServiceException : BaseException
 //{

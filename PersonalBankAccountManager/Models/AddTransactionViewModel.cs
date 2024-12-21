@@ -16,7 +16,7 @@ namespace PersonalBankAccountManager.Models
         public decimal Amount { get; set; }
 
         public bool IsWithdrawl { get; set; }
-
+        public IFormFile? File { get; set; }
         [Display(Name = "DescriptionProp", ResourceType = typeof(PresentationResources))]
         public string? Description { get; set; }
         public Guid BankAccountId { get; set; }

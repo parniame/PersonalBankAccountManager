@@ -1,0 +1,129 @@
+﻿@model IEnumerable<CategoryWithDetailsViewModel>;
+@{
+
+    Layout = "_Layout";
+}
+@Html.Partial("_dataTableHeader");
+
+<div class="col-lg-12">
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title"> دسته بندی ها</h5>
+
+
+
+            <table class="table  table-hover table-bordered adminTable">
+                <thead>
+                    <tr>
+                        <th class="border-bottom-0">اسم </th>
+                        <th class="border-bottom-0"> نوع</th>
+                        <th class="border-bottom-0"> نام سازنده</th>
+                        <th class="border-bottom-0">نام تغییر دهنده </th>
+                        <th class="border-bottom-0">زمان ساخت</th>
+                        <th class="border-bottom-0">زمان تغییر</th>
+                        <th class="border-bottom-0">اعمال</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.IsWithdrawl)
+                            </td>
+                            
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CreatorName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UpdatorName)
+                            </td>
+                            <td data-order="@item.DateCreated" class="ltr">
+                                @Html.DisplayFor(modelItem => item.DateCreatedFarsi)
+                            </td>
+                            <td data-order="@item.DateUpdated" class="ltr">
+                                @Html.DisplayFor(modelItem => item.DateUpdatedFarsi)
+                            </td>
+
+
+                            <td>
+                                
+                                <button type="button" class="btn btn-danger  btn-sm" onclick="ShowDeleteModal('@item.Id')" href="">حذف</button>
+
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="border-bottom-0">اسم </th>
+                        <th class="border-bottom-0"> نوع</th>
+                        <th class="border-bottom-0"> نام سازنده</th>
+                        <th class="border-bottom-0">نام تغییر دهنده </th>
+                        <th class="border-bottom-0">زمان ساخت</th>
+                        <th class="border-bottom-0">زمان تغییر</th>
+                        <th class="border-bottom-0">اعمال</th>
+
+
+                    </tr>
+
+
+                </tfoot>
+            </table>
+            <!-- start: Delete Category Modal -->
+            <div class="modal fade delete-modal" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h3 class="modal-title">هشدار!</h3>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <h4> آیا از حذف مطمئن هستید؟</h4>
+                            <p>درصورت حذف، تراکنش ها با این دسته بندی، بدون دسته بندی میشوند</p>
+                        </div>
+                        <!--/modal-body-collapse -->
+                        <div class="modal-footer">
+                            <!--Send Data To Delete Action -->
+                            <form method="post" asp-action="DeleteCategory" asp-controller="Admin">
+                                <div class="mb-3 d-none">
+                                    <input type="hidden" name="bankId" class="form-control" id="entityIdInput" value="">
+                                </div>
+                                <button type="submit" class="btn btn-danger">بله</button>
+                            </form>
+
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">خیر</button>
+                        </div>
+                        <!--/modal-footer-collapse -->
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+
+@Html.Partial("_dataTableFooter");
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.js" integrity="sha256-v2nySZafnswY87um3ymbg7p9f766IQspC5oqaqZVX2c=" crossorigin="anonymous"></script>
+    }
+}
+@Html.Partial("_Footer")
+
+

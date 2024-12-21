@@ -23,11 +23,7 @@
                         <i class="bi bi-circle"></i><span>اضافه کردن دسته بندی تراکنش</span>
                     </a>
                 </li>
-                <li>
-                    <a asp-action="AddUser" asp-controller="Admin">
-                        <i class="bi bi-circle"></i><span>اضافه کردن کاربر</span>
-                    </a>
-                </li>
+                
                 <li>
                     <a asp-action="AddBank" asp-controller="Admin">
                         <i class="bi bi-circle"></i><span>اضافه کردن بانک</span>
@@ -41,13 +37,18 @@
             </a>
             <ul id="See-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a asp-action="AddTransactionCategory" asp-controller="Admin">
+                    <a asp-action="GetTransactionCategories" asp-controller="Admin">
                         <i class="bi bi-circle"></i><span> لیست دسته بندی های  تراکنش</span>
                     </a>
                 </li>
                 <li>
-                    <a asp-action="AddUser" asp-controller="Admin">
+                    <a asp-action="GetUsers" asp-controller="Admin">
                         <i class="bi bi-circle"></i><span>لیست کاربران</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-action="GetBanks" asp-controller="Admin">
+                        <i class="bi bi-circle"></i><span>لیست بانک ها</span>
                     </a>
                 </li>
                

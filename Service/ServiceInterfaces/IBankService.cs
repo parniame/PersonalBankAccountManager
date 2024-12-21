@@ -12,6 +12,7 @@ namespace Service.ServiceInterfaces
 {
     public interface IBankService : IServiceBase<Bank>
     {
-        Task<bool> CreateBankWithFileAsync(BankCommand bankDTO, IFormFile file);
+        Task<bool> CreateAsync(BankCommand bankDTO, IFormFile file);
+        Task<bool> DeleteAsync(Guid Id);
     }
 }

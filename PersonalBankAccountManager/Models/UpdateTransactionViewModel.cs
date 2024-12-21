@@ -1,4 +1,6 @@
-﻿using PersonalBankAccountManager.Resources;
+﻿using DataTransferObject;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using PersonalBankAccountManager.Resources;
 using System.ComponentModel.DataAnnotations;
 
 namespace PersonalBankAccountManager.Models
@@ -17,9 +19,13 @@ namespace PersonalBankAccountManager.Models
 
         [Display(Name = "DescriptionProp", ResourceType = typeof(PresentationResources))]
         public string? Description { get; set; }
+
         
+        public bool KeepFile { get; set; }
+        public IFormFile? File { get; set; }
+        public PictureArgs? FileArgs { get; set; } 
         public Guid? CategoryId { get; set; }
-        //public Guid? SecondBankAccountId { get; set; }
+        
         
         public List<CategoryViewModel>? Categories { get; set; }
         public TransactionPlanViewModel? TransactionPlanViewModel { get; set; }

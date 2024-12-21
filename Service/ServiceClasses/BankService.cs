@@ -2,6 +2,7 @@
 using Abstraction.Service.Exceptions;
 using DataTransferObject;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Models.Entities;
 using Persistence.Repositories;
 using Service.Exceptions;
@@ -19,65 +20,59 @@ namespace Service.ServiceClasses
     public class BankService : ServiceBase<Bank>, IBankService
     {
         private readonly IBaseRepository<Bank> _baseRepository;
-        public BankService(IBaseRepository<Bank> baseRepository) : base(baseRepository)
+        private readonly IBankAccountService _bankAccountService;
+        private readonly IPictureService _pictureService;
+        public BankService(IBaseRepository<Bank> baseRepository, IPictureService pictureService, IBankAccountService bankAccountService) : base(baseRepository)
         {
             _baseRepository = baseRepository;
+            _pictureService = pictureService;
+            _bankAccountService = bankAccountService;
         }
-        public async Task<bool> CreateBankWithFileAsync(BankCommand bankDTO, IFormFile file)
+
+        public async Task<bool> CreateAsync(BankCommand bankDTO, IFormFile? file)
 
         {
-
-            if (!file.IsImage())
+            if (file != null)
             {
-                throw new InvalidImage();
+                var fullAddress = await _pictureService.AddFileAsync(file);
+                //Create Picture Object
+                bankDTO.Picture = new PictureArgs { FileAddress = fullAddress };
             }
 
+            return await CreateUniqueAsync(bankDTO, "Name", "بانک");
+        }
 
-            var root = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images");
-            if (!Directory.Exists(root))
-                Directory.CreateDirectory(root);
-            var fileAddress = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            var fullAddress = Path.Combine(root, fileAddress);
-            //Create Picture Object
-            bankDTO.Picture = new PictureArgs { FileAddress = fullAddress };
-
-            var bankEntity = MapToEntity(bankDTO);
-            bankEntity.DateCreated = DateTime.Now;
-            bankEntity.DateUpdated = DateTime.Now;
-
-
-            var isUnique = await IsUniqueAsync(bankEntity, "Name");
-            if (isUnique == 0)
+        public async Task<bool> DeleteAsync(Guid Id)
+        {
+            //Check if Id valid
+            if (new Guid() != Id)
             {
-                throw new DuplicateUniquePropertyException( "بانک ");
-            }
-            if(isUnique == -1)
-            {
-                return false;
-            }
-
-            var result = await _baseRepository.CreateAsync(bankEntity);
-            if (fullAddress != null)
-            {
-                using(var stream = new FileStream(fullAddress, FileMode.Create))
+                var check = await _baseRepository.GetByIdAsync(Id, x => x.Include(x => x.Picture), true);
+                if (check != null)
                 {
-                    stream.Position = 0;
-                    stream.Flush();
-                    await file.CopyToAsync(stream);
+
+                    //delete bank from bankAcccounts
+                    await _bankAccountService.DeleteBankAsync(Id);
+                    var result = await _baseRepository.DeleteAsync(Id);
+                    if (result)
+                    {
+                        if (check.Picture != null)
+                        {
+                            //delete File
+                            await _pictureService.DeleteAsync(check.Picture.Id, check.Picture.FileAddress);
+                        }
+
+                    }
+
+                    return result;
+
+
+
                 }
             }
-                //file.CopyTo(new FileStream(fullAddress, FileMode.Create));
-            else
-                throw new CodeErrorException();
 
-
-            return result;
-        }
-        public override async Task<bool> CreateAsync<DTO>(DTO dto)
-            where DTO : class
-        {
-            return await CreateUniqueAsync(dto, "Name", "بانک");
+            throw new ItemNotFoundException("بانک");
         }
     }
-    
+
 }

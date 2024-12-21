@@ -20,9 +20,6 @@ namespace Models.Entities
         public User User { get; set; } 
         public Bank Bank { get; set; } 
 
-        protected override void Validate()
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }

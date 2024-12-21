@@ -16,10 +16,7 @@ namespace Models.Entities
         public string FileAddress { get; private set; }
        
 
-        protected override void Validate()
-        {
-            throw new NotImplementedException();
-        }
+        
 
 
         

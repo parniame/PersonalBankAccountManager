@@ -2,12 +2,15 @@
 using DataTransferObject;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Models.Entities;
 using PersonalBankAccountManager.Models;
 using PersonalBankAccountManager.Resources.MyAttributes;
 using PersonalBankAccountManager.Resources.Utilities;
 using Service.ServiceClasses;
 using Service.ServiceInterfaces;
+using Shared;
+using System.Dynamic;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 
@@ -21,7 +24,7 @@ namespace PersonalBankAccountManager.Controllers
         private readonly ITransactionService _transactionService;
         private readonly ITransactionPlanService _transactionPlanService;
         private readonly ITransactionCategoryService _categoryService;
-        
+
         private readonly Translator _translator;
         private readonly ILogger<TransactionController> _logger;
 
@@ -31,7 +34,7 @@ namespace PersonalBankAccountManager.Controllers
             _transactionService = transactionService;
             _transactionPlanService = transactionPlanService;
 
-            _translator = new Translator(bankAccountService, transactionService);
+            _translator = new Translator(bankAccountService, transactionService, transactionPlanService);
             _logger = logger;
             _categoryService = categoryService;
         }
@@ -39,33 +42,16 @@ namespace PersonalBankAccountManager.Controllers
         //create
         [HttpGet]
 
-        public async Task<IActionResult> AddTransaction(string? errorMessage)
+        public async Task<IActionResult> AddTransaction()
         {
             try
             {
-                
-                if (errorMessage != null)
-                {
-                    TempData["ErrorMessage"] = errorMessage;
-                }
-
-                var addTransactionViewModel = new AddTransactionViewModel();
-                //bring bankAccounts
                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (!string.IsNullOrEmpty(currentUserId))
                 {
-                    List<BankAccountViewModel> bankAccounts = await _translator.GetBankAccountViewModelsAsync(new Guid(currentUserId));
 
-                    //bring transactionPlans
-
-
-                    var transactionPlanCommands = await _transactionPlanService.GetAllAsync<TransactionPlanArgs>(new Guid(currentUserId));
-                    var transactionCategoryViewModels = Translator.ProjectToCustom<TransactionPlanArgs, TransactionPlanViewModel>(transactionPlanCommands);
-
-                    addTransactionViewModel.BankAccountViewModels = bankAccounts;
-                    addTransactionViewModel.TransactionPlanViewModels = transactionCategoryViewModels;
-                    
-                    return View(addTransactionViewModel);
+                    var addTransactionViewModel2 = await _translator.GetAddTransactionViewModelAsync(new Guid(currentUserId));
+                    return View(addTransactionViewModel2);
 
                 }
 
@@ -82,7 +68,7 @@ namespace PersonalBankAccountManager.Controllers
                 TempData["ErrorMessage"] = "اوردن صفحه درج تراکنش با مشکل مواجه شد";
             }
 
-            return RedirectToAction("Index", "Member", new { errorMessage = TempData["ErrorMessage"] });
+            return RedirectToAction("Index", "Member");
         }
 
 
@@ -90,11 +76,10 @@ namespace PersonalBankAccountManager.Controllers
         [HttpPost]
         public async Task<IActionResult> AddTransactionPostAsync(AddTransactionViewModel addTransactionViewModel)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    
                     var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                     if (!string.IsNullOrEmpty(currentUserId))
                     {
@@ -105,35 +90,45 @@ namespace PersonalBankAccountManager.Controllers
                         var amountChangeResult = await _bankAccountService.ChangeAmmountAsync(amount, new Guid(currentUserId), isPositive, bankAccountId);
                         if (amountChangeResult)
                         {
+                            if (addTransactionViewModel.TransactionPlanId.HasValue)
+                                await _transactionPlanService.SetIsPaidAsync(addTransactionViewModel.TransactionPlanId.Value, new Guid(currentUserId));
                             var transactionCommand = Translator.MapToCustom<AddTransactionViewModel, TransactionCommand>(addTransactionViewModel);
 
                             transactionCommand.UserId = new Guid(currentUserId);
-                            var result = await _transactionService.CreateAsync(transactionCommand);
-                            TempData["SuccessMessage"] = "   تراکنش  با موفقیت ساخته شد";
-                            return LocalRedirect("/Member/index");
+
+                            var result = await _transactionService.CreateAsync(transactionCommand, addTransactionViewModel.File);
+                            if (result)
+                            {
+                                TempData["SuccessMessage"] = "   تراکنش  با موفقیت ساخته شد";
+                                return RedirectToAction("Index", "Member");
+                            }
                         }
-
-
                     }
-
-
-
                 }
-                catch (Exception e)
+                else
                 {
-                    _logger.LogError(e, "در ساخت   تراکنش  مشکلی به وجود آمد");
-                    //If error is in english
-                    if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
-                        TempData["ErrorMessage"] = e.Message;
+                    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    if (!string.IsNullOrEmpty(currentUserId))
+                    {
+                        var addTransactionViewModel2 = await _translator.GetAddTransactionViewModelAsync(new Guid(currentUserId));
+                        return View("AddTransaction", addTransactionViewModel2);
+                    }
                 }
-
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "در ساخت   تراکنش  مشکلی به وجود آمد");
+                //If error is in english
+                if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
+                    TempData["ErrorMessage"] = e.Message;
             }
             if (TempData["ErrorMessage"] == null)
             {
                 TempData["ErrorMessage"] = "ساخت  تراکنش با مشکل مواجه شد";
             }
 
-            return RedirectToAction("AddTransaction", new { errorMessage = TempData["ErrorMessage"].ToString() });
+
+            return RedirectToAction("AddTransaction");
         }
 
         public IActionResult GetCategories(bool isPositive, Guid categoryId = new Guid())
@@ -145,8 +140,6 @@ namespace PersonalBankAccountManager.Controllers
                 {
                     ViewData["categoryId"] = categoryId;
                 }
-
-                
                 //bring categories.. 
                 var transactionCategoryCommands = _categoryService.GetAllWithFilter<CategoryArgs>(isPositive);
                 var transactionCategories = Translator.ProjectToCustom<CategoryArgs, CategoryViewModel>(transactionCategoryCommands);
@@ -154,7 +147,7 @@ namespace PersonalBankAccountManager.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "در اوردن کتگوری ها    مشکلی به وجود آمد");
+                _logger.LogError(e, "در اوردن دسته بندی تراکنش ها    مشکلی به وجود آمد");
                 //If error is in english
                 if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
                     TempData["ErrorMessage"] = e.Message;
@@ -163,11 +156,11 @@ namespace PersonalBankAccountManager.Controllers
 
             if (TempData["ErrorMessage"] == null)
             {
-                TempData["ErrorMessage"] = "اوردن کتگوری   با مشکل مواجه شد";
+                TempData["ErrorMessage"] = "اوردن دسته بندی تراکنش   با مشکل مواجه شد";
 
             }
 
-            return RedirectToAction("AddTransaction", new { errorMessage = TempData["ErrorMessage"].ToString() });
+            return RedirectToAction("AddTransaction");
 
 
 
@@ -211,6 +204,7 @@ namespace PersonalBankAccountManager.Controllers
             return RedirectToAction("Index", "Member", new { errorMessage = TempData["ErrorMessage"] });
 
         }
+
         //Delete
         public async Task<IActionResult> DeleteTransaction(Guid transactionId)
         {
@@ -227,10 +221,6 @@ namespace PersonalBankAccountManager.Controllers
                     }
 
                 }
-
-
-
-
             }
             catch (Exception e)
             {
@@ -298,9 +288,8 @@ namespace PersonalBankAccountManager.Controllers
                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (!string.IsNullOrEmpty(currentUserId))
                 {
-                    var guid = new Guid(currentUserId);
-                    var transactionResult = await _transactionService.GetByIdAsync<TransactionArgs>(transactionId, guid);
-                    var result = Translator.MapToCustom<TransactionArgs, UpdateTransactionViewModel>(transactionResult);
+
+                    var result = await _translator.GetUpdateTransactionViewModelAsync(transactionId, new Guid(currentUserId));
 
                     return View(result);
 
@@ -332,32 +321,59 @@ namespace PersonalBankAccountManager.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateTransactionPostAsync(UpdateTransactionViewModel updateTransactionViewModel)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (updateTransactionViewModel != null)
                 {
-                    var transactionResult = Translator.MapToCustom<UpdateTransactionViewModel, TransactionCommand>(updateTransactionViewModel);
-
-
-                    var result = await _transactionService.UpdateAsync(transactionResult);
-                    if (result)
+                    //remove TillThisDateFarsi
+                    if (ModelState.ContainsKey("TransactionPlanViewModel.Id"))
                     {
-                        TempData["SuccessMessage"] = " تراکنش با موفقیت تغییرداده شد";
-                        return RedirectToAction("GetTransactions");
+                        ModelState["TransactionPlanViewModel.Id"].ValidationState = ModelValidationState.Valid;
+                        ModelState["TransactionPlanViewModel.Id"].Errors.Clear();
                     }
-
-
-
-
+                    if (ModelState.ContainsKey("TransactionPlanViewModel.Name"))
+                    {
+                        ModelState["TransactionPlanViewModel.Name"].ValidationState = ModelValidationState.Valid;
+                        ModelState["TransactionPlanViewModel.Name"].Errors.Clear();
+                    }
                 }
-                catch (Exception e)
+
+                if (ModelState.IsValid)
                 {
-                    _logger.LogError(e, "در تغییر  تراکنش مشکلی به وجود آمد");
-                    //If error is in english
-                    if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
-                        TempData["ErrorMessage"] = e.Message;
 
+                    var transactionCommand = Translator.MapToCustom<UpdateTransactionViewModel, TransactionCommand>(updateTransactionViewModel);
+                    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    if (!string.IsNullOrEmpty(currentUserId))
+                    {
+                        transactionCommand.UserId = new Guid(currentUserId);
+                        var result = await _transactionService.UpdateAsync(transactionCommand, updateTransactionViewModel.File,updateTransactionViewModel.KeepFile); 
+                        if (result)
+                        {
+                            TempData["SuccessMessage"] = " تراکنش با موفقیت تغییرداده شد";
+                            return RedirectToAction("GetTransactions");
+                        }
+                    }
                 }
+                else
+                {
+                    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    if (!string.IsNullOrEmpty(currentUserId))
+                    {
+
+                        var result = await _translator.GetUpdateTransactionViewModelAsync(updateTransactionViewModel.Id, new Guid(currentUserId));
+
+                        return View("UpdateTransaction", result);
+
+
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "در تغییر  تراکنش مشکلی به وجود آمد");
+                //If error is in english
+                if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
+                    TempData["ErrorMessage"] = e.Message;
 
             }
             if (TempData["ErrorMessage"] == null)
@@ -369,6 +385,110 @@ namespace PersonalBankAccountManager.Controllers
             return RedirectToAction("GetTransactions", new { errorMessage = TempData["ErrorMessage"]?.ToString() });
 
         }
+
+
+        public async Task<IActionResult> Compare(DateTime? from, DateTime? to)
+        {
+            try
+            {
+
+                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (!string.IsNullOrEmpty(currentUserId))
+                {
+
+                    var guid = new Guid(currentUserId);
+
+                    dynamic obj = await _translator.GetCompareTransactionAsync(guid, from, to);
+
+
+                    return View("CompareTransaction", obj);
+                }
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "در اوردن لیست   تراکنش  مشکلی به وجود آمد");
+                //If error is in english
+                if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
+                    TempData["ErrorMessage"] = e.Message;
+            }
+            if (TempData["ErrorMessage"] == null)
+            {
+                TempData["ErrorMessage"] = " اوردن لیست  تراکنش با مشکل مواجه شد";
+            }
+
+            return View("CompareTransaction", new List<TransactionWithoutDetails>());
+
+
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetTransactionLineChart()
+        {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            TransactionLists lists;
+            if (!string.IsNullOrEmpty(currentUserId))
+            {
+                lists = await _transactionService.GetChartListAsync(new Guid(currentUserId));
+            }
+            else
+            {
+                lists = new TransactionLists()
+                {
+                    Amounts = new List<decimal>(),
+                    Times = new List<DateTime> { DateTime.Now },
+
+                };
+            }
+            return Json(lists);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetTransactionPieChart()
+        {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            TransactionCategoryLists lists;
+            if (!string.IsNullOrEmpty(currentUserId))
+            {
+                lists = await _transactionService.GetTransactionWithCategoriesChartAsync(new Guid(currentUserId));
+            }
+            else
+            {
+                lists = new TransactionCategoryLists()
+                {
+                    Counts = new List<List<int>>(),
+                    Categories = new List<List<string>>(),
+
+                };
+            }
+            return Json(lists);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetTransactionBarChart()
+        {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            CompareTransaction comareArgs;
+            if (!string.IsNullOrEmpty(currentUserId))
+            {
+                
+                 dynamic obj    =await _transactionService.GetComareAsync<Transaction>(new Guid(currentUserId),null,null,false);
+                 comareArgs = obj.Compare;
+            }
+            else
+            {
+                comareArgs = new CompareTransaction()
+                {
+                    CountAll = 0,
+                    CountAmountIn = 0,
+                    CountAmountOut = 0,
+                    AmountIn = 0,
+                    AmountOut = 0,
+                    TotalAmount = 0,
+                };
+            }
+            return Json(comareArgs);
+        }
+
+
 
 
 

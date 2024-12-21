@@ -13,9 +13,10 @@ namespace Service.ServiceInterfaces
     {
         //Task<IdentityResult> CreateUser(RegisterCommand user, string password,Guid userId);
         Task<User> GetCurrentUserAsync( string userId);
-        Task<List<UserResult>> GetAllUser();
         Task<bool> LoginAsync(LoginCommand command);
         Task<bool> RegisterAsync(RegisterCommand command,string userRole);
         Task LogoutAsync(string username);
+        Task DeleteUserAsync(Guid userId);
+        Task<List<UserResult>> GetAllUser(Guid userId);
     }
 }

@@ -13,17 +13,14 @@ namespace PersonalBankAccountManager.Models
 
         [Display(Name = "AmountProp", ResourceType = typeof(PresentationResources))]
         public decimal Amount { get; set; }
-
         public string IsWithdrawl { get; set; }
-
-        [Display(Name = "TillThisDateProp", ResourceType = typeof(PresentationResources))]
-        [DataType(DataType.Date, ErrorMessageResourceName = "InvalidDate", ErrorMessageResourceType = typeof(PresentationResources))]
-        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
-        [Required(ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = "RequiredValidationMessage")]
-        [FutureDate(ErrorMessageResourceName = "InvalideFutureDate", ErrorMessageResourceType = typeof(PresentationResources))]
-        public DateTime TillThisDate { get; set; }
+        public string TillThisDateFarsi { get; set; }
+        public bool IsOverdue { get; set; }
+        public bool IsPaid { get; set; }
+        public string? DateCreatedFarsi { get; set; }
+        public string? DateUpdatedFarsi { get; set; }
         public DateTime? DateCreated { get; set; }
         public DateTime? DateUpdated { get; set; }
-        public DateTime? TransactionDateCreated { get; set; }
+        
     }
 }

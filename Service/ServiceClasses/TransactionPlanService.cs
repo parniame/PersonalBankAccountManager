@@ -1,6 +1,8 @@
 ﻿using Abstraction.Domain;
 using Abstraction.Service.Exceptions;
 using DataTransferObject;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Models.Entities;
@@ -27,6 +29,33 @@ namespace Service.ServiceClasses
         {
             return await CreateUniqueAsync(transactionPlanCommand, "Name", "پلنر تراکنش");
         }
+        public async Task SetIsPaidAsync(Guid transactionPlanId, Guid userId)
+        {
+
+            //check user
+            var user = await _userService.GetCurrentUserAsync(userId.ToString());
+            if (user == null)
+            {
+                throw new ItemNotFoundException("نام کاربری");
+            }
+            //Check if Id valid
+            if (new Guid() != transactionPlanId)
+            {
+                var check = await _baseRepository.GetByIdAsync(transactionPlanId, false);
+                if (check != null)
+                {
+                    if (check.UserId == userId)
+                    {
+                        check.IsPaid = true;
+                        _baseRepository.CommitAsync();
+                        return;
+                    }
+                    throw new CodeErrorException();
+                }
+            }
+            throw new ItemNotFoundException("پلنر تراکنش ");
+
+        }
         public async Task<List<DTO>> GetAllAsync<DTO>(Guid userId)
         where DTO : class
         {
@@ -36,12 +65,12 @@ namespace Service.ServiceClasses
             {
                 throw new ItemNotFoundException("نام کاربری");
             }
-            var entities =  _baseRepository.GetAll(x => x.UserId == userId, true);
-            if(entities == null)
+            var entities = _baseRepository.GetAll(x => x.UserId == userId, true);
+            if (entities == null)
             {
                 return new List<DTO>();
             }
-             
+
             var results = await entities.ProjectToType<DTO>().ToListAsync();
             return results;
 
@@ -67,6 +96,7 @@ namespace Service.ServiceClasses
 
             throw new ItemNotFoundException("پلنر تراکنش ");
         }
+       
         public async Task<DTO?> GetByIdAsync<DTO>(Guid Id, Guid userId, bool readOnly = true)
            where DTO : class
         {
@@ -84,7 +114,7 @@ namespace Service.ServiceClasses
                 {
                     if (check.UserId == userId)
                     {
-                        var entity = await _baseRepository.GetByIdAsync(Id, readOnly);
+                        var entity = await _baseRepository.GetByIdAsync(Id, x => x.Include(x => x.Transaction).Include(x => x.Transaction.Category).Include(x => x.Transaction.BankAccount), readOnly);
 
                         var test = MapToDTO<DTO>(entity);
                         return entity == null ? null : MapToDTO<DTO>(entity);
@@ -93,6 +123,30 @@ namespace Service.ServiceClasses
                 }
             }
             throw new ItemNotFoundException("پلنر تراکنش ");
+        }
+        public async Task<bool> UpdateAsync(TransactionPlanCommand dto, bool isPaid)
+
+        {
+            var dtoCheck = await _baseRepository.GetByIdAsync(dto.Id);
+            if (dtoCheck != null)
+            {
+                if (dtoCheck.UserId == dto.UserId)
+                {
+                    var entity = MapToEntity(dto);
+                    entity.DateUpdated = DateTime.Now;
+                    var list = new List<string>
+            {
+                "UserId",
+
+            };
+                    if (isPaid)
+                    {
+                        list.AddRange(["Amount", "TillThisDate", "IsWithdrawl"]);
+                    }
+                    return await _baseRepository.UpdateAsync(entity, list);
+                }
+            }
+            throw new CodeErrorException();
         }
 
     }
