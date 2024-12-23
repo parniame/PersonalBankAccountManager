@@ -13,12 +13,9 @@ namespace Abstraction.Service
     {
         Entity MapToEntity<DtO>(DtO dto) where DtO : class;
         DtO MapToDTO<DtO>(Entity entity) where DtO : class;
-        Task<DTO> GetByIdAsync<DTO>(Guid Id, bool readOnly = true) where DTO : class; 
         Task<List<DTO>> GetAllAsync<DTO>()
             where DTO : class;
         Task<bool> CreateAsync<DTO>(DTO dto) where DTO : class;
-        Task<bool> UpdateAsync<DTO>(DTO dto) where DTO : class;
-        //Task<bool> DeleteAsync(Guid Id);
-        
+         
     }
 }

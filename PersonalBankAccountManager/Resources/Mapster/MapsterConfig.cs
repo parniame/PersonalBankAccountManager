@@ -3,6 +3,7 @@ using Mapster;
 using MD.PersianDateTime.Standard;
 using PersonalBankAccountManager.Models;
 using System.Globalization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace PersonalBankAccountManager.Resources.Mapster
@@ -26,9 +27,11 @@ namespace PersonalBankAccountManager.Resources.Mapster
                 .Map(dest => dest.DateCreatedFarsi, src => toSolarCalender(src.DateCreated))
                 .Map(dest => dest.DateUpdatedFarsi, src => toSolarCalender(src.DateUpdated));
             TypeAdapterConfig<UserResult, UserWithDetailsViewModel>.NewConfig()
-                .Map(dest => dest.DateOfBirth,src => toSolarCalenderDateOnly(src.DateOfBirth))
-                .Map(dest => dest.DateCreatedFarsi, src => toSolarCalender(src.DateCreated))
-                .Map(dest => dest.DateUpdatedFarsi, src => toSolarCalender(src.DateUpdated));
+                .Map(dest => dest.DateOfBirthFarsi,src => toSolarCalenderDateOnly(src.DateOfBirth),srcCond => srcCond.DateOfBirth != null)
+                .Map(dest => dest.DateCreatedFarsi, src => toSolarCalender(src.DateCreated), srcCond => srcCond.DateCreated != null)
+                .Map(dest => dest.DateUpdatedFarsi, src => toSolarCalender(src.DateUpdated), srcCond => srcCond.DateUpdated != null);
+            TypeAdapterConfig<UserWithDetailsViewModel, RegisterCommand>.NewConfig()
+                .Map(dest => dest.DateOfBirth, src => new DateTime(src.DateOfBirth.Value,new TimeOnly()));
             TypeAdapterConfig<TransactionPlanArgs, TransactionPlanViewModel>.NewConfig()
                 .Map(dest => dest.Name, src => src.Name)
                 .Map(dest => dest.Id, src => src.Id)

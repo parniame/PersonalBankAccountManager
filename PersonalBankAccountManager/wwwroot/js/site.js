@@ -165,28 +165,7 @@ function ShowDetailsModal(Id, isPaid) {
 
 
 }
-//function ShowDetailsModalPlan(description) {
 
-
-//    let td = $("#description");
-
-//    td.html(description);
-
-//    let thisModal = $("#details-modal");
-//    thisModal.modal("show");
-
-//}
-
-
-$('#addTransactionForm').on('reset', function (e) {
-    console.log("hi");
-    let amountInput = $("#transactionAmount");
-    let falseWithdrawlRadio = $("#IsWithdrawl1");
-    let trueWithdrawlRadio = $("#IsWithdrawl2");
-    amountInput.prop("readonly", false);
-    trueWithdrawlRadio.prop('disabled', false);
-    falseWithdrawlRadio.prop('disabled', false);
-});
 
 
 if ($("#transactionTable").length) {
@@ -203,15 +182,16 @@ if ($("#transactionTable").length) {
                 .every(function () {
                     var column = this;
                     var title = column.footer().textContent;
-
-                    // Create input element and add event listener
-                    $('<input type="text" placeholder="جستوجو ' + title + '" />')
-                        .appendTo($(column.footer()).empty())
-                        .on('keyup change clear', function () {
-                            if (column.search() !== this.value) {
-                                column.search(this.value).draw();
-                            }
-                        });
+                    if (title != "اعمال") {
+                        // Create input element and add event listener
+                        $('<input type="text" placeholder="جستوجو ' + title + '" />')
+                            .appendTo($(column.footer()).empty())
+                            .on('keyup change clear', function () {
+                                if (column.search() !== this.value) {
+                                    column.search(this.value).draw();
+                                }
+                            });
+                    }
                 });
         },
         layout: {
@@ -290,7 +270,9 @@ if ($("#transactionTable").length) {
 
                 },
                 targets: [2]
-            }
+            },
+
+            { orderable: false, targets: -1 }
         ]
     });
 }
@@ -303,15 +285,16 @@ if ($("#bankAccountTable").length) {
                 .every(function () {
                     var column = this;
                     var title = column.footer().textContent;
-
-                    // Create input element and add event listener
-                    $('<input type="text" placeholder="جستوجو ' + title + '" />')
-                        .appendTo($(column.footer()).empty())
-                        .on('keyup change clear', function () {
-                            if (column.search() !== this.value) {
-                                column.search(this.value).draw();
-                            }
-                        });
+                    if (title != "اعمال") {
+                        // Create input element and add event listener
+                        $('<input type="text" placeholder="جستوجو ' + title + '" />')
+                            .appendTo($(column.footer()).empty())
+                            .on('keyup change clear', function () {
+                                if (column.search() !== this.value) {
+                                    column.search(this.value).draw();
+                                }
+                            });
+                    }
                 });
         },
         layout: {
@@ -350,6 +333,9 @@ if ($("#bankAccountTable").length) {
 
         columnDefs: [
             { type: 'date', targets: [2, 3] },
+            
+
+            { orderable: false, targets: -1 }
 
 
         ]
@@ -365,15 +351,16 @@ if ($("#PlannerTabel").length) {
                 .every(function () {
                     var column = this;
                     var title = column.footer().textContent;
-
-                    // Create input element and add event listener
-                    $('<input type="text" placeholder="جستوجو ' + title + '" />')
-                        .appendTo($(column.footer()).empty())
-                        .on('keyup change clear', function () {
-                            if (column.search() !== this.value) {
-                                column.search(this.value).draw();
-                            }
-                        });
+                    if (title != "اعمال") {
+                        // Create input element and add event listener
+                        $('<input type="text" placeholder="جستوجو ' + title + '" />')
+                            .appendTo($(column.footer()).empty())
+                            .on('keyup change clear', function () {
+                                if (column.search() !== this.value) {
+                                    column.search(this.value).draw();
+                                }
+                            });
+                    }
                 });
         },
         language: {
@@ -465,6 +452,8 @@ if ($("#PlannerTabel").length) {
                 targets: [3]
             },
 
+            { orderable: false, targets: -1 }
+
 
         ],
     });
@@ -484,15 +473,18 @@ if ($(".adminTable").length) {
                 .every(function () {
                     var column = this;
                     var title = column.footer().textContent;
+                    if (title != "اعمال") {
+                        // Create input element and add event listener
+                        $('<input type="text" placeholder="جستوجو ' + title + '" />')
+                            .appendTo($(column.footer()).empty())
+                            .on('keyup change clear', function () {
+                                if (column.search() !== this.value) {
+                                    column.search(this.value).draw();
+                                }
+                            });
+                    }
 
-                    // Create input element and add event listener
-                    $('<input type="text" placeholder="جستوجو ' + title + '" />')
-                        .appendTo($(column.footer()).empty())
-                        .on('keyup change clear', function () {
-                            if (column.search() !== this.value) {
-                                column.search(this.value).draw();
-                            }
-                        });
+                   
                 });
         },
         layout: {
@@ -530,6 +522,8 @@ if ($(".adminTable").length) {
 
         columnDefs: [
             { type: 'date', targets: [4, 5] },
+
+            { orderable: false, targets: -1 }
             
         ]
     });

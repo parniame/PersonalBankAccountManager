@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 namespace PersonalBankAccountManager.Resources.MyAttributes
 {
@@ -6,7 +7,8 @@ namespace PersonalBankAccountManager.Resources.MyAttributes
     {
         public override bool IsValid(object value)// Return a boolean value: true == IsValid, false != IsValid
         {
-            var birthDate = Convert.ToDateTime(value);
+            if(value == null) return true;
+            var birthDate = Convert.ToDateTime(value.ToString());
             var year = birthDate.Year;
             var yearNow = DateTime.Now.Year;
             return yearNow - year >= 18;

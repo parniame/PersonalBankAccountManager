@@ -50,7 +50,7 @@ namespace PersonalBankAccountManager.Controllers
         [HttpPost]
         public async Task<IActionResult> AddTransactionPlanPostAsync(AddTransactionPlanViewModel transactionPlanViewModel)
         {
-
+           
             if (ModelState.IsValid)
             {
                 try
@@ -62,11 +62,7 @@ namespace PersonalBankAccountManager.Controllers
                         transactionPlanCommand.UserId = new Guid(currentUserId);
                         var result = await _transactionPlanService.CreateAsync(transactionPlanCommand);
                         TempData["SuccessMessage"] = "  پلنر تراکنش  با موفقیت ساخته شد";
-
-                        //BackgroundJob.Schedule(() =>  scheduleControler.CreatePlannerTimer(transactionPlanCommand.UniqueName),selectedDate));
-
-
-                        return LocalRedirect("/Member/index");
+                        return RedirectToAction("GetTransactionPlans");
                     }
 
                     throw new CodeErrorException();
@@ -90,17 +86,14 @@ namespace PersonalBankAccountManager.Controllers
             {
                 TempData["ErrorMessage"] = "ساخت پلنر تراکنش با مشکل مواجه شد";
             }
-            return RedirectToAction("Index", "Member", new { errorMessage = TempData["ErrorMessage"] });
+            return RedirectToAction("Index", "Member");
             
         }
         //Read
         [HttpGet]
-        public async Task<IActionResult> GetTransactionPlans(string? errorMessage)
+        public async Task<IActionResult> GetTransactionPlans()
         {
-            if (errorMessage != null)
-            {
-                TempData["ErrorMessage"] = errorMessage;
-            }
+            
             try
             {
                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -129,7 +122,7 @@ namespace PersonalBankAccountManager.Controllers
 
             }
 
-            return RedirectToAction("Index", "Member", new { errorMessage = TempData["ErrorMessage"] });
+            return RedirectToAction("Index", "Member");
 
         }
         //Delete
@@ -149,9 +142,6 @@ namespace PersonalBankAccountManager.Controllers
 
                 }
 
-
-
-
             }
             catch (Exception e)
             {
@@ -168,8 +158,7 @@ namespace PersonalBankAccountManager.Controllers
 
             }
 
-
-            return RedirectToAction("GetTransactionPlans", new { errorMessage = TempData["ErrorMessage"] });
+            return RedirectToAction("GetTransactionPlans");
         }
         //Details
         public async Task<IActionResult> GetPlannerDetails(Guid plannerId)
@@ -200,7 +189,7 @@ namespace PersonalBankAccountManager.Controllers
             }
 
 
-            return RedirectToAction("GetTransactionPlans", new { errorMessage = TempData["ErrorMessage"] });
+            return RedirectToAction("GetTransactionPlans");
         }
         //update
         [HttpGet]
@@ -243,27 +232,7 @@ namespace PersonalBankAccountManager.Controllers
 
 
         }
-        //[SetTempDataModelStateAttribute]
-        //public IActionResult Test()
-        //{
-
-        //    var test = ModelState.ToDictionary();
-        //    ModelState.AddModelError("test", "is sent?");
-        //    ModelState.AddModelError("check", "hi");
-        //    //var h = typeof(ModelState);
-        //    TempData.Put("ModelState", ModelState.ToDictionary());
-
-        //    //TempData["n"] = ModelState.ToDictionary();
-        //    return RedirectToAction("Index");
-        //}
-        ////[RestoreModelStateFromTempDataAttribute]
-        //public IActionResult Index()
-        //{
-        //    //var test = TempData["n"];
-        //    var test2 = TempData.Get<Dictionary<string,ModelStateEntry?>>("ModelState");
-        //    ModelState.Merge((ModelStateDictionary)test);
-        //    return View();
-        //}
+        
 
         [HttpPost]
         public async Task<IActionResult> UpdatePlannerPostAsync(UpdateTransactionPlanViewModel updateTransactionPlanViewModel)
@@ -278,7 +247,6 @@ namespace PersonalBankAccountManager.Controllers
                         ModelState["TillThisDateFarsi"].ValidationState = ModelValidationState.Valid;
                         ModelState["TillThisDateFarsi"].Errors.Clear();
                     }
-                        
                     if (updateTransactionPlanViewModel.IsPaid)
                     {
                         if (ModelState.ContainsKey("TillThisDate"))
@@ -294,13 +262,18 @@ namespace PersonalBankAccountManager.Controllers
                         if (updateTransactionPlanViewModel.OldDateTime <= DateTime.Now)
                         {
                             ModelState["TillThisDate"].Errors.Clear();
+                            ModelState["TillThisDate"].ValidationState = ModelValidationState.Valid;
                             var selectedDateTime = updateTransactionPlanViewModel.TillThisDate;
 
-                            var selectedOnlyDate = new DateTime(selectedDateTime.Year, selectedDateTime.Month, selectedDateTime.Day, selectedDateTime.Hour, selectedDateTime.Minute, 0);
+                            var selectedOnlyDate = new DateTime(selectedDateTime.Value.Year, selectedDateTime.Value.Month, selectedDateTime.Value.Day, selectedDateTime.Value.Hour, selectedDateTime.Value.Minute, 0);
                             var oldDate = updateTransactionPlanViewModel.OldDateTime;
-                            var nowDateOnlyDate = new DateTime(oldDate.Year, oldDate.Month, oldDate.Day, oldDate.Hour, oldDate.Minute, 0);
-                            if (selectedDateTime >= nowDateOnlyDate)
+                            var oldDateOnlyDate = new DateTime(oldDate.Year, oldDate.Month, oldDate.Day, oldDate.Hour, oldDate.Minute, 0);
+                            if (selectedOnlyDate < oldDateOnlyDate)
+                            {
                                 ModelState["TillThisDate"].Errors.Add("باید برابر یا بیشتر از تایم قبلی باشد");
+                                ModelState["TillThisDate"].ValidationState = ModelValidationState.Invalid;
+                            }
+                                
                         }
 
                     }
@@ -362,7 +335,7 @@ namespace PersonalBankAccountManager.Controllers
 
 
 
-            return RedirectToAction("GetTransactionPlans", new { errorMessage = TempData["ErrorMessage"]?.ToString() });
+            return RedirectToAction("GetTransactionPlans");
         }
     }
 }

@@ -35,14 +35,11 @@ namespace PersonalBankAccountManager.Controllers
 
         //create
         [HttpGet]
-        public async Task<IActionResult> AddBankAccount(string? errorMessage)
+        public async Task<IActionResult> AddBankAccount()
         {
             try
             {
-                if (errorMessage != null)
-                {
-                    TempData["ErrorMessage"] = errorMessage;
-                }
+                
                 var addBankAccountViewModel = await _translator.GetBankAccountViewModelAsync();
 
 
@@ -199,10 +196,6 @@ namespace PersonalBankAccountManager.Controllers
                     }
 
                 }
-
-
-
-
             }
             catch (Exception e)
             {

@@ -89,22 +89,12 @@ namespace Service.ServiceClasses
 
             throw new ItemNotFoundException("حساب بانکی");
         }
-        public async Task<bool> DeleteBankAsync(Guid bankId)
-        {
-            var transactions = _bankAccountRepository.GetAll(x => x.BankId == bankId, false).ToList();
-
-            foreach (var transaction in transactions)
-            {
-                transaction.BankId = null;
-            }
-            await  _bankAccountRepository.CommitAsync();
-            return true;
-        }
+        
         public async Task<DTO?> GetByIdAsync<DTO>(Guid Id, Guid userId, bool readOnly = true)
             where DTO : class
         {
             //check user
-            var user = await _userService.GetCurrentUserAsync(userId.ToString());
+            var user = await _userService.GetUserAsync(userId.ToString());
             if (user == null)
             {
                 throw new ItemNotFoundException("نام کاربری");
@@ -131,7 +121,7 @@ namespace Service.ServiceClasses
         where DTO : class
         {
             //check user
-            var user = await _userService.GetCurrentUserAsync(userId.ToString());
+            var user = await _userService.GetUserAsync(userId.ToString());
             if (user == null)
             {
                 throw new ItemNotFoundException("نام کاربری");

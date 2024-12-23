@@ -24,7 +24,7 @@ namespace PersonalBankAccountManager.Models
         [DataType(DataType.Date, ErrorMessageResourceName = "InvalidDate", ErrorMessageResourceType = typeof(PresentationResources))]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         [FutureDate(ErrorMessageResourceName = "InvalideFutureDate", ErrorMessageResourceType = typeof(PresentationResources))]
-        public DateTime TillThisDate { get; set; }
+        public DateTime? TillThisDate { get; set; }
 
         [Display(Name = "DescriptionProp", ResourceType = typeof(PresentationResources))]
         public string? Description { get; set; }

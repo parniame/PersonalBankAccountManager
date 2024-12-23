@@ -200,7 +200,7 @@
             </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">ثبت</button>
-                <button type="reset" class="btn btn-secondary">پاک کردن</button>
+               
             </div>
 
 
@@ -208,7 +208,13 @@
 
         </form>
         <form id="addCategory" asp-action="GetCategories" method="post" data-ajax-update="#categories" data-ajax="true">
-            <input id="isPositive" type="hidden" name="isPositive" value="@Model.IsWithdrawl" />
+            @{
+                bool value = Model.IsWithdrawl;
+                string str2 = "False";
+                if (value)
+                    str2 = "True";
+            }
+            <input id="isPositive" type="hidden" name="isPositive" value="@str2" />
             <input id="categoryId" type="hidden" name="categoryId" value="@Model.CategoryId" />
 
 

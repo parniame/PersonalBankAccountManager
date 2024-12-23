@@ -14,7 +14,6 @@ namespace Service.ServiceInterfaces
         
         Task<bool> ChangeAmmountAsync(decimal amount, Guid userId, bool isPositive, Guid bankAccountId);
         Task<bool> DeleteAsync(Guid Id, Guid userId);
-        Task<bool> DeleteBankAsync(Guid bankId);
         Task<List<DTO>> GetAllAsync<DTO>(Guid userId) where DTO : class;
         Task<DTO?> GetByIdAsync<DTO>(Guid Id, Guid userId, bool readOnly = true) where DTO : class;
         Task<bool> UpdateAsync(BankAccountCommand dto);

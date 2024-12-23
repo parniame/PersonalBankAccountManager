@@ -69,9 +69,7 @@
                         <th class="border-bottom-0">نام تغییر دهنده </th>
                         <th class="border-bottom-0">زمان ساخت</th>
                         <th class="border-bottom-0">زمان تغییر</th>
-                        <th class="border-bottom-0">اعمال</th>
-
-
+                        <th class="border-bottom-0 ">اعمال</th>
                     </tr>
 
 
@@ -95,7 +93,7 @@
                             <!--Send Data To Delete Action -->
                             <form method="post" asp-action="DeleteCategory" asp-controller="Admin">
                                 <div class="mb-3 d-none">
-                                    <input type="hidden" name="bankId" class="form-control" id="entityIdInput" value="">
+                                    <input type="hidden" name="categoryId" class="form-control" id="entityIdInput" value="">
                                 </div>
                                 <button type="submit" class="btn btn-danger">بله</button>
                             </form>

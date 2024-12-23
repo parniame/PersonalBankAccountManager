@@ -29,8 +29,8 @@ namespace Service.Mapster
                 .Map(dest => dest.DateOfBirth, src => DateOnly.FromDateTime(src.DateOfBirth.Value),srcCond => srcCond.DateOfBirth.HasValue)
                 .Map(dest => dest.DateCreated,src => src.DateCreated)
                 .Map(dest => dest .DateUpdated,src => src.DateUpdated)
-                .Map(dest => dest.CreatorName, src => src.Creator.FirstName + src.Creator.LastName,srcCond => srcCond.Creator != null)
-                .Map(dest => dest.UpdatorName, src => src.Updator.FirstName + src.Updator.LastName, srcCond => srcCond.Updator != null)
+                .Map(dest => dest.CreatorName, src => src.Creator.FirstName+"  " + src.Creator.LastName,srcCond => srcCond.Creator != null)
+                .Map(dest => dest.UpdatorName, src => src.Updator.FirstName+ "  "+ src.Updator.LastName, srcCond => srcCond.Updator != null)
             ;
             TypeAdapterConfig<RegisterCommand, User>.NewConfig();
 
@@ -61,13 +61,13 @@ namespace Service.Mapster
                 .Map(dest => dest.Picture, src => src.Picture)
                 .Map(dest => dest.URL, src => src.Picture.FileAddress);
             TypeAdapterConfig<Bank, BankResult>.NewConfig()
-                .Map(dest => dest.UpdatorName, src => src.Updator.FirstName + src.Updator.LastName)
                 .Map(dest => dest.URL, src => src.Picture.FileAddress)
-                .Map(dest => dest.CreatorName, src => src.Creator.FirstName + src.Creator.LastName);
-            TypeAdapterConfig<TransactionCategory,CategoryResult>.NewConfig()
-                 .Map(dest => dest.UpdatorName, src => src.Updator.FirstName + src.Updator.LastName)
+                .Map(dest => dest.CreatorName, src => src.Creator.FirstName + "  " + src.Creator.LastName, srcCond => srcCond.Creator != null)
+                .Map(dest => dest.UpdatorName, src => src.Updator.FirstName + "  " + src.Updator.LastName, srcCond => srcCond.Updator != null);
+            TypeAdapterConfig<TransactionCategory, CategoryResult>.NewConfig()
                 .Map(dest => dest.IsWithdrawl, src => src.IsWithdrawl)
-                .Map(dest => dest.CreatorName, src => src.Creator.FirstName + src.Creator.LastName);
+                .Map(dest => dest.CreatorName, src => src.Creator.FirstName + "  " + src.Creator.LastName, srcCond => srcCond.Creator != null)
+                .Map(dest => dest.UpdatorName, src => src.Updator.FirstName + "  " + src.Updator.LastName, srcCond => srcCond.Updator != null);
             TypeAdapterConfig<BankAccount, BankAccountArgs>.NewConfig()
                  .Map(dest => dest.URL, src => src.Bank.Picture.FileAddress);
             TypeAdapterConfig<BankAccount, BankAccountResult>.NewConfig()

@@ -8,10 +8,10 @@
     <form action="Compare" method="post">
 
 
-        <input type="text" class="form-control" id="date-min" placeholder="  از تاریخ">
+        <input type="text" class="form-control ltr" id="date-min" placeholder="  از تاریخ">
         <input type="hidden" id="from" name="from" placeholder="مقدار میلادی تاریخ">
 
-        <input type="text" class="form-control" id="date-max" placeholder=" تا تاریخ ">
+        <input type="text" class="form-control ltr" id="date-max" placeholder=" تا تاریخ ">
         <input type="hidden" id="to" name="to" placeholder="مقدار میلادی تاریخ">
         <input class="btn btn-primary" type="submit" value="تایید" />
     </form>
@@ -97,7 +97,7 @@
                         </th>
                         <th class="border-bottom-0">مقدار</th>
                         <th class="border-bottom-0">نوع تراکنش</th>
-                        <th class="border-bottom-0">زمان ساخت</th>
+                        <th class="border-bottom-0 ">زمان ساخت</th>
                         
 
 
@@ -151,7 +151,7 @@
                                 @item.IsWithdrawl
                             </td>
 
-                            <td data-search="@item.DateCreated" ,data-order="@item.DateCreated">
+                            <td class="ltr" data-search="@item.DateCreated" ,data-order="@item.DateCreated">
                                 @item.DateCreatedFarsi
                             </td>
                            

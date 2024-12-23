@@ -52,7 +52,7 @@ namespace PersonalBankAccountManager.Models
 
         [Display(Name = "PhoneNumberProp", ResourceType = typeof(PresentationResources))]
         [Required(ErrorMessageResourceName = "RequiredValidationMessage", ErrorMessageResourceType = typeof(PresentationResources))]
-        [RegularExpression(@"^(0|\+98)\d{10}", ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = "InvalidPhoneNumber")]
+        [RegularExpression("^09\\d{9}$", ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = "InvalidPhoneNumber")]
         public string PhoneNumber { get; set; }
     }
 }

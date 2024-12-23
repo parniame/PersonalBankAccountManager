@@ -19,7 +19,7 @@
                         <th class="border-bottom-0">موجودی</th>
                         <th class="border-bottom-0">زمان ساخت</th>
                         <th class="border-bottom-0">زمان تغییر</th>
-                        <th class="border-bottom-0">اعمال</th>
+                        <th class="border-bottom-0 actions">اعمال</th>
 
                     </tr>
                 </thead>
@@ -45,7 +45,7 @@
                             </td>
 
 
-                            <td>
+                            <td class="actions">
                                 <a type="button" class="btn  btn-outline-warning  btn-sm" asp-controller="BankAccount" asp-action="UpdateBankAccount" asp-route-bankAccountId="@item.Id">تغییر</a>|
                                 <button type="button" class="btn  btn-outline-info  btn-sm" onclick="ShowDetailsModal('@item.Id')" href="">جزئیات</button>|
                                 <button type="button" class="btn btn-danger  btn-sm" onclick="ShowDeleteModal('@item.Id')" href="">حذف</button>
@@ -61,6 +61,7 @@
                         <th class="border-bottom-0">موجودی</th>
                         <th class="border-bottom-0">زمان ساخت</th>
                         <th class="border-bottom-0">زمان تغییر</th>
+                        <th class="border-bottom-0 actions">اعمال</th>
                         
                     </tr>
 

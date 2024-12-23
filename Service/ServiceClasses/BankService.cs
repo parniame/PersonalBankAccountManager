@@ -20,13 +20,13 @@ namespace Service.ServiceClasses
     public class BankService : ServiceBase<Bank>, IBankService
     {
         private readonly IBaseRepository<Bank> _baseRepository;
-        private readonly IBankAccountService _bankAccountService;
+        private readonly IBaseRepository<BankAccount> _bankAccountRepository;
         private readonly IPictureService _pictureService;
-        public BankService(IBaseRepository<Bank> baseRepository, IPictureService pictureService, IBankAccountService bankAccountService) : base(baseRepository)
+        public BankService(IBaseRepository<Bank> baseRepository, IPictureService pictureService, IBaseRepository<BankAccount> bankAccountRepository) : base(baseRepository)
         {
             _baseRepository = baseRepository;
             _pictureService = pictureService;
-            _bankAccountService = bankAccountService;
+            _bankAccountRepository = bankAccountRepository;
         }
 
         public async Task<bool> CreateAsync(BankCommand bankDTO, IFormFile? file)
@@ -52,7 +52,15 @@ namespace Service.ServiceClasses
                 {
 
                     //delete bank from bankAcccounts
-                    await _bankAccountService.DeleteBankAsync(Id);
+                    var bankAccounts = _bankAccountRepository.GetAll(x => x.BankId == Id, false).ToList();
+                    if(bankAccounts.Any())
+                    {
+                        foreach (var bankAccount in bankAccounts)
+                        {
+                            bankAccount.BankId = null;
+                        }
+                        await _bankAccountRepository.CommitAsync();
+                    }
                     var result = await _baseRepository.DeleteAsync(Id);
                     if (result)
                     {

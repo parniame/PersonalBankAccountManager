@@ -6,12 +6,14 @@ using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Models.Entities;
+using Persistence.Repositories;
 using Service.Exceptions;
 using Service.ServiceInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,7 +37,7 @@ namespace Service.ServiceClasses
         }
 
 
-        public async Task<List<UserResult>> GetAllUser(Guid userId)
+        public async Task<List<UserResult>> GetAllUserAsync(Guid userId)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
@@ -46,7 +48,7 @@ namespace Service.ServiceClasses
             {
                 foreach (User data in users)
                 {
-                    var dto = await TranslateToDTO(data);
+                    var dto = await TranslateToResultAsync(data);
                     result.Add(dto);
                 }
 
@@ -54,7 +56,19 @@ namespace Service.ServiceClasses
             return result;
 
         }
-        public async Task<User?> GetCurrentUserAsync(string userId)
+        //used in controller
+        public async Task<UserResult> GetCurrentUserAsync(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                throw new ItemNotFoundException("کاربر ");
+
+            var dto = await TranslateToResultAsync(user);
+            return dto;
+
+        }
+        //used  in services
+        public async Task<User?> GetUserAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
 
@@ -67,18 +81,23 @@ namespace Service.ServiceClasses
 
             if (user != null)
             {
-                var signInResult = await _signInManager.PasswordSignInAsync(user, command.Password, command.RememberMe, false);
-                result = signInResult.Succeeded;
-            }
-            else
-            {
-                throw new UserDoseNotExistException(command.UserName);
+                var passwordOK = await _userManager.CheckPasswordAsync(user, command.Password);
+                if (passwordOK)
+                {
+                    var signInResult = await _signInManager.PasswordSignInAsync(user, command.Password, command.RememberMe, false);
+                    result = signInResult.Succeeded;
+                    return result;
+                }
+
             }
 
-            return result;
+            throw new UserDoseNotExistException(command.UserName);
+
+
+
         }
 
-        public async Task<bool> RegisterAsync(RegisterCommand command, string userRole)
+        public async Task<bool> RegisterAsync(RegisterCommand command, string userRole, Guid userId = new Guid())
         {
 
             var duplicateUser = await _userManager.FindByNameAsync(command.UserName);
@@ -87,7 +106,10 @@ namespace Service.ServiceClasses
 
             var user = TranslateToEntity<RegisterCommand>(command);
             user.DateCreated = DateTime.Now;
-
+            if (userId != Guid.Empty)
+            {
+                user.CreatorID = userId;
+            }
             var registerResult = await _userManager.CreateAsync(user, command.Password);
             await _userManager.AddToRoleAsync(user, userRole);
 
@@ -106,7 +128,7 @@ namespace Service.ServiceClasses
         }
         public async Task DeleteUserAsync(Guid userId)
         {
-            
+
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
                 throw new ItemNotFoundException("کاربر ");
@@ -124,23 +146,69 @@ namespace Service.ServiceClasses
                         await _userManager.DeleteAsync(user);
                         return;
                     }
-                
+
                 }
-                
+
 
 
             }
             throw new CodeErrorException();
 
+        }
+        public async Task<bool> UpdateUserAsync(RegisterCommand dto, Guid userId,string oldUsername)
+
+        {
+            var newUser = TranslateToEntity(dto);
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+
+            if (user == null)
+                throw new ItemNotFoundException("کاربر ");
+
+            var entity = TranslateToEntity(dto);
+            user.DateUpdated = DateTime.Now;
+            user.UpdatorID = userId;
+            user.Email = newUser.Email;
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains("Member"))
+            {
+                if(dto.UserName != oldUsername)
+                {
+                    var duplicateUser = await _userManager.FindByNameAsync(dto.UserName);
+                    if (duplicateUser != null)
+                        throw new DuplicateUserNameException(dto.UserName);
+                    user.UserName = newUser.UserName;
+                }
+               
+
+            }
+            user.DateOfBirth = newUser.DateOfBirth;
+            user.FirstName = newUser.FirstName;
+            user.LastName = newUser.LastName;
+            user.PhoneNumber = newUser.PhoneNumber;
+
+            var result = await _userManager.UpdateAsync(user);
+            return result.Succeeded;
+        }
+        public async Task<bool> UpdatePasswordAsync(string userName, string password)
+
+        {
+            var user = await _userManager.FindByNameAsync(userName);
+
+            if (user == null)
+                throw new ItemNotFoundException("کاربر ");
 
 
-            
 
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var changePasswordOK = await _userManager.ResetPasswordAsync(user, token, password);
+            return changePasswordOK.Succeeded;
 
 
         }
 
-        public async Task<UserResult> TranslateToDTO(User entity)
+        public async Task<UserResult> TranslateToResultAsync(User entity)
         {
             var dto = entity.Adapt<UserResult>();
             dto.RoleName = (await _userManager.GetRolesAsync(entity))[0];

@@ -27,14 +27,14 @@ namespace Service.ServiceClasses
         private readonly IBaseRepository<Transaction> _transactionRepository;
         private readonly IUserService _userService;
         private readonly IPictureService _pictureService;
-        private readonly ITransactionCategoryService _transactionCategoryService;
+        
 
-        public TransactionService(IBaseRepository<Transaction> transactionRepository, IUserService userService, IPictureService pictureService, ITransactionCategoryService transactionCategoryService) : base(transactionRepository)
+        public TransactionService(IBaseRepository<Transaction> transactionRepository, IUserService userService, IPictureService pictureService) : base(transactionRepository)
         {
             _transactionRepository = transactionRepository;
             _userService = userService;
             _pictureService = pictureService;
-            _transactionCategoryService = transactionCategoryService;
+            
         }
         public async Task<bool> CreateAsync(TransactionCommand transactionCommand, IFormFile? file)
 
@@ -48,23 +48,13 @@ namespace Service.ServiceClasses
 
             return await CreateUniqueAsync(transactionCommand, "TransactionPlanId", "پرداخت پلنر تراکنش");
         }
+
         public async Task<bool> DeleteAnyTransactionWithThisBankAccountAsync(Guid bankAccountId)
         {
             return await _transactionRepository.DeleteListAsync(x => x.BankAccountId == bankAccountId); ;
         }
-        //Guid is already unique
-        public async Task<bool> DeletePlannerAsync(Guid plannerId)
-        {
-            var transactions = _transactionRepository.GetAll(x => x.TransactionPlanId == plannerId, false).ToList();
-
-            foreach (var transaction in transactions)
-            {
-                transaction.TransactionPlanId = null;
-            }
-            await _transactionRepository.CommitAsync();
-            return true;
-        }
         
+
         public async Task<bool> DeleteAsync(Guid Id, Guid userId)
         {
             //Check if Id valid
@@ -102,7 +92,7 @@ namespace Service.ServiceClasses
                 where DTO : class
         {
             //check user
-            var user = await _userService.GetCurrentUserAsync(userId.ToString());
+            var user = await _userService.GetUserAsync(userId.ToString());
             if (user == null)
             {
                 throw new ItemNotFoundException("نام کاربری");
@@ -124,7 +114,7 @@ namespace Service.ServiceClasses
         where DTO : class
         {
             //check user
-            var user = await _userService.GetCurrentUserAsync(userId.ToString());
+            var user = await _userService.GetUserAsync(userId.ToString());
             if (user == null)
             {
                 throw new ItemNotFoundException("نام کاربری");
@@ -137,7 +127,7 @@ namespace Service.ServiceClasses
                 {
                     if (check.UserId == userId)
                     {
-                        var entity = await _transactionRepository.GetByIdAsync(Id, x => x.Include(x => x.BankAccount).Include(x => x.BankAccount.Bank).Include(x => x.Category).Include(x => x.TransactionPlan).Include(x => x.TransActionDocument).Include(x => x.TransActionDocument), readOnly);
+                        var entity = await _transactionRepository.GetByIdAsync(Id, x => x.Include(x => x.BankAccount).Include(x => x.BankAccount.Bank).Include(x => x.BankAccount.Bank.Picture).Include(x => x.Category).Include(x => x.TransactionPlan).Include(x => x.TransActionDocument).Include(x => x.TransActionDocument), readOnly);
 
                         var test = MapToDTO<DTO>(entity);
                         return entity == null ? null : MapToDTO<DTO>(entity);
@@ -236,7 +226,7 @@ namespace Service.ServiceClasses
         where DTO : class
         {
             //check user
-            var user = await _userService.GetCurrentUserAsync(userId.ToString());
+            var user = await _userService.GetUserAsync(userId.ToString());
             if (user == null)
             {
                 throw new ItemNotFoundException("نام کاربری");
@@ -295,7 +285,7 @@ namespace Service.ServiceClasses
         {
 
             //check user
-            var user = await _userService.GetCurrentUserAsync(userId.ToString());
+            var user = await _userService.GetUserAsync(userId.ToString());
             if (user != null)
             {
                 var entities = _transactionRepository.GetAll(x => x.UserId == userId, true);
@@ -340,7 +330,7 @@ namespace Service.ServiceClasses
         public async Task<TransactionCategoryLists> GetTransactionWithCategoriesChartAsync(Guid userId)
         {
             //check user
-            var user = await _userService.GetCurrentUserAsync(userId.ToString());
+            var user = await _userService.GetUserAsync(userId.ToString());
             if (user != null)
             {
                 var entities = _transactionRepository.GetAll(x => x, x => x.UserId == userId, x => x.Include(x => x.Category), true);

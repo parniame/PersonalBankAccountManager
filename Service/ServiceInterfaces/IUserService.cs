@@ -12,11 +12,14 @@ namespace Service.ServiceInterfaces
     public interface IUserService
     {
         //Task<IdentityResult> CreateUser(RegisterCommand user, string password,Guid userId);
-        Task<User> GetCurrentUserAsync( string userId);
+        Task<User> GetUserAsync( string userId);
         Task<bool> LoginAsync(LoginCommand command);
-        Task<bool> RegisterAsync(RegisterCommand command,string userRole);
         Task LogoutAsync(string username);
         Task DeleteUserAsync(Guid userId);
-        Task<List<UserResult>> GetAllUser(Guid userId);
+        Task<List<UserResult>> GetAllUserAsync(Guid userId);
+        Task<UserResult> GetCurrentUserAsync(Guid userId);
+        Task<bool> RegisterAsync(RegisterCommand command, string userRole, Guid userId = default);
+        Task<bool> UpdatePasswordAsync(string userName, string password); 
+        Task<bool> UpdateUserAsync(RegisterCommand dto, Guid userId, string oldUsername);
     }
 }

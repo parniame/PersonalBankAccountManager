@@ -25,7 +25,7 @@
                         <th class="border-bottom-0">محدوددیت زمانی </th>
                         <th class="border-bottom-0">زمان ساخت</th>
                         <th class="border-bottom-0">زمان تغییر</th>
-                        <th class="border-bottom-0">اعمال</th>
+                        <th class="border-bottom-0 actions">اعمال</th>
 
                     </tr>
                 </thead>
@@ -77,7 +77,7 @@
                             </td>
 
 
-                            <td>
+                            <td class="actions">
 
                                 <a type="button" class="btn  btn-outline-warning  btn-sm" asp-controller="Planner" asp-action="UpdatePlanner" asp-route-plannerId="@item.Id">تغییر</a>|
                                 <button type="button" class="btn  btn-outline-info  btn-sm" onclick="ShowDetailsModal('@item.Id','@item.IsPaid')" href="">جزئیات</button>|
@@ -97,7 +97,7 @@
                         <th class="border-bottom-0 ltr">محدوددیت زمانی </th>
                         <th class="border-bottom-0 ltr">زمان ساخت</th>
                         <th class="border-bottom-0 ltr">زمان تغییر</th>
-                        <th class="border-bottom-0">اعمال</th>
+                        <th class="border-bottom-0 actions">اعمال</th>
                     </tr>
                     
                 </tfoot>

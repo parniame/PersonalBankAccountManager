@@ -24,12 +24,11 @@
                 
                 @if (!User.Identity?.IsAuthenticated ?? true)
                 {
-                    <a class="btn btn-outline-success" asp-area="" asp-controller="Accounting" asp-action="Login">وارد شوید</a>
+                    <a class="btn btn-outline-success" asp-area="" asp-controller="Account" asp-action="Login">وارد شوید</a>
                 }
                 else
                 {
-                    @* <strong class="d-inline-block mt-1 me-2">خوش آمدید @User.Identity.Name</strong>
-                <a class="btn btn-outline-danger" asp-area="" asp-controller="Accounting" asp-action="Logout">خارج شوید</a> *@
+                    
                     
                 <!-- ======= Profile ======= -->
                     <li class="nav-item dropdown pe-3">
@@ -122,6 +121,7 @@
     <script src="~/assets/vendor/php-email-form/validate.js"></script>
     <script src="~/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
+   
     @{
         await Html.RenderPartialAsync("_FooterLinks");
         await RenderSectionAsync("Scripts", required: false);

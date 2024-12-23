@@ -47,3 +47,11 @@ body {
 .hidden_row ,.hidden{
     display: none;
 }
+.actions {
+    display: block;
+    width: 200px;
+    box-sizing: border-box;
+}
+.ltr, table.dataTable th.dt-type-date {
+    text-align: right !important;
+}

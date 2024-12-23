@@ -90,7 +90,7 @@ namespace PersonalBankAccountManager.Controllers
                     transactionCategoryCommand.UpdatorID = transactionCategoryCommand.CreatorID;
                     var result = await _transactionCategoryService.CreateAsync(transactionCategoryCommand);
                     TempData["SuccessMessage"] = "  دسته بندی تراکنش با موفقیت ساخته شد";
-                    return LocalRedirect("/Admin/index");
+                    return RedirectToAction("GetTransactionCategories");
                 }
                 catch (Exception e)
                 {
@@ -138,7 +138,7 @@ namespace PersonalBankAccountManager.Controllers
                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (!string.IsNullOrEmpty(currentUserId))
                 {
-                    var users = await _userService.GetAllUser(new Guid(currentUserId));
+                    var users = await _userService.GetAllUserAsync(new Guid(currentUserId));
 
                     var userWithDetails = Translator.ProjectToCustom<UserResult, UserWithDetailsViewModel>(users);
                     return View(userWithDetails);
@@ -215,26 +215,50 @@ namespace PersonalBankAccountManager.Controllers
         }
         public async Task<IActionResult> DeleteBank(Guid bankId)
         {
-            //try
+            try
             {
                 await _bankService.DeleteAsync(bankId);
             }
-            //catch (Exception e)
-            //{
-            //    _logger.LogError(e, "در  حذف  بانک  مشکلی به وجود آمد");
-            //    //If error is in english
-            //    if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
-            //        TempData["ErrorMessage"] = e.Message;
-            //    else
-            //        TempData["ErrorMessage"] = "احذف  بانک با مشکل مواجه شد";
+            catch (Exception e)
+            {
+                _logger.LogError(e, "در  حذف  بانک  مشکلی به وجود آمد");
+                //If error is in english
+                if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
+                    TempData["ErrorMessage"] = e.Message;
+                else
+                    TempData["ErrorMessage"] = "احذف  بانک با مشکل مواجه شد";
 
-            //}
+            }
 
 
 
             return RedirectToAction("GetBanks", "Admin");
         }
+        public async Task<IActionResult> DeleteCategory(Guid categoryId)
+        {
+            try
+            {
+                await _transactionCategoryService.DeleteAsync(categoryId);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "در  حذف  بانک  مشکلی به وجود آمد");
+                //If error is in english
+                if (!Regex.IsMatch(e.Message, "^[\u0000-\u007F]+$"))
+                    TempData["ErrorMessage"] = e.Message;
+                else
+                    TempData["ErrorMessage"] = "احذف  بانک با مشکل مواجه شد";
+
+            }
+
+
+
+            return RedirectToAction("GetTransactionCategories", "Admin");
+        }
 
     }
+    
+
 }
+
 

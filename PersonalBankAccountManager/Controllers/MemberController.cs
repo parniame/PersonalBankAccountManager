@@ -28,7 +28,7 @@ namespace PersonalBankAccountManager.Controllers
             _transactionService = transactionService;
         }
 
-        public async Task<IActionResult> Index(string? errorMessage)
+        public async Task<IActionResult> Index()
         {
 
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);

@@ -17,23 +17,25 @@ namespace Service.ServiceClasses
     {
         private readonly IBaseRepository<TransactionPlan> _baseRepository;
         private readonly IUserService _userService;
-        private readonly ITransactionService _transactionService;
-        public TransactionPlanService(IBaseRepository<TransactionPlan> baseRepository, IUserService userService, ITransactionService transactionService) : base(baseRepository)
+       
+        private readonly IBaseRepository<Transaction> _transactionRepository;
+        public TransactionPlanService(IBaseRepository<TransactionPlan> baseRepository, IUserService userService, IBaseRepository<Transaction> transactionRepository) : base(baseRepository)
         {
             _userService = userService;
             _baseRepository = baseRepository;
-            _transactionService = transactionService;
+            _transactionRepository = transactionRepository;
         }
 
         public override async Task<bool> CreateAsync<TransactionPlanCommand>(TransactionPlanCommand transactionPlanCommand)
         {
             return await CreateUniqueAsync(transactionPlanCommand, "Name", "پلنر تراکنش");
         }
+
         public async Task SetIsPaidAsync(Guid transactionPlanId, Guid userId)
         {
 
             //check user
-            var user = await _userService.GetCurrentUserAsync(userId.ToString());
+            var user = await _userService.GetUserAsync(userId.ToString());
             if (user == null)
             {
                 throw new ItemNotFoundException("نام کاربری");
@@ -56,11 +58,12 @@ namespace Service.ServiceClasses
             throw new ItemNotFoundException("پلنر تراکنش ");
 
         }
+
         public async Task<List<DTO>> GetAllAsync<DTO>(Guid userId)
         where DTO : class
         {
             //check user
-            var user = await _userService.GetCurrentUserAsync(userId.ToString());
+            var user = await _userService.GetUserAsync(userId.ToString());
             if (user == null)
             {
                 throw new ItemNotFoundException("نام کاربری");
@@ -75,6 +78,7 @@ namespace Service.ServiceClasses
             return results;
 
         }
+
         public async Task<bool> DeleteAsync(Guid Id, Guid userId)
         {
             //Check if Id valid
@@ -85,9 +89,20 @@ namespace Service.ServiceClasses
                 {
                     if (check.UserId == userId)
                     {
+                        //delete plannerId from transaction
+                        var transactions = _transactionRepository.GetAll(x => x.TransactionPlanId == Id, false).ToList();
+                        var result = true;
+                        if (transactions.Any())
+                        {
+                            foreach (var transaction in transactions)
+                            {
+                                transaction.TransactionPlanId = null;
+                            }
 
-                        var result = await _transactionService.DeletePlannerAsync(Id);
-                        return await _baseRepository.DeleteAsync(Id);
+                             result = await _transactionRepository.CommitAsync() > 0;
+                        }
+                        if (result)
+                            return await _baseRepository.DeleteAsync(Id);
                     }
                     throw new CodeErrorException();
 
@@ -96,12 +111,12 @@ namespace Service.ServiceClasses
 
             throw new ItemNotFoundException("پلنر تراکنش ");
         }
-       
+
         public async Task<DTO?> GetByIdAsync<DTO>(Guid Id, Guid userId, bool readOnly = true)
            where DTO : class
         {
             //check user
-            var user = await _userService.GetCurrentUserAsync(userId.ToString());
+            var user = await _userService.GetUserAsync(userId.ToString());
             if (user == null)
             {
                 throw new ItemNotFoundException("نام کاربری");
@@ -137,11 +152,11 @@ namespace Service.ServiceClasses
                     var list = new List<string>
             {
                 "UserId",
-
+                
             };
                     if (isPaid)
                     {
-                        list.AddRange(["Amount", "TillThisDate", "IsWithdrawl"]);
+                        list.AddRange(["Amount", "TillThisDate", "IsWithdrawl", "IsPaid"]);
                     }
                     return await _baseRepository.UpdateAsync(entity, list);
                 }

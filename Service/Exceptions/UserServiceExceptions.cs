@@ -25,7 +25,7 @@ namespace Service.Exceptions
     }
     public class UserDoseNotExistException : UserServiceExceptions
     {
-        public UserDoseNotExistException(string userName) : base($" از قبل وجود ندارد\u200E[{userName}]\u200E کاربر با این نام کاربری\u200E", 1)
+        public UserDoseNotExistException(string userName) : base($"   یا پسورد از قبل وجود ندارد\u200E[{userName}]\u200E کاربر با این نام کاربری\u200E", 1)
         {
            
         }

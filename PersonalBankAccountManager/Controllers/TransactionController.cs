@@ -131,7 +131,7 @@ namespace PersonalBankAccountManager.Controllers
             return RedirectToAction("AddTransaction");
         }
 
-        public IActionResult GetCategories(bool isPositive, Guid categoryId = new Guid())
+        public IActionResult GetCategories(bool isPositive = false, Guid categoryId = new Guid())
         {
             List<CategoryViewModel> categories = new List<CategoryViewModel>();
             try
@@ -167,18 +167,11 @@ namespace PersonalBankAccountManager.Controllers
         }
         //Read
         [HttpGet]
-        public async Task<IActionResult> GetTransactions(string? errorMessage, string? successMessage)
+        public async Task<IActionResult> GetTransactions()
         {
             try
             {
-                if (errorMessage != null)
-                {
-                    TempData["ErrorMessage"] = errorMessage;
-                }
-                if (successMessage != null)
-                {
-                    TempData["SuccessMessage"] = successMessage;
-                }
+                
                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (!string.IsNullOrEmpty(currentUserId))
                 {
@@ -201,7 +194,7 @@ namespace PersonalBankAccountManager.Controllers
                 TempData["ErrorMessage"] = " اوردن لیست  تراکنش با مشکل مواجه شد";
             }
 
-            return RedirectToAction("Index", "Member", new { errorMessage = TempData["ErrorMessage"] });
+            return RedirectToAction("Index", "Member");
 
         }
 
@@ -217,7 +210,7 @@ namespace PersonalBankAccountManager.Controllers
                     if (result)
                     {
                         TempData["SuccessMessage"] = " تراکنش با موفقیت حذف شد";
-                        return RedirectToAction("GetTransactions", new { successMessage = TempData["SuccessMessage"]?.ToString() });
+                        return RedirectToAction("GetTransactions");
                     }
 
                 }
@@ -238,7 +231,7 @@ namespace PersonalBankAccountManager.Controllers
             }
 
 
-            return RedirectToAction("GetTransactions", new { errorMessage = TempData["ErrorMessage"] });
+            return RedirectToAction("GetTransactions");
         }
         //Details
         public async Task<IActionResult> GetTransactionDetails(Guid transactiontId)
@@ -272,17 +265,14 @@ namespace PersonalBankAccountManager.Controllers
             }
 
 
-            return RedirectToAction("GetTransactions", new { errorMessage = TempData["ErrorMessage"] });
+            return RedirectToAction("GetTransactions");
 
         }
         //Update
 
-        public async Task<IActionResult> UpdateTransaction(Guid transactionId, string? errorMessage)
+        public async Task<IActionResult> UpdateTransaction(Guid transactionId)
         {
-            if (errorMessage != null)
-            {
-                TempData["ErrorMessage"] = errorMessage;
-            }
+            
             try
             {
                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -292,12 +282,7 @@ namespace PersonalBankAccountManager.Controllers
                     var result = await _translator.GetUpdateTransactionViewModelAsync(transactionId, new Guid(currentUserId));
 
                     return View(result);
-
-
                 }
-
-
-
             }
             catch (Exception e)
             {
@@ -315,7 +300,7 @@ namespace PersonalBankAccountManager.Controllers
             }
 
 
-            return RedirectToAction("GetTransactions", new { errorMessage = TempData["ErrorMessage"] });
+            return RedirectToAction("GetTransactions");
 
         }
         [HttpPost]
@@ -382,7 +367,7 @@ namespace PersonalBankAccountManager.Controllers
 
             }
 
-            return RedirectToAction("GetTransactions", new { errorMessage = TempData["ErrorMessage"]?.ToString() });
+            return RedirectToAction("GetTransactions");
 
         }
 

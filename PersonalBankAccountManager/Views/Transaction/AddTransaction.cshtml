@@ -23,7 +23,7 @@
             در صورت انتخاب پلنر تراکنش، ورودی های مورد نظر به صورت خودکار پر خواهد شد و قابل تغییر نخواهد بود.
             در صورت نیاز به تغییر پلنر تراکنش، در صفحه مربوطه آن را تغییر دهید.
         </p>
-        <form asp-action="AddTransactionPost" method="post" id="addTransactionForm" enctype="multipart/form-data">
+        <form  asp-action="AddTransactionPost" method="post" id="addTransactionForm" enctype="multipart/form-data">
 
             <div class="row mb-3  required-field">
                 <label asp-for="Title" class="col-sm-2 col-form-label"></label>
@@ -150,7 +150,7 @@
             </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">ثبت</button>
-                <button type="reset" class="btn btn-secondary">پاک کردن</button>
+                
             </div>
 
 
@@ -183,7 +183,7 @@
         </div>
         <!-- /.modal -->
         <form id="addCategory" asp-action="GetCategories" method="post" data-ajax-update="#categories" data-ajax="true">
-            <input id="isPositive" type="hidden" name="isPositive" value="False" />
+            <input id="isPositive" type="hidden" name="isPositive" value="" />
             <input id="categoryId" type="hidden" name="categoryId" value="" />
 
 

@@ -133,14 +133,11 @@ namespace PersonalBankAccountManager
             {
 
                 await FirstData.CreateRolesAsync(scope);
+                await FirstData.CreateAdmibAsync(scope);
 
 
             }
-            using (var scope = app.Services.CreateScope())
-            {
-                await FirstData.CreateRolesAsync(scope);
-
-            }
+            
 
             app.Run();
         }

@@ -28,29 +28,7 @@ namespace Service
 
             return await _baseRepository.CreateAsync(entity);
         }
-        public virtual Task<bool> UpdateAsync<DTO>(DTO dto)
-            where DTO : class
-        {
-            var entity = MapToEntity(dto);
-            entity.DateUpdated = DateTime.Now;
-            return _baseRepository.UpdateAsync(entity);
-        }
-        //public virtual async Task<bool> DeleteAsync(Guid Id)
-        //{
-        //    var check = await _baseRepository.GetByIdAsync(Id);
-        //    if (check == null)
-        //    {
-        //        throw new ItemNotFoundException("آیدی");
-        //    }
-        //    return await _baseRepository.DeleteAsync(Id);
-        //}
-        public virtual async Task<DTO?> GetByIdAsync<DTO>(Guid Id, bool readOnly = true)
-            where DTO : class
-        {
-            var entity = await _baseRepository.GetByIdAsync(Id, readOnly);
-            return entity == null ? null : MapToDTO<DTO>(entity);
-
-        }
+          
 
         public async Task<List<DTO>> GetAllAsync<DTO>()
             where DTO : class
